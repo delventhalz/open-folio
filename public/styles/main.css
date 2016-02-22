@@ -1,0 +1,60 @@
+/*Overwrite Bootstrap Stylings*/
+p {
+  margin: 0;
+}
+
+.content {
+  margin-top: 176px;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+button:focus, input[type="button"]:focus {
+    outline: none;
+}
+
+textarea:focus, input:focus{
+    outline: 0;
+}
+
+.navbar {
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+  padding-bottom: 6px;
+}
+
+.navbar-brand {
+  font-style: normal;
+}
+
+.dropdown-menu {
+  padding: 0.5em;
+  color: #000;
+  width: 4em; /*TODO: find out why this doesn't work*/
+  font-size: 1.2em;
+  font-style: normal;
+  cursor: pointer;
+}
+
+.dropdown-menu li:hover {
+  background-color: #ddd;
+}
+
+.dropdown-menu li:active {
+  background-color: #235c9e;
+}
+
+.anchor {
+  margin-top: -200px;
+  padding-top: 200px;
+}
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
+.autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
+.autocomplete-selected { background: #F0F0F0; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 2px 5px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }

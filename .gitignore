@@ -1,0 +1,17 @@
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# Dependency directory
+node_modules/
+
+# OS X
+.DS_Store
+
+# To Do List
+_todo.txt
