@@ -4,6 +4,8 @@ var plays = [
   {value: "Winter's Tale", path: "winters_tale.html"}
 ];
 
+var settings = {};
+
 // $('.formatting').attr('href', 'styles/modern.css');
 
 // Adds a style tag to the head if it does not exist.
@@ -44,12 +46,23 @@ var toggleSizeStyle = function (selector, style, size) {
   }
 };
 
+var setSceneVisibility = function() {
+  if (!settings.displayAll && settings.scene) {
+    $('.anchor').hide();
+    $(settings.scene).show();
+  } else {
+    $('.anchor').show();
+  }
+}
+
 var populateSceneSelect = function() {
   var anchorIds = $.makeArray(
     $('.anchor').map(function(index, anchor) {
     return $(anchor).attr('id');
     })
   );
+
+  $('#scene_select>.dropdown-menu').children().remove();
 
   anchorIds.forEach(function(id) {
     var actNumbers = { I: '1', II: '2', III: '3', IV: '4', V: '5' };
@@ -79,15 +92,26 @@ $('.radio-toggle').on('click', function() {
 
 
 $('#play_selection').autocomplete({
-    lookup: plays,
-    onSelect: function (suggestion) {
-      $('.content').children().remove();
-      $.get(suggestion.path, function(data) {
-        $('.content').append(data);
-        populateSceneSelect();
-      });
-    }
+  lookup: plays,
+  onSelect: function (suggestion) {
+    $('.content').children().remove();
+    $.get(suggestion.path, function(data) {
+      $('.content').append(data);
+      populateSceneSelect();
+    });
+  }
 });
+
+$('#scene_select>.dropdown-menu').on('click', 'a', function() {
+  settings.scene = $(this).attr('href');
+  setSceneVisibility();
+});
+
+$('#display_box').on('click', function() {
+  settings.displayAll = $(this).prop('checked');
+  setSceneVisibility();
+});
+
 
 // Behaviors for the formatting buttons on the third row.
 $('#font_smaller').on('click', function() {
