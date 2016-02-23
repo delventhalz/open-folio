@@ -36,8 +36,8 @@
 
           <!-- Print and Info buttons -->
           <ul class="nav navbar-nav navbar-right">
-            <li id="info_button"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
-            <li id="print_button" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
+            <li id="info_button" title="display help"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
+            <li id="print_button" title="print" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
           </ul>
 
           <div id="navbar" class="navbar-collapse collapse">
@@ -70,9 +70,12 @@
             <!-- Fonts -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Fonts</div>
-              <button id="font_smaller" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
-              <button id="font_larger" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
-              <div id="line_spacing" class="btn-group" role="group">
+
+              <button id="font_smaller" title="reduce font size" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
+
+              <button id="font_larger" title="increase font size" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
+
+              <div id="line_spacing" title="adjust line spacing" class="btn-group" role="group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="glyphicon glyphicon-text-height"></span>
                   <span class="caret"></span>
@@ -83,7 +86,6 @@
                   <li>1.15</li>
                   <li>1.5</li>
                   <li>2.0</li>
-                  <li>3.0</li>
                   <li>4.0</li>
                 </ul>
               </div>
@@ -92,30 +94,39 @@
             <!-- Characters -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Characters</div>
-              <button id="character_linebreak" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
-              <button id="character_caps" type="button" class="btn btn-default toggle">CAPS</button>
-              <button id="character_bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+
+              <button id="character_linebreak" title="set character names on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
+
+              <button id="character_caps" title="make character names uppercase" type="button" class="btn btn-default toggle">CAPS</button>
+
+              <button id="character_bold" title="make character names bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
             </div> 
 
             <!-- Stage Directions -->
             <div class="nav navbar-nav col-sm-1">
               <div class="nav-header">Directions</div>
-              <button id="direction_linebreak" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
+
+              <button id="direction_linebreak" title="set stage directions on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
             </div>
 
             <!-- First Folio -->
             <div class="nav navbar-nav col-sm-2">
               <div class="nav-header">Punctuation</div>
-              <button id="paragraph_linebreak" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
-              <button id="punctuation_whitespace" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
-              <button id="punctuation_bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+
+              <button id="paragraph_linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
+
+              <button id="punctuation_whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
+
+              <button id="punctuation_bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
             </div> 
 
             <!-- Numbering -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Numbering</div>
-              <button id="line_numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
-              <button id="syllable_numbers" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
+
+              <button id="line_numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
+
+              <button id="syllable_numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
             </div> 
 
           </div> <!--/.navbar-bottom -->
