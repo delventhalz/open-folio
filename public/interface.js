@@ -4,11 +4,23 @@ var plays = [
   {value: "Winter's Tale", path: "winters_tale.html"}
 ];
 
+var styles = {
+
+  modern: {
+    path: 'styles/modern.css',
+    toggles: [
+      'direction_linebreak',
+      'character_linebreak',
+      'character_caps',
+      'punctuation_bold',
+      'punctuation_whitespace',
+      'line_numbers'
+    ]
+  }
+
+};
+
 var settings = {};
-
-// $('.formatting').attr('href', 'styles/modern.css');
-
-
 
 // Adds a style tag to the head if it does not exist.
 var makeStyleTag = function (selector) {
@@ -87,6 +99,12 @@ var toggleOff = function(id) {
   if ($(id).hasClass('active')) $(id).trigger('click');
 };
 
+var setStyle = function(name) {
+  toggleOff();
+  $('.formatting').attr('href', styles[name].path);
+  toggleOn(styles[name].toggles);
+};
+
 var setSceneVisibility = function() {
   if (!settings.displayAll && settings.scene) {
     $('.anchor').hide();
@@ -151,6 +169,10 @@ $('#scene_select>.dropdown-menu').on('click', 'a', function() {
 $('#display_box').on('click', function() {
   settings.displayAll = $(this).prop('checked');
   setSceneVisibility();
+});
+
+$('#modern_style').on('click', function() {
+  setStyle('modern');
 });
 
 

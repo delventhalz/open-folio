@@ -1,4 +1,14 @@
-/*
+/******* INTERFACE STYLES *******/
+/* These styles should be toggled on by the interface:
+  'direction_linebreak',
+  'character_linebreak',
+  'character_caps',
+  'punctuation_bold',
+  'punctuation_whitespace',
+  'line_numbers'
+ */
+
+
 /******* MAIN *******/
 /*.confolio {
   font: 300 16px/22px "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -29,7 +39,6 @@
   font-size: 0.7em;
   color: #bbb;
   float: right;
-  display: none;
 }
 
 
@@ -67,13 +76,11 @@
 }
 
 .folio .direction {
-  display: block;
+  
 }
 
 .character {
-  text-transform: uppercase;
   font-weight: 400;
-  display: block;
   margin-top: 0.6em;
 }
 
@@ -112,12 +119,10 @@
 
 .folio .major {
   font-size: 1.2em;
-  font-weight: 800;
-  padding-right: 1.5em;
 }
 
 .folio .minor {
-  font-weight: 500;
+
 }
 
 .folio .end-stop {
@@ -141,5 +146,5 @@
 }
 
 .folio .char-stop {
-  display: none;
-}*/
+
+}
