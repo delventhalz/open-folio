@@ -8,6 +8,8 @@ var settings = {};
 
 // $('.formatting').attr('href', 'styles/modern.css');
 
+
+
 // Adds a style tag to the head if it does not exist.
 var makeStyleTag = function (selector) {
   var type;
@@ -44,6 +46,45 @@ var toggleSizeStyle = function (selector, style, size) {
   } else {
     $(id).html(selector + '{' + style + ':' + size + ';}');
   }
+};
+
+// Returns an array of all ids that match a class
+var getIds = function(className) {
+  if (className[0] !== '.') className = '.' + className;
+
+  return Array.prototype.reduce.call($(className), function(ids, elem) {
+      ids.push(elem.id); 
+      return ids;
+    }, []);
+};
+
+// Sets a toggleable button(s) to on.
+var toggleOn = function(id) {
+  if (Array.isArray(id)) {
+    return id.forEach(function(id) {
+      toggleOn(id);
+    });
+  }
+
+  if (id[0] !== '#') id = '#' + id;
+
+  if (!$(id).hasClass('active')) $(id).trigger('click');
+};
+
+// Sets a toggleable button(s) to off.
+// Will set all to off if no id is specified.
+var toggleOff = function(id) {
+  if (Array.isArray(id)) {
+    return id.forEach(function(id) {
+      toggleOff(id);
+    });
+  }
+
+  if (!id) return toggleOff( getIds('toggle') );
+
+  if (id[0] !== '#') id = '#' + id;
+
+  if ($(id).hasClass('active')) $(id).trigger('click');
 };
 
 var setSceneVisibility = function() {
