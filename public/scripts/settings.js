@@ -1,3 +1,7 @@
+// Object used to store a few runtime settings
+var settings = {};
+
+// Names and paths of plays for the autocomplete
 var plays = [
   {
     value: "Hamlet", 
@@ -16,6 +20,7 @@ var plays = [
 ];
 
 
+// CSS location and button toggles for different presets
 var styles = {
 
   modern: {
