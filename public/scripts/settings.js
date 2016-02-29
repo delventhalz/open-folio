@@ -6,12 +6,12 @@ var plays = [
 
   {
     value: "Twelfth Night", 
-    path: "plays/twelfth_night.html"
+    path: "plays/twelfth-night.html"
   },
   
   {
     value: "Winter's Tale", 
-    path: "plays/winters_tale.html"
+    path: "plays/winters-tale.html"
   }
 ];
 
@@ -21,12 +21,12 @@ var styles = {
   modern: {
     path: 'styles/modern.css',
     toggles: [
-      'direction_linebreak',
-      'character_linebreak',
-      'character_caps',
-      'punctuation_bold',
-      'punctuation_whitespace',
-      'line_numbers'
+      'direction-linebreak',
+      'character-linebreak',
+      'character-caps',
+      'punctuation-bold',
+      'punctuation-whitespace',
+      'line-numbers'
     ]
   },
 

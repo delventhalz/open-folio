@@ -15,7 +15,7 @@
     
     <!-- Custom Styles -->
     <link href="styles/main.css" rel="stylesheet">
-    <link href="styles/modern.css" rel="stylesheet">
+    <link href="styles/defaults.css" rel="stylesheet">
     
     <!-- Styles to be assign later for the first folio -->
     <link class="formatting" rel="stylesheet">
@@ -33,13 +33,13 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a id="header_brand" class="navbar-brand" href="#">CSS Shakespeare</a>
+          <a id="header-brand" class="navbar-brand" href="#">CSS Shakespeare</a>
         </div>
 
           <!-- Print and Info buttons -->
           <ul class="nav navbar-nav navbar-right">
-            <li id="info_button" title="display help"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
-            <li id="print_button" title="print" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
+            <li id="info-button" title="display help"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
+            <li id="print-button" title="print" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
           </ul>
 
           <div id="navbar" class="navbar-collapse collapse">
@@ -47,8 +47,8 @@
 
               <!-- Play Selection -->
               <form class="navbar-form navbar col-sm-6">
-                <input id="play_selection" type="text" class="form-control autocomplete" placeholder="Pick a play...">
-                <div id="scene_select" class="btn-group" role="group">
+                <input id="play-selection" type="text" class="form-control autocomplete" placeholder="Pick a play...">
+                <div id="scene-select" class="btn-group" role="group">
                   <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Scene
                     <span class="caret"></span>
@@ -56,16 +56,16 @@
                   <ul class="dropdown-menu"></ul>
                 </div>
                 <label class="checkbox-inline">
-                  <input id="display_box" type="checkbox" value="displayAll"> Display all
+                  <input id="display-box" type="checkbox" value="displayAll"> Display all
                 </label>
               </form>
 
-              <!-- Style Selection -->
+              <!-- Style Presets Selection -->
               <div class="nav navbar-right col-sm-6">
                 <div class="nav-header">Presets</div>
-                <button id="modern_style" type="button" class="btn btn-primary radio-toggle">Modern</button>
-                <button id="original_style" type="button" class="btn btn-primary radio-toggle">Original</button>
-                <button id="night_style" type="button" class="btn btn-primary radio-toggle">Night</button>
+                <button id="modern-preset" type="button" class="btn btn-primary preset">Modern</button>
+                <button id="original-preset" type="button" class="btn btn-primary preset">Original</button>
+                <button id="night-preset" type="button" class="btn btn-primary preset">Night</button>
               </div>
 
             </div>
@@ -76,11 +76,11 @@
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Fonts</div>
 
-              <button id="font_smaller" title="reduce font size" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
+              <button id="font-smaller" title="reduce font size" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
 
-              <button id="font_larger" title="increase font size" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
+              <button id="font-larger" title="increase font size" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
 
-              <div id="line_spacing" title="adjust line spacing" class="btn-group" role="group">
+              <div id="line-spacing" title="adjust line spacing" class="btn-group" role="group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="glyphicon glyphicon-text-height"></span>
                   <span class="caret"></span>
@@ -100,38 +100,38 @@
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Characters</div>
 
-              <button id="character_linebreak" title="set character names on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
+              <button id="character-linebreak" title="set character names on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
 
-              <button id="character_caps" title="make character names uppercase" type="button" class="btn btn-default toggle">CAPS</button>
+              <button id="character-caps" title="make character names uppercase" type="button" class="btn btn-default toggle">CAPS</button>
 
-              <button id="character_bold" title="make character names bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+              <button id="character-bold" title="make character names bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
             </div> 
 
             <!-- Stage Directions -->
             <div class="nav navbar-nav col-sm-1">
               <div class="nav-header">Directions</div>
 
-              <button id="direction_linebreak" title="set stage directions on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
+              <button id="direction-linebreak" title="set stage directions on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
             </div>
 
             <!-- First Folio -->
             <div class="nav navbar-nav col-sm-2">
               <div class="nav-header">Punctuation</div>
 
-              <button id="paragraph_linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
+              <button id="paragraph-linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
 
-              <button id="punctuation_whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
+              <button id="punctuation-whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
 
-              <button id="punctuation_bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+              <button id="punctuation-bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
             </div> 
 
             <!-- Numbering -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Numbering</div>
 
-              <button id="line_numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
+              <button id="line-numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
 
-              <button id="syllable_numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
+              <button id="syllable-numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
             </div> 
 
           </div> <!--/.navbar-bottom -->

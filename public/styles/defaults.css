@@ -1,0 +1,140 @@
+/******* MAIN *******/
+/*.confolio {
+  font: 300 16px/22px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #4d88ff;
+}*/
+
+.folio {
+  width: 36em;
+  margin: 0 auto;
+  padding: 3em 1em;
+  background: #fff;
+}
+
+.folio .addendum {
+
+}
+
+
+
+/******* BONUSES *******/
+.line-count {
+  font-size: 0.9em;
+  color: #777;
+  float: right;
+  display: none;
+}
+
+.syllable-count {
+  font-size: 0.7em;
+  color: #bbb;
+  float: right;
+  display: none;
+}
+
+
+/******* HEADINGS *******/
+.folio h1 {
+  font-size: 2em;
+  font-weight: 800;
+  margin: 2em auto;
+}
+
+.folio h2 {
+  font-size: 1.5em;
+  font-weight: 800;
+  margin: 1em 0;
+}
+
+.folio h3 {
+  font-size: 1.5em;
+  font-weight: 800;
+  margin-top: 1em;
+}
+
+.folio .act {
+
+}
+
+.folio .scene {
+
+}
+
+.folio .finis {
+  font-size: 1.5em;
+  font-weight: 800;
+  margin-top: 1em;
+}
+
+.folio .direction {
+  
+}
+
+.character {
+  margin-top: 0.6em;
+}
+
+.folio .sub-honofific {
+
+}
+
+.folio .sub-name {
+
+}
+
+.folio .unknown-header {
+  font-size: 1.2em;
+  font-weight: 400;
+}
+
+
+/******* DIALOGUE *******/
+.folio em {
+  font-style: italic;
+}
+
+.folio p {
+  padding-bottom: 0.6em;
+}
+
+.folio br {
+
+}
+
+
+/******* PUNCTUATION *******/
+.folio strong {
+
+}
+
+.folio .major {
+
+}
+
+.folio .minor {
+
+}
+
+.folio .end-stop {
+
+}
+
+.folio.mid-stop {
+
+}
+
+.folio .colon {
+
+}
+
+.folio .paren {
+
+}
+
+.folio .comma {
+
+}
+
+.folio .char-stop {
+
+}

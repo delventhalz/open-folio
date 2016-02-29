@@ -1,5 +1,5 @@
 // Global variable to prevent multiple animations.
-var animating = false;
+// var animating = false;
 
 // Adds a style tag to the head if it does not exist.
 var makeStyleTag = function (selector) {
@@ -18,17 +18,17 @@ var makeStyleTag = function (selector) {
 // Disappears and reappears changing content
 var animateChange = function(selector, hidden, done) {
   setTimeout(function() {
-    if (animating) return;
-    animating = true;
+    // if (animating) return hidden && hidden();
+    // animating = true;
 
-    $(selector).fadeOut(450, function() {
+    $(selector).fadeOut(600, function() {
       if (hidden) hidden();
-      $(selector).fadeIn(900, function() {
-        animating = false;
+      $(selector).fadeIn(1200, function() {
+        // animating = false;
         if (done) done();
       });
     });
-  }, 150);
+  }, 200);
 };
 
 // Toggles a particular CSS style on or off in the whole document. 
@@ -91,17 +91,22 @@ var toggleOff = function(id) {
     });
   }
 
-  if (!id) return toggleOff( getIds('toggle') );
+  if (!id) return toggleOff( getIds('.toggle') );
 
   if (id[0] !== '#') id = '#' + id;
 
   if ($(id).hasClass('active')) $(id).trigger('click');
 };
 
-var setStyle = function(name) {
+var togglePreset = function(button, name) {
+  if ( $(button).hasClass('active') ) return;
+
   toggleOff();
   $('.formatting').attr('href', styles[name].path);
   toggleOn(styles[name].toggles);
+
+  $('.preset').removeClass('active');
+  $(button).addClass('active');
 };
 
 var setSceneVisibility = function() {
@@ -120,7 +125,7 @@ var populateSceneSelect = function() {
     })
   );
 
-  $('#scene_select>.dropdown-menu').children().remove();
+  $('#scene-select>.dropdown-menu').children().remove();
 
   anchorIds.forEach(function(id) {
     var actNumbers = { I: '1', II: '2', III: '3', IV: '4', V: '5' };
@@ -128,11 +133,11 @@ var populateSceneSelect = function() {
     var scene = id.slice(id.length-1);
 
     if (scene === '1') {
-      $('#scene_select>.dropdown-menu')
+      $('#scene-select>.dropdown-menu')
       .append('<li><a href="#' + id + '" class="dropdown-header">Act ' + act + '</a></li>');
     }
 
-    $('#scene_select>.dropdown-menu')
+    $('#scene-select>.dropdown-menu')
     .append('<li><a href="#' + id + '">Scene ' + scene + '</a></li>');
   });
 };
@@ -143,13 +148,8 @@ $('.toggle').on('click', function() {
   $(this).toggleClass('active');
 });
 
-$('.radio-toggle').on('click', function() {
-  $(this).toggleClass('active');
-  $(this).removeClass('active');
-});
 
-
-$('#play_selection').autocomplete({
+$('#play-selection').autocomplete({
   lookup: plays,
   onSelect: function (suggestion) {
     animateChange('.content', function() {
@@ -162,74 +162,83 @@ $('#play_selection').autocomplete({
   }
 });
 
-$('#scene_select>.dropdown-menu').on('click', 'a', function() {
+$('#scene-select>.dropdown-menu').on('click', 'a', function() {
   settings.scene = $(this).attr('href');
   setSceneVisibility();
 });
 
-$('#display_box').on('click', function() {
+$('#display-box').on('click', function() {
   settings.displayAll = $(this).prop('checked');
   setSceneVisibility();
 });
 
-$('#modern_style').on('click', function() {
-  setStyle('modern');
+
+$('#modern-preset').on('click', function() {
+  togglePreset(this, 'modern');
+});
+
+$('#original-preset').on('click', function() {
+  togglePreset(this, 'original');
+});
+
+$('#night-preset').on('click', function() {
+  togglePreset(this, 'night');
 });
 
 
 // Behaviors for the formatting buttons on the third row.
-$('#font_smaller').on('click', function() {
+$('#font-smaller').on('click', function() {
   var fontSize = $('.folio').css('font-size').slice(0, -2);
   $('.folio').css('font-size', fontSize - 1);
 });
 
-$('#font_larger').on('click', function() {
+$('#font-larger').on('click', function() {
   var fontSize = $('.folio').css('font-size').slice(0, -2);
   fontSize++; // No idea why, but fontSize must be incremented seperately.
   $('.folio').css('font-size', fontSize);
 });
 
-$('#line_spacing').on('click', 'li', function() {
+$('#line-spacing').on('click', 'li', function() {
   $('.folio').css( 'line-height', ($(this).text() * 100) + '%' );
 });
 
-$('#character_linebreak').on('click', function() {
+$('#character-linebreak').on('click', function() {
   toggleStyle('.character', 'display', 'block', 'inline');
   toggleStyle('.char-stop', 'display', 'none', 'inline');
 });
 
-$('#character_caps').on('click', function() {
+$('#character-caps').on('click', function() {
   toggleStyle('.character', 'text-transform', 'uppercase', 'none');
 });
 
-$('#character_bold').on('click', function() {
+$('#character-bold').on('click', function() {
   toggleStyle('.character', 'font-weight', '800', '300');
 });
 
-$('#direction_linebreak').on('click', function() {
+$('#direction-linebreak').on('click', function() {
   toggleStyle('.direction', 'display', 'block', 'inline');
 });
 
 // TODO: Make dynamic with line-height is changed afterwards.
-$('#paragraph_linebreak').on('click', function() {
+$('#paragraph-linebreak').on('click', function() {
   var height = $('.folio').css('line-height').replace('px', '');
   toggleSizeStyle('p', 'margin-top', height * 0.5 + 'px');
 });
 
-$('#punctuation_whitespace').on('click', function() {
+$('#punctuation-whitespace').on('click', function() {
   toggleSizeStyle('.major', 'margin-right', '1.5em');
 });
 
 // TODO: Make major punctuation bigger as well;
-$('#punctuation_bold').on('click', function() {
+$('#punctuation-bold').on('click', function() {
   toggleStyle('.major', 'font-weight', '800', '300');
   toggleStyle('.minor', 'font-weight', '800', '300');
 });
 
-$('#line_numbers').on('click', function() {
+$('#line-numbers').on('click', function() {
   toggleStyle('.line-count', 'display', 'none', 'inline');
 });
 
-$('#syllable_numbers').on('click', function() {
+$('#syllable-numbers').on('click', function() {
   toggleStyle('.syllable-count', 'display', 'none', 'inline');
 });
