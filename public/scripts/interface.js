@@ -16,15 +16,12 @@ var makeStyleTag = function (selector) {
 };
 
 // Disappears and reappears changing content
-var animateChange = function(selector, hidden, done) {
+var animateChange = function(hidden, done) {
   setTimeout(function() {
-    // if (animating) return hidden && hidden();
-    // animating = true;
 
-    $(selector).fadeOut(600, function() {
+    $('.content').fadeOut(600, function() {
       if (hidden) hidden();
-      $(selector).fadeIn(1200, function() {
-        // animating = false;
+      $('.content').fadeIn(1200, function() {
         if (done) done();
       });
     });
@@ -37,7 +34,7 @@ var toggleStyle = function (selector, style, on, off) {
   var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
   makeStyleTag(id);
 
-  animateChange('.folio', function() {
+  animateChange(function() {
     if ($(selector).css(style) === on) {
       $(id).html(selector + '{' + style + ':' + off + ';}');
     } else {
@@ -50,7 +47,7 @@ var toggleSizeStyle = function (selector, style, size) {
   var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
   makeStyleTag(id);
 
-  animateChange('.folio', function() {
+  animateChange(function() {
     if ( $(selector).css(style).replace('px', '') > 0 ) {
       $(id).html(selector + '{' + style + ':0;}');
     } else {
@@ -152,7 +149,7 @@ $('.toggle').on('click', function() {
 $('#play-selection').autocomplete({
   lookup: plays,
   onSelect: function (suggestion) {
-    animateChange('.content', function() {
+    animateChange(function() {
       $('.content').children().remove();
       $.get(suggestion.path, function(data) {
         $('.content').append(data);
@@ -168,8 +165,10 @@ $('#scene-select>.dropdown-menu').on('click', 'a', function() {
 });
 
 $('#display-box').on('click', function() {
-  settings.displayAll = $(this).prop('checked');
-  setSceneVisibility();
+  animateChange(function() {
+    settings.displayAll = $(this).prop('checked');
+    setSceneVisibility();
+  });
 });
 
 
