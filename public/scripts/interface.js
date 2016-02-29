@@ -119,13 +119,12 @@ var setSceneVisibility = function() {
 };
 
 var populateSceneSelect = function() {
-  console.log('Populating...');
   var anchorIds = $.makeArray(
     $('.anchor').map(function(index, anchor) {
     return $(anchor).attr('id');
     })
   );
-  console.log('IDS:', anchorIds);
+
   $('#scene-select>.dropdown-menu').children().remove();
 
   anchorIds.forEach(function(id) {
