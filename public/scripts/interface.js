@@ -1,27 +1,3 @@
-var plays = [
-  {value: "Hamlet", path: "hamlet.html"},
-  {value: "Twelfth Night", path: "twelfth_night.html"},
-  {value: "Winter's Tale", path: "winters_tale.html"}
-];
-
-var styles = {
-
-  modern: {
-    path: 'styles/modern.css',
-    toggles: [
-      'direction_linebreak',
-      'character_linebreak',
-      'character_caps',
-      'punctuation_bold',
-      'punctuation_whitespace',
-      'line_numbers'
-    ]
-  }
-
-};
-
-var settings = {};
-
 // Adds a style tag to the head if it does not exist.
 var makeStyleTag = function (selector) {
   var type;
