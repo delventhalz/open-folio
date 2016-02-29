@@ -1,3 +1,6 @@
+// Global variable to prevent multiple animations.
+var animating = false;
+
 // Adds a style tag to the head if it does not exist.
 var makeStyleTag = function (selector) {
   var type;
@@ -12,28 +15,48 @@ var makeStyleTag = function (selector) {
   }
 };
 
+// Disappears and reappears changing content
+var animateChange = function(selector, hidden, done) {
+  setTimeout(function() {
+    if (animating) return;
+    animating = true;
+
+    $(selector).fadeOut(450, function() {
+      if (hidden) hidden();
+      $(selector).fadeIn(900, function() {
+        animating = false;
+        if (done) done();
+      });
+    });
+  }, 150);
+};
+
 // Toggles a particular CSS style on or off in the whole document. 
 // Note that an off state must be provided in order to override existing styles.
 var toggleStyle = function (selector, style, on, off) {
   var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
   makeStyleTag(id);
 
-  if ($(selector).css(style) === on) {
-    $(id).html(selector + '{' + style + ':' + off + ';}');
-  } else {
-    $(id).html(selector + '{' + style + ':' + on + ';}');
-  }
+  animateChange('.folio', function() {
+    if ($(selector).css(style) === on) {
+      $(id).html(selector + '{' + style + ':' + off + ';}');
+    } else {
+      $(id).html(selector + '{' + style + ':' + on + ';}');
+    }
+  });
 };
 
 var toggleSizeStyle = function (selector, style, size) {
   var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
   makeStyleTag(id);
 
-  if ( $(selector).css(style).replace('px', '') > 0 ) {
-    $(id).html(selector + '{' + style + ':0;}');
-  } else {
-    $(id).html(selector + '{' + style + ':' + size + ';}');
-  }
+  animateChange('.folio', function() {
+    if ( $(selector).css(style).replace('px', '') > 0 ) {
+      $(id).html(selector + '{' + style + ':0;}');
+    } else {
+      $(id).html(selector + '{' + style + ':' + size + ';}');
+    }
+  });
 };
 
 // Returns an array of all ids that match a class
@@ -88,7 +111,7 @@ var setSceneVisibility = function() {
   } else {
     $('.anchor').show();
   }
-}
+};
 
 var populateSceneSelect = function() {
   var anchorIds = $.makeArray(
@@ -115,7 +138,7 @@ var populateSceneSelect = function() {
 };
 
 
-// General Button Toggle Behavior
+// General Button Behavior
 $('.toggle').on('click', function() {
   $(this).toggleClass('active');
 });
@@ -129,10 +152,12 @@ $('.radio-toggle').on('click', function() {
 $('#play_selection').autocomplete({
   lookup: plays,
   onSelect: function (suggestion) {
-    $('.content').children().remove();
-    $.get(suggestion.path, function(data) {
-      $('.content').append(data);
-      populateSceneSelect();
+    animateChange('.content', function() {
+      $('.content').children().remove();
+      $.get(suggestion.path, function(data) {
+        $('.content').append(data);
+        populateSceneSelect();
+      });
     });
   }
 });
