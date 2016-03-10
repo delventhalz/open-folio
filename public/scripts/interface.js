@@ -1,6 +1,16 @@
 // Global variable to prevent multiple animations.
 // var animating = false;
 
+// Runs and empties a queue of functions stored in an array
+var runFunctions = function(funcArray) {
+  funcArray.reverse();
+  var func;
+
+  while ( func = funcArray.pop() ) {
+    func();
+  }
+};
+
 // Adds a style tag to the head if it does not exist.
 var makeStyleTag = function (selector) {
   var type;
@@ -17,15 +27,28 @@ var makeStyleTag = function (selector) {
 
 // Disappears and reappears changing content
 var animateChange = function(hidden, done) {
+  if (animating.now) {
+    if (hidden) animating.hiddens.push(hidden);
+    if (done) animating.dones.push(done);
+    return;
+  }
+
+  animating.now = true;
+
   setTimeout(function() {
 
-    $('.content').fadeOut(600, function() {
+    $('.content').fadeOut(animating.inTime, function() {
       if (hidden) hidden();
-      $('.content').fadeIn(1200, function() {
+      runFunctions( animating.hiddens );
+
+      $('.content').fadeIn(animating.outTime, function() {
         if (done) done();
+        runFunctions( animating.hiddens );
+        runFunctions( animating.dones );
+        animating.now = false;
       });
     });
-  }, 200);
+  }, animating.delay);
 };
 
 // Toggles a particular CSS style on or off in the whole document. 
@@ -98,8 +121,12 @@ var toggleOff = function(id) {
 var togglePreset = function(button, name) {
   if ( $(button).hasClass('active') ) return;
 
+  // Animating this reloads page, so I sneak it in during later animations
+  setTimeout(function() {
+    $('.formatting').attr('href', styles[name].path);
+  }, animating.delay + animating.inTime);
+
   toggleOff();
-  $('.formatting').attr('href', styles[name].path);
   toggleOn(styles[name].toggles);
 
   $('.preset').removeClass('active');

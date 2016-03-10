@@ -1,6 +1,16 @@
 // Object used to store a few runtime settings
 var settings = {};
 
+// Animation settings
+var animating = {
+  now: false,
+  delay: 200,
+  inTime: 600,
+  outTime: 1200,
+  hiddens: [],
+  dones: []
+};
+
 // Names and paths of plays for the autocomplete
 var plays = [
   {
