@@ -6,7 +6,7 @@
   'punctuation-bold',
   'punctuation-whitespace',
   'line-numbers',
-  'syllable-count'
+  'syllable-numbers'
 */
 
 /*
@@ -26,6 +26,10 @@ Possible Palette URL: http://paletton.com/#uid=73L1T0kh9bNCxDFn4ktcI4nb300
 
 
 /******* HEADINGS *******/
+.folio .title {
+  color: #AF7DFF;
+}
+
 .folio .act {
   color: #A4E406;
 }

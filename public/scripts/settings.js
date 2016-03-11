@@ -55,7 +55,13 @@ var styles = {
   night: {
     path: 'styles/night.css',
     toggles: [
-      /* TODO */
+      'direction-linebreak',
+      'character-linebreak',
+      'character-caps',
+      'punctuation-bold',
+      'punctuation-whitespace',
+      'line-numbers',
+      'syllable-numbers'
     ]
   }
 
