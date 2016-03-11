@@ -189,15 +189,20 @@ $('.toggle').on('click', function() {
 
 $('#play-selection').autocomplete({
   lookup: plays,
+
   onSelect: function (suggestion) {
     animateChange(function() {
       $('.content').children().remove();
       $.get(suggestion.path, function(data) {
         $('.content').append(data);
         populateSceneSelect();
+        if ( !$('.preset').hasClass('active') ) {
+          $('#modern-preset').trigger('click');
+        }
       });
     });
   }
+
 });
 
 $('#scene-select>.dropdown-menu').on('click', 'a', function() {
