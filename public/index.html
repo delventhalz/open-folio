@@ -40,13 +40,13 @@
           <a id="header-brand" class="navbar-brand" href="#">CSS Shakespeare</a>
         </div>
 
-          <!-- Print and Info buttons -->
-          <ul class="nav navbar-nav navbar-right">
-            <li id="info-button" title="display help"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
-            <li id="print-button" title="print" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
-          </ul>
+        <!-- Print and Info buttons -->
+        <ul class="nav navbar-nav navbar-right">
+          <li id="info-button" title="display help"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
+          <li id="print-button" title="print" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
+        </ul>
 
-          <div id="navbar" class="navbar-collapse collapse">
+        <div id="navbar" class="navbar-collapse collapse">
             <div class="navbar-top col-sm-12">
 
               <!-- Play Selection -->
@@ -79,36 +79,38 @@
             <!-- Fonts -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Fonts</div>
+              <div class="btn-group">
+                <button id="font-smaller" title="reduce font size" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
 
-              <button id="font-smaller" title="reduce font size" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
+                <button id="font-larger" title="increase font size" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
 
-              <button id="font-larger" title="increase font size" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
-
-              <div id="line-spacing" title="adjust line spacing" class="btn-group" role="group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <span class="glyphicon glyphicon-text-height"></span>
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                  <li>0.9</li>
-                  <li>1.0</li>
-                  <li>1.15</li>
-                  <li>1.5</li>
-                  <li>2.0</li>
-                  <li>4.0</li>
-                </ul>
+                <div id="line-spacing" title="adjust line spacing" class="btn-group" role="group">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="glyphicon glyphicon-text-height"></span>
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>0.9</li>
+                    <li>1.0</li>
+                    <li>1.15</li>
+                    <li>1.5</li>
+                    <li>2.0</li>
+                    <li>4.0</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
             <!-- Characters -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Characters</div>
+              <div class="btn-group">
+                <button id="character-linebreak" title="set character names on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
 
-              <button id="character-linebreak" title="set character names on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
+                <button id="character-caps" title="make character names uppercase" type="button" class="btn btn-default toggle">CAPS</button>
 
-              <button id="character-caps" title="make character names uppercase" type="button" class="btn btn-default toggle">CAPS</button>
-
-              <button id="character-bold" title="make character names bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+                <button id="character-bold" title="make character names bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+              </div>
             </div> 
 
             <!-- Stage Directions -->
@@ -121,21 +123,23 @@
             <!-- First Folio -->
             <div class="nav navbar-nav col-sm-2">
               <div class="nav-header">Punctuation</div>
+              <div class="btn-group">
+                <button id="paragraph-linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
 
-              <button id="paragraph-linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
+                <button id="punctuation-whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
 
-              <button id="punctuation-whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
-
-              <button id="punctuation-bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+                <button id="punctuation-bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
+              </div>
             </div> 
 
             <!-- Numbering -->
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Numbering</div>
+              <div class="btn-group">
+                <button id="line-numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
 
-              <button id="line-numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
-
-              <button id="syllable-numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
+                <button id="syllable-numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
+              </div>
             </div> 
 
           </div> <!--/.navbar-bottom -->
