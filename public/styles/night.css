@@ -1,8 +1,76 @@
 /******* INTERFACE STYLES *******/
 /* These styles should be toggled on by the interface:
-  TODO
+  'direction-linebreak',
+  'character-linebreak',
+  'character-caps',
+  'punctuation-bold',
+  'punctuation-whitespace',
+  'line-numbers',
+  'syllable-count'
+*/
+
+/*
+Possible Palette URL: http://paletton.com/#uid=73L1T0kh9bNCxDFn4ktcI4nb300
 */
 
 
-
 /******* MAIN *******/
+.content {
+  background: #000;
+}
+
+.folio {
+  color: #fff;
+  background: #272822;
+}
+
+
+/******* HEADINGS *******/
+.folio .act {
+  color: #A4E406;
+}
+
+.folio .scene {
+  color: #A4E406;
+}
+
+.folio .finis {
+  color: #A4E406;
+}
+
+.folio .direction {
+  color: #75715D;
+}
+
+.folio .character {
+  color: #60D9F1;
+}
+
+.folio .unknown-header {
+  color: #A4E406;
+}
+
+
+/******* PUNCTUATION *******/
+.folio .punc {
+  color: #FC1E70;
+}
+
+.folio .major {
+  color: #FC1E70;
+}
+
+.folio .minor {
+  color: #FC1E70;
+}
+
+
+
+/******* BONUSES *******/
+.line-count {
+  color: #FF9800;
+}
+
+.syllable-count {
+  color: #E6DC6D;
+}

@@ -16,22 +16,6 @@
 
 
 
-/******* BONUSES *******/
-.line-count {
-  font-size: 0.9em;
-  color: #777;
-  float: right;
-  display: none;
-}
-
-.syllable-count {
-  font-size: 0.7em;
-  color: #bbb;
-  float: right;
-  display: none;
-}
-
-
 /******* HEADINGS *******/
 .folio h1 {
   font-size: 2em;
@@ -87,6 +71,7 @@
 }
 
 
+
 /******* DIALOGUE *******/
 .folio em {
   font-style: italic;
@@ -99,6 +84,7 @@
 .folio br {
 
 }
+
 
 
 /******* PUNCTUATION *******/
@@ -136,4 +122,21 @@
 
 .folio .char-stop {
 
+}
+
+
+
+/******* BONUSES *******/
+.line-count {
+  font-size: 0.9em;
+  color: #777;
+  float: right;
+  display: none;
+}
+
+.syllable-count {
+  font-size: 0.7em;
+  color: #bbb;
+  float: right;
+  display: none;
 }
