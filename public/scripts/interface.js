@@ -1,5 +1,16 @@
-// Global variable to prevent multiple animations.
-// var animating = false;
+/* * * * * * * * * * * * * * * * * * * * * * * *
+ *              GENERAL HELPERS                *
+ * * * * * * * * * * * * * * * * * * * * * * * */
+
+// Returns an array of all ids that match a class
+var getIds = function(className) {
+  if (className[0] !== '.') className = '.' + className;
+
+  return Array.prototype.reduce.call($(className), function(ids, elem) {
+      ids.push(elem.id); 
+      return ids;
+    }, []);
+};
 
 // Runs and empties a queue of functions stored in an array
 var runFunctions = function(funcArray) {
@@ -8,20 +19,6 @@ var runFunctions = function(funcArray) {
 
   while ( func = funcArray.pop() ) {
     func();
-  }
-};
-
-// Adds a style tag to the head if it does not exist.
-var makeStyleTag = function (selector) {
-  var type;
-
-  if (!$(selector).length) {
-    if (selector[0] === '.') type = 'class';
-    else if (selector[0] === '#') type = 'id';
-    else return;
-
-    $('head').append('<style ' + type + '="' + selector.slice(1) 
-      + '" type="text/css"></style>');
   }
 };
 
@@ -36,7 +33,6 @@ var animateChange = function(hidden, done) {
   animating.now = true;
 
   setTimeout(function() {
-
     $('.content').fadeOut(animating.inTime, function() {
       if (hidden) hidden();
       runFunctions( animating.hiddens );
@@ -51,45 +47,36 @@ var animateChange = function(hidden, done) {
   }, animating.delay);
 };
 
-// Toggles a particular CSS style on or off in the whole document. 
-// Note that an off state must be provided in order to override existing styles.
-var toggleStyle = function (selector, style, on, off) {
-  var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
-  makeStyleTag(id);
 
-  animateChange(function() {
-    if ($(selector).css(style) === on) {
-      $(id).html(selector + '{' + style + ':' + off + ';}');
-    } else {
-      $(id).html(selector + '{' + style + ':' + on + ';}');
+/* * * * * * * * * * * * * * * * * * * * * * * *
+ *             INTERFACE FUNCTIONS             *
+ * * * * * * * * * * * * * * * * * * * * * * * */
+
+var populateSceneSelect = function() {
+  var anchorIds = $.makeArray(
+    $('.anchor').map(function(index, anchor) {
+    return $(anchor).attr('id');
+    })
+  );
+
+  $('#scene-select>.dropdown-menu').children().remove();
+
+  anchorIds.forEach(function(id) {
+    var actNumbers = { I: '1', II: '2', III: '3', IV: '4', V: '5' };
+    var act = actNumbers[ id.slice(0, id.length-1) ];
+    var scene = id.slice(id.length-1);
+
+    if (scene === '1') {
+      $('#scene-select>.dropdown-menu')
+      .append('<li><a href="#' + id + '" class="dropdown-header">Act ' + act + '</a></li>');
     }
+
+    $('#scene-select>.dropdown-menu')
+    .append('<li><a href="#' + id + '">Scene ' + scene + '</a></li>');
   });
 };
 
-var toggleSizeStyle = function (selector, style, size) {
-  var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
-  makeStyleTag(id);
-
-  animateChange(function() {
-    if ( $(selector).css(style).replace('px', '') > 0 ) {
-      $(id).html(selector + '{' + style + ':0;}');
-    } else {
-      $(id).html(selector + '{' + style + ':' + size + ';}');
-    }
-  });
-};
-
-// Returns an array of all ids that match a class
-var getIds = function(className) {
-  if (className[0] !== '.') className = '.' + className;
-
-  return Array.prototype.reduce.call($(className), function(ids, elem) {
-      ids.push(elem.id); 
-      return ids;
-    }, []);
-};
-
-// Sets a toggleable button(s) to on.
+// Sets a toggleable button(s) to on
 var toggleOn = function(id) {
   if (Array.isArray(id)) {
     return id.forEach(function(id) {
@@ -102,8 +89,8 @@ var toggleOn = function(id) {
   if (!$(id).hasClass('active')) $(id).trigger('click');
 };
 
-// Sets a toggleable button(s) to off.
-// Will set all to off if no id is specified.
+// Sets toggleable button(s) to off
+// Sets all to off if no id is specified
 var toggleOff = function(id) {
   if (Array.isArray(id)) {
     return id.forEach(function(id) {
@@ -133,6 +120,53 @@ var togglePreset = function(button, name) {
   $(button).addClass('active');
 };
 
+
+/* * * * * * * * * * * * * * * * * * * * * * * *
+ *              STYLE FUNCTIONS                *
+ * * * * * * * * * * * * * * * * * * * * * * * */
+
+// Adds a style tag to the head if it does not exist.
+var makeStyleTag = function (selector) {
+  var type;
+
+  if (!$(selector).length) {
+    if (selector[0] === '.') type = 'class';
+    else if (selector[0] === '#') type = 'id';
+    else return;
+
+    $('head').append('<style ' + type + '="' + selector.slice(1) 
+      + '" type="text/css"></style>');
+  }
+};
+
+// Toggles a particular CSS style on or off in the whole document
+// Note that an off state must be provided in order to override existing styles
+var toggleStyle = function (selector, style, on, off) {
+  var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
+  makeStyleTag(id);
+
+  animateChange(function() {
+    if ($(selector).css(style) === on) {
+      $(id).html(selector + '{' + style + ':' + off + ';}');
+    } else {
+      $(id).html(selector + '{' + style + ':' + on + ';}');
+    }
+  });
+};
+
+var toggleSizeStyle = function (selector, style, size) {
+  var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
+  makeStyleTag(id);
+
+  animateChange(function() {
+    if ( $(selector).css(style).replace('px', '') > 0 ) {
+      $(id).html(selector + '{' + style + ':0;}');
+    } else {
+      $(id).html(selector + '{' + style + ':' + size + ';}');
+    }
+  });
+};
+
 var setSceneVisibility = function() {
   if (!settings.displayAll && settings.scene) {
     $('.anchor').hide();
@@ -142,30 +176,10 @@ var setSceneVisibility = function() {
   }
 };
 
-var populateSceneSelect = function() {
-  var anchorIds = $.makeArray(
-    $('.anchor').map(function(index, anchor) {
-    return $(anchor).attr('id');
-    })
-  );
 
-  $('#scene-select>.dropdown-menu').children().remove();
-
-  anchorIds.forEach(function(id) {
-    var actNumbers = { I: '1', II: '2', III: '3', IV: '4', V: '5' };
-    var act = actNumbers[ id.slice(0, id.length-1) ];
-    var scene = id.slice(id.length-1);
-
-    if (scene === '1') {
-      $('#scene-select>.dropdown-menu')
-      .append('<li><a href="#' + id + '" class="dropdown-header">Act ' + act + '</a></li>');
-    }
-
-    $('#scene-select>.dropdown-menu')
-    .append('<li><a href="#' + id + '">Scene ' + scene + '</a></li>');
-  });
-};
-
+/* * * * * * * * * * * * * * * * * * * * * * * *
+ *            INTERFACE LISTENERS              *
+ * * * * * * * * * * * * * * * * * * * * * * * */
 
 // General Button Behavior
 $('.toggle').on('click', function() {
