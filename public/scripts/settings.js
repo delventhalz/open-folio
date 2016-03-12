@@ -39,6 +39,7 @@ var styles = {
       'direction-linebreak',
       'character-linebreak',
       'character-caps',
+      'paragraph-linebreak',
       'punctuation-bold',
       'punctuation-whitespace',
       'line-numbers'
@@ -58,6 +59,7 @@ var styles = {
       'direction-linebreak',
       'character-linebreak',
       'character-caps',
+      'paragraph-linebreak',
       'punctuation-bold',
       'punctuation-whitespace',
       'line-numbers',
