@@ -13,8 +13,7 @@
 }
 
 .folio {
-  font-family: "Merriweather", "Palatino Linotype", Palatino, serif;
-  font-size: 18px;
+  font: 400 18px "Merriweather", "Palatino Linotype", Palatino, serif;
   background: rgba(256, 256, 256, 0.9);
 }
 
