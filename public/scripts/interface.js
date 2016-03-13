@@ -177,7 +177,7 @@ var setSceneVisibility = function() {
 };
 
 var setDynamicText = function() {
-  if ($(window).width() < 720) {
+  if ($(window).width() < settings.resizeWidth) {
     $('.folio').addClass('dynamic');
   } else {
     $('.folio').removeClass('dynamic');

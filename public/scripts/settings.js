@@ -1,5 +1,7 @@
 // Object used to store a few runtime settings
-var settings = {};
+var settings = {
+  resizeWidth: 640
+};
 
 // Animation settings
 var animating = {
