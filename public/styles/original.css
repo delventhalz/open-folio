@@ -6,6 +6,13 @@
 
 
 /******* MAIN *******/
+.content {
+  background-image: url("../images/parchment-bg.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .folio {
   font: 400 16px/22px "Merriweather", "Palatino Linotype", Palatino, serif;
+  background: rgba(256, 256, 256, 0.9);
 }
