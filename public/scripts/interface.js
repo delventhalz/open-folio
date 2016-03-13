@@ -176,10 +176,24 @@ var setSceneVisibility = function() {
   }
 };
 
+var setDynamicText = function() {
+  if ($(window).width() < 720) {
+    $('.folio').addClass('dynamic');
+  } else {
+    $('.folio').removeClass('dynamic');
+  }
+};
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
- *            INTERFACE LISTENERS              *
+ *                 LISTENERS                   *
  * * * * * * * * * * * * * * * * * * * * * * * */
+
+//Text resizing
+setDynamicText();
+$(window).on('resize', function() {
+  setDynamicText();
+});
 
 // General Button Behavior
 $('.toggle').on('click', function() {
@@ -187,6 +201,7 @@ $('.toggle').on('click', function() {
 });
 
 
+// Play selection
 $('#play-selection').autocomplete({
   lookup: plays,
 
@@ -218,6 +233,7 @@ $('#display-box').on('click', function() {
 });
 
 
+// Presets
 $('#modern-preset').on('click', function() {
   togglePreset(this, 'modern');
 });

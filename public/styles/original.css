@@ -13,6 +13,11 @@
 }
 
 .folio {
-  font: 400 16px/22px "Merriweather", "Palatino Linotype", Palatino, serif;
+  font-family: "Merriweather", "Palatino Linotype", Palatino, serif;
+  font-size: 18px;
   background: rgba(256, 256, 256, 0.9);
+}
+
+.dynamic {
+  font-size: 3vw;
 }
