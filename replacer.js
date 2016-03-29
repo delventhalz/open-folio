@@ -105,10 +105,10 @@ var formatLine = function(line, isStart) {
         formatted += '<span class="char-stop">' + letter + '</span>';
       } else if (!inTag) {
         if (i+1 === line.length) {
-          formatted += '<strong class="end-stop major">' + letter + '</strong>';
+          formatted += '<span class="end-stop major">' + letter + '</span>';
           isEnd = true;
         } else {
-          formatted += '<strong class="mid-stop major">' + letter + '</strong>';
+          formatted += '<span class="mid-stop major">' + letter + '</span>';
         }
       } else {
         formatted += letter;
@@ -121,7 +121,7 @@ var formatLine = function(line, isStart) {
 
     ':': function() {
       if (!inTag) {
-        formatted += '<strong class="colon major">' + letter + '</strong>';
+        formatted += '<span class="colon major">' + letter + '</span>';
       } else {
         formatted += letter;
       }
@@ -131,7 +131,7 @@ var formatLine = function(line, isStart) {
 
     ',': function() {
       if (!inTag) {
-        formatted += '<strong class="comma minor">' + letter + '</strong>';
+        formatted += '<span class="comma minor">' + letter + '</span>';
       } else {
         formatted += letter;
       }
@@ -139,7 +139,7 @@ var formatLine = function(line, isStart) {
 
     '(': function() {
       if (!inTag) {
-        formatted += '<strong class="paren minor">' + letter + '</strong>';
+        formatted += '<span class="paren minor">' + letter + '</span>';
       } else {
         formatted += letter;
       }
