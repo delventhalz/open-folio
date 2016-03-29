@@ -34,9 +34,11 @@ textarea:focus, input:focus{
   padding: 0.5em;
   color: #000;
   width: 4em; /*TODO: find out why this doesn't work*/
+  max-height: 50vh;
   font-size: 1.2em;
   font-style: normal;
   cursor: pointer;
+  overflow: auto;
 }
 
 .dropdown-menu li:hover {
