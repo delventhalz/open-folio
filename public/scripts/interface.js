@@ -189,7 +189,16 @@ var setDynamicText = function() {
  *                 LISTENERS                   *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
-//Text resizing
+// Move stage direction tags to after numbering tags
+// (affects appearance when directions have block display)
+Array.prototype.forEach.call($('.direction'), function(direction){
+  var numbering = $(direction).nextAll('.numbering')[0];
+
+  if (numbering) $(direction).detach().insertAfter(numbering);
+});
+
+
+// Text resizing
 setDynamicText();
 $(window).on('resize', function() {
   setDynamicText();
