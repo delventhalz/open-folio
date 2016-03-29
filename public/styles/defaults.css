@@ -2,9 +2,9 @@
 .folio {
   font: 400 19px Lato, "Trebuchet MS", Helvetica, sans-serif;
   width: 100%;
-  max-width: 36em;
+  max-width: 38em;
   margin: 0 auto;
-  padding: 3em 1em;
+  padding: 4em 2em;
   background: #fff;
 }
 
@@ -14,6 +14,11 @@
 
 .dynamic {
   font-size: 3vw;
+  padding: 4em 0.5em;
+}
+
+.dynamic .numbering {
+  width: 3em;
 }
 
 
