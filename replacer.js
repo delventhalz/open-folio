@@ -158,7 +158,7 @@ var formatLine = function(line, isStart) {
         'Z': function() {
 
           if (line[i+3] === 'F' || line[i+4] === 'F') {
-            formatted += '<div class ="finis"';
+            formatted += '<div class="finis"';
             closeTag = '</div>';
 
             if (currentLine > currentText.length - 5) {
@@ -168,13 +168,13 @@ var formatLine = function(line, isStart) {
             }
 
           } else if (line[i+3] === 'S' || line[i+4] === 'S') {
-            formatted += '</div>\n<div ' + getId(line.slice(i+9)) + '><h3 class="scene">';
+            formatted += '</div>\n<div ' + getId(line.slice(i+9)) + '><h3 class="anchor scene">';
             closeTag = '</h3>';
 
           } else if (line[i+3] === 'A' || line[i+4] === 'A') {
             if (actCount !== 0) formatted += '</div>\n';
             actCount++;
-            formatted += '<div ' + getId(line.slice(i+9)) + '><h2 class="act">';
+            formatted += '<div ' + getId(line.slice(i+9)) + '><h2 class="anchor act">';
             closeTag = '</h2>';
           } else {
             formatted += '<div class="unknown-header">';
