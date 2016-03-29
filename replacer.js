@@ -311,7 +311,10 @@ var formatLine = function(line, isStart) {
 
   // Add formatting after the line.
   if (lineCount % 5 === 0 && isLine) {
-    formatted += ' <span class ="line-count">' + lineCount + '</span> ';
+    formatted += ' <span class ="line-end line-count">' + lineCount + '</span> ';
+  }
+  else {
+    formatted += ' <span class ="line-end">&nbsp</span> ';
   }
   if (poetry && isLine && syllables !== 0) {
     formatted += ' <span class ="syllable-count">' + syllables + '</span>';
