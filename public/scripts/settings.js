@@ -1,6 +1,7 @@
 // Object used to store a few runtime settings
 var settings = {
-  resizeWidth: 640
+  resizeWidth: 640,
+  displayAll: $('#display-box').prop('checked')
 };
 
 // Animation settings

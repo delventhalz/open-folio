@@ -236,7 +236,7 @@ $('#scene-select>.dropdown-menu').on('click', 'a', function() {
 
 $('#display-box').on('click', function() {
   animateChange(function() {
-    settings.displayAll = $(this).prop('checked');
+    settings.displayAll = $('#display-box').prop('checked');
     setSceneVisibility();
   });
 });
