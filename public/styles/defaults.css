@@ -128,16 +128,20 @@
 
 
 /******* BONUSES *******/
-.line-count {
-  font-size: 0.9em;
-  color: #777;
+.numbering {
   float: right;
-  display: none;
+  width: 6em;
 }
 
 .syllable-count {
   font-size: 0.7em;
   color: #bbb;
+  display: none;
+}
+
+.line-count {
+  font-size: 0.9em;
+  color: #777;
   float: right;
   display: none;
 }
