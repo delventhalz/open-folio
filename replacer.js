@@ -62,6 +62,8 @@ actCount = 0;
 var currentText = [];
 var currentLine = 0;
 var formattedText =[];
+var closeTag = '';
+var inTag = false;
 
 
 // Format a string line by line.
@@ -90,9 +92,9 @@ var format = function(string) {
 
 // Format a line.
 var formatLine = function(line, isStart) {
-  var letter = word = closeTag = formatted = '';
+  var letter = word = formatted = '';
   var i = syllables = closeCount = wordStart = 0;
-  var isEnd = inWord = inTag = inChar = false;
+  var isEnd = inWord = inChar = false;
   var isLine = true;
 
   var poetry = isPoetry();

@@ -1,0 +1,3502 @@
+      <T WT><L 1><Y C><P Aa1><C A>
+1      <Z {Actus  Primus. Scoena Prima}.>---
+layout: post
+title:  "config files for security and convenience"
+date:   2016-01-18 21:55:00 -0600
+categories: javascript
+---
+So, you've been over the [Node.js](https://nodejs.org/en/) and [Express](http://expressjs.com) documentation. You got a simple server up and running and everything is going great. You've even gone out into the wide web and found some awesome APIs to use with your web service, like the [Sunlight Foundation's](https://sunlightfoundation.com/api/) amazing political API's, or [Giphy's](https://api.giphy.com) ridiculous gif API. Fun times all around.
+
+But you've got a bit of a problem. You've put all your work on GitHub and now all those precious precious API keys you signed up for are as easily visible as the rest of your code. All someone has to do is glance at your repo and soon they'll be guzzling up twitter feed requests in your name! Maybe you've got some other bits and pieces to guard, like perhaps the secret you're using for your session. What to do?
+
+### Enter config.js
+A common practice for keeping sensitive information away from your version control system, but still available to your application, is to use a config file. The concept is fairly simple: put all those api keys into a seperate file, add that file to your `.gitignore`. Since it *is* a configuration file, you could also use it to store various other settings if that's convenient. Just keep in mind, any updates here will not be pushed to github.
+
+The file itself is fairly simple. Just save the keys as strings, preferably with variable names in ALL_CAPS as this is the JS convention for constant variables which should not be altered. If you're using a JavaScript file, finish up by making sure you set up the module.exports object for Node.js:
+
+{% highlight javascript %}
+var SESSION_SECRET = 'shhh dont tell';
+var KEYS = {};
+
+KEYS.GIPHY = 'kajhfaksjdfawdb';
+KEYS.SUNLIGHT = 'alkwejbsadhbvsal';
+
+
+module.exports = {
+  SESSION_SECRET: SESSION_SECRET,
+  KEYS: KEYS
+};
+{% end highlight %}
+
+Afterwards add `config.js` (or whatever you called it) to your `.gitignore`, and then you require it in your server like any other JS file or module:
+
+{% highlight javascript %}
+var express = require('express');
+var session = require('express-session');
+var app = express();
+
+var SESSION_SECRET = require('./config.js').SESSION_SECRET;
+app.use( session({ secret: SESSION_SECRET }) );
+{% end highlight %}
+
+You're done! Now your API keys and other secrets are stashed away from prying eyes on github. But I think we can simplify this a bit more.
+
+### No logic? Use JSON.
+Why bother writing out an entire JavaScript file when we're just trying to save a few variables. If we aren't planning to actually write any logic into our config file, JSON will suit just fine. Let's do a quick refactor:
+
+{% highlight javascript %}
+{
+	SESSION_SECRET: 'shhh dont tell',
+	KEYS: {
+		GIPHY: 'kajhfaksjdfawdb',
+		SUNLIGHT: 'alkwejbsadhbvsal'
+	}
+}
+{% end highlight %}
+
+Of course, you'll have to change the filename to `config.json`, and update our `.gitignore` accordingly. But how do we import a json file into our node server? Really easily actally. Node can import json files just like anything else. All we have to change in our server is two little letters:
+{% highlight javascript %}
+var SESSION_SECRET = require('./config.json').SESSION_SECRET;
+{% end highlight %}
+
+As an added bonus, I also like to use the JavaScript convention for private variables and name the file `_config.json` if I'm not planning on making it public. It's a nice reminder that no one should be passing the file around, though obviously this has no effect on the way the code actually runs.
+
+### And The Client?
+So what if you are making API calls from the client-side? That's a much thornier issue. Even if your sensitive client code isn't on GitHub, it's still on . . . the client. Ultimately anything in your client code is not going to be safe without some pretty complex workarounds like PHP wrappers or some sort of hashing scheme, both of which are beyond the scope of this blog post. 
+
+But depending on your needs, there are a couple of simpler options which might help. First, consider whether or not your client really has to be the one making API calls. Potentially the server could handle it all and then just send the data along. But, depending on how often these calls are made, or how much data they handle, this may be a poor solution as you've just added a somewhat extraneous networking middleman.
+
+You could split the difference by adding a route in your server's internal api that will send back the keys to your client (which the server got from the config file). Using Angular's `$http` module (because who doesn't love Angular?), your client's GET request might look something like this:
+
+{% highlight javascript %}
+var GIPHY_KEY = '';
+var SUNLIGHT_KEY = '';
+
+$http({
+	method: 'GET',
+	url: '/api/keys'
+})
+.then(function (response) {
+	GIPHY_KEY = response.data.GIPHY;
+	SUNLIGHT_KEY = response.data.SUNLIGHT;
+});
+{% end highlight %}
+
+This call would only need to happen once when the client is first loaded, so the extra bandwidth required is negligible, but of course if the route does not require some sort of authorization, this really isn't much more sequire than saving the API keys in your code. There won't be much to stop determined ne'er-do-wells from sending their own GET request and peeking at the results. But at least you've taken a few first steps to building a better security strategy on your new server.
+2      <D {Enter Camillo and Archidamus}.>
+3      <S {Arch}.>
+4     *If you shall chance ({Camillo}) to visit {Bohemia}, on
+5     *the like occasion whereon my seruices are now
+6     *on- foot, you shall see (as I haue said) great dif-ference
+7      betwixt our {Bohemia}, and your {Sicilia}.
+8     *<S {Cam}.> I thinke, this comming Summer, the King of
+9     *{Sicilia} meanes to pay {Bohemia} the Visitation, which hee
+10     iustly owes him.
+11    *<S {Arch}.> Wherein our Entertainment shall shame vs: we
+12     will be iustified in our Loues: for indeed===
+13     <S {Cam}.> 'Beseech you===
+14    *<S {Arch}.> Verely I speake it in the freedome of my know-ledge:
+15    *we cannot with such magnificence=== in so rare===
+16    *I know not what to say=== Wee will giue you sleepie
+17    *Drinkes, that your Sences (vn- intelligent  of our insuffi-cience)
+18    *may, though they cannot prayse vs, as little ac-cuse
+19     vs.
+20    *<S {Cam}.> You pay a great deale #to deare, for what's giuen
+21     freely.
+22    *<S {Arch}.> 'Beleeue me, I speake as my vnderstanding in-structs
+23     me, and as mine honestie puts it to vtterance.
+24    *<S {Cam}.> {Sicilia} cannot shew himselfe ouer- kind  to {Bohe-mia}:
+25    *They were trayn'd together in their Child-hoods;
+26    *and there rooted betwixt them then such an affection,
+27    *which cannot chuse but braunch now. Since their more
+28    *mature Dignities, and Royall Necessities, made seperati-on
+29    *of their Societie, their Encounters (though not Perso-nall)
+30    *hath been Royally attornyed with enter- change of
+31    *Gifts, Letters, louing Embassies, that they haue seem'd to
+32    *be together, though absent: shooke hands, as ouer a Vast;
+33    *and embrac'd as it were from the ends of opposed Winds.
+34     The Heauens continue their Loues.
+35    *<S {Arch}.> I thinke there is not in the World, either Malice
+36    *or Matter, to alter it. You haue an vnspeakable comfort
+37    *of your young Prince {Mamillius}: it is a Gentleman of the
+38     greatest Promise, that euer came into my Note.
+39    *<S {Cam}.> I very well agree with you, in the hopes of him:
+40    *it is a gallant Child; one, that (indeed) Physicks the Sub-iect,
+41    *makes old hearts fresh: they that went on Crutches
+42     ere he was borne, desire yet their life, to see him a Man.
+43     <S {Arch}.> Would they else be content to die?
+44    *<S {Cam}.> Yes; if there were no other excuse, why they should
+45     desire to liue.
+46    *<S {Arch}.> If the King had no Sonne, they would desire to
+47     liue on Crutches till he had one.  <D {Exeunt}.>
+48     <Z {Scoena Secunda}.>
+49     <D {Enter Leontes, Hermione, Mamillius, Polixenes, Camillo}.>
+50     <S {Pol}.> Nine Changes of the Watry- Starre  hath been
+51     The Shepheards Note, since we haue left our Throne
+52     Without a Burthen: Time as long againe
+53     Would be fill'd vp (my Brother) with our Thanks,
+54     And yet we should, for perpetuitie,
+55     Goe hence in debt: And therefore, like a Cypher
+56     (Yet standing in rich place) I multiply
+57     With one we thanke you, many thousands moe,
+58     That goe before it.
+59     <S {Leo}.> Stay your Thanks #a while,
+60     And pay them when you part.
+61     <S {Pol}.> Sir, that's to morrow:
+62     I am question'd by my feares, of what may chance,
+63     Or breed vpon our absence, that may blow
+64     No sneaping Winds at home, to make vs say,
+65     This is put forth too truly: besides, I haue stay'd
+66     To tyre your Royaltie.
+67     <S {Leo}.> We are tougher (Brother)
+68     Then you can put vs to't.
+69     <S {Pol}.> No longer stay.
+70     <S {Leo}.> One Seue' night longer.
+71     <S {Pol}.> Very sooth, to morrow.
+72    *<S {Leo}.> Wee'le part the time betweene's then: and in that
+73     Ile no gaine- saying.
+74     <S {Pol}.> Presse me not ('beseech you) so:
+75     There is no Tongue that moues; none, none i'th' World
+76     So soone as yours, could win me: so it should now,
+77     Were there necessitie in your request, although
+78     'Twere needfull I deny'd it. My Affaires
+79     Doe euen drag me home- ward: which to hinder,
+80     Were (in your Loue) a Whip to me; my stay,
+81     To you a Charge, and Trouble: to saue both,
+82     Farewell (our Brother.)
+83     <S {Leo}.> Tongue- ty'd our Queene? speake you.
+84    *<S {Her}.> I had thought (Sir) to haue held my peace, vntill
+85     You had drawne Oathes from him, not to stay: you (Sir)
+86     Charge him too coldly. Tell him, you are sure
+87     All in {Bohemia's} well: this satisfaction,
+88     The by- gone- day proclaym'd, say this to him,
+89     He's beat from his best ward.
+90     <S {Leo}.> Well said, {Hermione}.
+91     <S {Her}.> To tell, he longs to see his Sonne, were strong:
+92     But let him say so then, and let him goe;
+93     But let him sweare so, and he shall not stay,
+94     Wee'l thwack him hence with Distaffes.
+95     Yet of your Royall presence, Ile aduenture
+96     The borrow of a Weeke. When at {Bohemia}
+97     You take my Lord, Ile giue him my Commission,
+98     To let him there a Moneth, behind the Gest
+99     Prefix'd for's parting: yet (good- deed) {Leontes},
+100    I loue thee not a Iarre o'th' Clock, behind
+      <P Aa1v>
+101    What Lady she her Lord. You'le stay?
+102    <S {Pol}.> No, Madame.
+103    <S {Her}.> Nay, but you will?
+104    <S {Pol}.> I may not verely.
+105    <S {Her}.> Verely?
+106    You put me off with limber Vowes: but I,
+107   *Though you would seek t' vnsphere the Stars with Oaths,
+108    Should yet say, Sir, no going: Verely
+109    You shall not goe; a Ladyes Verely 'is
+110    As potent as a Lords. Will you goe yet?
+111    Force me to keepe you as a Prisoner,
+112    Not like a Guest: so you shall pay your Fees
+113   *When you depart, and saue your Thanks. How say you?
+114    My Prisoner? or my Guest? by your dread Verely,
+115    One of them you shall be.
+116    <S {Pol}.> Your Guest then, Madame:
+117    To be your Prisoner, should import offending;
+118    Which is for me, lesse easie to commit,
+119    Then you to punish.
+120    <S {Her}.> Not your Gaoler then,
+121    But your kind Hostesse. Come, Ile question you
+122    Of my Lords Tricks, and yours, when you were Boyes:
+123    You were pretty Lordings then?
+124    <S {Pol}.> We were (faire Queene)
+125    Two Lads, that thought there was no more behind,
+126    But such a day to morrow, as to day,
+127    And to be Boy eternall.
+128    <S {Her}.> Was not my Lord
+129    The veryer Wag o'th' two?
+130   *<S {Pol}.> We were as twyn'd Lambs, that did frisk i'th' Sun,
+131    And bleat the one at th' other: what we chang'd,
+132    Was Innocence, for Innocence: we knew not
+133    The Doctrine of ill- doing, nor dream'd
+134    That any did: Had we pursu'd that life,
+135    And our weake Spirits ne're been higher rear'd
+136    With stronger blood, we should haue answer'd Heauen
+137    Boldly, not guilty; the Imposition clear'd,
+138    Hereditarie ours.
+139    <S {Her}.> By this we gather
+140    You haue tript since.
+141    <S {Pol}.> O my most sacred Lady,
+142    Temptations haue since then been borne to's: for
+143    In those vnfledg'd dayes, was my Wife a Girle;
+144    Your precious selfe had then not cross'd the eyes
+145    Of my young Play- fellow.
+146    <S {Her}.> Grace to boot:
+147    Of this make no conclusion, least you say
+148    Your Queene and I are Deuils: yet goe on,
+149    Th' offences we haue made you doe, wee'le answere,
+150    If you first sinn'd with vs: and that with vs
+151    You did continue fault; and that you slipt not
+152    With any, but with vs.
+153    <S {Leo}.> Is he woon yet?
+154    <S {Her}.> Hee'le stay (my Lord.)
+155    <S {Leo}.> At my request, he would not:
+156    {Hermione} (my dearest) thou neuer spoak'st
+157    To better purpose.
+158    <S {Her}.> Neuer?
+159    <S {Leo}.> Neuer, but once.
+160   *<S {Her}.> What? haue I twice said well? when #was't before?
+161    I prethee tell me: cram's with prayse, and make's
+162   *As fat as tame things: One good deed, dying tonguelesse,
+163    Slaughters a thousand, wayting vpon that.
+164    Our prayses are our Wages. You may ride's
+165    With one soft Kisse a thousand Furlongs, ere
+166    With Spur we heat an Acre. But to th' Goale:
+167    My last good deed, was to entreat his stay.
+168    What was my first? it ha's an elder Sister,
+169    Or I mistake you: O, would her Name were {Grace}.
+170    But once before I spoke to th' purpose? when?
+171    Nay, let me haue't: I long.
+172    <S {Leo}.> Why, that was when
+173   *Three crabbed Moneths had sowr'd themselues to death,
+174    Ere I could make thee open thy white Hand:
+175    #A clap thy selfe, my Loue; then didst thou vtter,
+176    I am yours for euer.
+177    <S {Her}.> 'Tis Grace indeed.
+178    Why lo- you now; I haue spoke to th' purpose twice:
+179    The one, for euer earn'd a Royall Husband;
+180    Th' other, for some while a Friend.
+181    <S {Leo}.> Too hot, too hot:
+182    To mingle friendship farre, is mingling bloods.
+183    I haue {Tremor Cordis} on me: my heart daunces,
+184    But not for ioy; not ioy. This Entertainment
+185    May a free face put on: deriue a Libertie
+186    From Heartinesse, from Bountie, fertile Bosome,
+187    And well become the Agent: 't may; I graunt:
+188    But to be padling Palmes, and pinching Fingers,
+189    As now they are, and making practis'd Smiles
+190    As in a Looking- Glasse; and then to sigh, as 'twere
+191    The Mort o'th' Deere: oh, that is entertainment
+192    My Bosome likes not, nor my Browes. {Mamillius},
+193    Art thou my Boy?
+194    <S {Mam}.> #I, my good Lord.
+195    <S {Leo}.> I'fecks:
+196   *Why that's my Bawcock: what? #has't smutch'd thy Nose?
+197    They say it is a Coppy out of mine. Come Captaine,
+198    We must be neat; not neat, but cleanly, Captaine:
+199    And yet the Steere, the Heycfer, and the Calfe,
+200    Are all call'd Neat. Still Virginalling
+201    Vpon his Palme? How now (you wanton Calfe)
+202    Art thou my Calfe?
+203    <S {Mam}.> Yes, if you will (my Lord.)
+204   *<S {Leo}.> Thou want'st a rough pash, & the shoots that I haue
+205    To be full, like me: yet they say we are
+206    Almost as like as Egges; Women say so,
+207    (That will say any thing.) But were they false
+208    As o're- dy'd Blacks, as Wind, as Waters; false
+209    As Dice are to be wish'd, by one that fixes
+210    No borne 'twixt his and mine; yet were it true,
+211    To say this Boy were like me. Come (Sir Page)
+212    Looke on me with your Welkin eye: sweet Villaine,
+213    Most dear'st, my Collop: Can thy Dam, may't be
+214    Affection? thy Intention stabs the Center.
+215    Thou do'st make possible things not so held,
+216    Communicat'st with Dreames (how can this be?)
+217    With what's vnreall: thou coactiue art,
+218    And fellow'st nothing. Then 'tis very credent,
+219    Thou may'st co- ioyne with something, and thou do'st,
+220    (And that beyond Commission) and I find it,
+221    (And that to the infection of my Braines,
+222    And hardning of my Browes.)
+223    <S {Pol}.> What meanes {Sicilia}?
+224    <S {Her}.> He something seemes vnsetled.
+225    <S {Pol}.> How? my Lord?
+226    <S {Leo}.> What cheere? how is't with you, best Brother?
+227   *<S {Her}.> You look as if you held a Brow of much distraction:
+228    Are you mou'd (my Lord?)
+229    <S {Leo}.> No, in good earnest.
+230    How sometimes Nature will betray it's folly?
+231    It's tendernesse? and make it selfe a Pastime
+232    To harder bosomes? Looking on the Lynes
+      <P Aa2>
+233    Of my Boyes face, me thoughts I did requoyle
+234    Twentie three yeeres, and saw my selfe vn- breech'd,
+235    In my greene Veluet Coat; my Dagger muzzel'd,
+236    Least it should bite it's Master, and so proue
+237    (As Ornaments oft do's) too dangerous:
+238    How like (me thought) I then was to this Kernell,
+239    This Squash, this Gentleman. Mine honest Friend,
+240    Will you take Egges for Money?
+241    <S {Mam}.> No (my Lord) Ile fight.
+242   *<S {Leo}.> You will: why happy man be's dole. My Brother
+243    Are you so fond of your young Prince, as we
+244    Doe seeme to be of ours?
+245    <S {Pol}.> If at home (Sir)
+246    He's all my Exercise, my Mirth, my Matter;
+247    Now my sworne Friend, and then mine Enemy;
+248    My Parasite, my Souldier: States- man; all:
+249    He makes a Iulyes day, short as December,
+250    And with his varying child-nesse, cures in me
+251    Thoughts, that would thick my blood.
+252    <S {Leo}.> So stands this Squire
+253    Offic'd with me: We two will walke (my Lord)
+254    And leaue you to your grauer steps. {Hermione},
+255    How thou lou'st vs, shew in our Brothers welcome;
+256    Let what is deare in Sicily, be cheape:
+257    Next to thy selfe, and my young Rouer, he's
+258    Apparant to my heart.
+259    <S {Her}.> If you would seeke vs,
+260    We are yours i'th' Garden: shall's attend you there?
+261   *<S {Leo}.> To your owne bents dispose you: you'le be found,
+262    Be you beneath the Sky: I am angling now,
+263    (Though you perceiue me not how I giue Lyne)
+264    Goe #too, goe #too.
+265    How she holds vp the Neb? the Byll to him?
+266    And armes her with the boldnesse of a Wife
+267    To her allowing Husband. Gone already,
+268   *Ynch- thick, knee- deepe; ore head and eares a fork'd one.
+269    Goe play (Boy) play: thy Mother playes, and I
+270    Play too; but so disgrac'd a part, whose issue
+271    Will hisse me to my Graue: Contempt and Clamor
+272    Will be my Knell. Goe play (Boy) play, there haue been
+273    (Or I am much deceiu'd) Cuckolds ere now,
+274    And many a man there is (euen at this present,
+275    Now, while I speake this) holds his Wife by th' Arme,
+276    That little thinkes she ha's been sluyc'd in's absence,
+277    And his Pond fish'd by his next Neighbor (by
+278    Sir {Smile}, his Neighbor:) nay, there's comfort in't,
+279    Whiles other men haue Gates, and those Gates open'd
+280    (As mine) against their #will. Should all despaire
+281    That haue reuolted Wiues, the tenth of Mankind
+282    Would hang themselues. Physick for't, there's none:
+283    It is a bawdy Planet, that will strike
+284    Where 'tis predominant; and 'tis powrefull: thinke it:
+285    From East, West, North, and South, be it concluded,
+286    No Barricado for a Belly. Know't,
+287    It will let in and out the Enemy,
+288    With bag and baggage: many thousand on's
+289    Haue the Disease, and feele't not. How now Boy?
+290    <S {Mam}.> I am like you say.
+291    <S {Leo}.> Why, that's some comfort.
+292    What? {Camillo} there?
+293    <S {Cam}.> #I, my good Lord.
+294    <S {Leo}.> Goe play ({Mamillius}) thou'rt an honest man:
+295    {Camillo}, this great #Sir will yet stay longer.
+296   *<S {Cam}.> You had much adoe to make his Anchor hold,
+297    When you cast out, it still came home.
+298    <S {Leo}.> Didst note it?
+299    <S {Cam}.> He would not stay at your Petitions, made
+300    His Businesse more materiall.
+301    <S {Leo}.> Didst perceiue it?
+302    They're here with me already; whisp'ring, rounding:
+303    Sicilia is a so- forth: 'tis farre gone,
+304    When I shall gust it last. How cam't ({Camillo})
+305    That he did stay?
+306    <S {Cam}.> At the good Queenes entreatie.
+307   *<S {Leo}.> At the Queenes be't: Good should be pertinent,
+308    But so it is, it is not. Was this taken
+309    By any vnderstanding Pate but thine?
+310    For thy Conceit is soaking, will draw in
+311    More then the common Blocks. Not noted, is't,
+312    But of the finer Natures? by some Seueralls
+313    Of Head- peece extraordinarie? Lower Messes
+314    Perchance are to this Businesse purblind? say.
+315    <S {Cam}.> Businesse, my Lord? I thinke most vnderstand
+316    {Bohemia} stayes here longer.
+317    <S {Leo}.> Ha?
+318    <S {Cam}.> Stayes here longer.
+319    <S {Leo}.> #I, but why?
+320    <S {Cam}.> To satisfie your Highnesse, and the Entreaties
+321    Of our most gracious Mistresse.
+322    <S {Leo}.> Satisfie?
+323    Th' entreaties of your Mistresse? Satisfie?
+324    Let that suffice. I haue trusted thee ({Camillo})
+325    With all the neerest things to my heart, as well
+326    My Chamber- Councels, wherein (Priest- like) thou
+327    Hast cleans'd my Bosome: #I, from thee departed
+328    Thy Penitent reform'd: but we haue been
+329    Deceiu'd in thy Integritie, deceiu'd
+330    In that which seemes so.
+331    <S {Cam}.> Be it forbid (my Lord.)
+332    <S {Leo}.> To bide vpon't: thou art not honest: or
+333    If thou inclin'st that way, thou art a Coward,
+334    Which hoxes honestie behind, restrayning
+335    From Course requir'd: or else thou must be counted
+336    A Seruant, grafted in my serious Trust,
+337    And therein negligent: or else a Foole,
+338    That seest a Game play'd home, the rich Stake drawne,
+339    And tak'st it all for ieast.
+340    <S {Cam}.> My gracious Lord,
+341    I may be negligent, foolish, and fearefull,
+342    In euery one of these, no man is free,
+343    But that his negligence, his folly, feare,
+344    Among the infinite doings of the World,
+345    Sometime puts forth in your affaires (my Lord.)
+346    If euer I were wilfull- negligent,
+347    It was my folly: if industriously
+348    I play'd the Foole, it was my negligence,
+349    Not weighing well the end: if euer fearefull
+350    To doe a thing, where I the issue doubted,
+351    Whereof the execution did cry out
+352    Against the non- performance, 'twas a feare
+353    Which oft infects the wisest: these (my Lord)
+354    Are such allow'd Infirmities, that honestie
+355    Is neuer free of. But beseech your Grace
+356    Be plainer with me, let me know my Trespas
+357    By it's owne visage; if I then deny it,
+358    'Tis none of mine.
+359    <S {Leo}.> #Ha' not you seene {Camillo}?
+360    (But that's past doubt: you haue, or your eye- glasse
+361    Is thicker then a Cuckolds Horne) or heard?
+362    (For to a Vision so apparant, Rumor
+363    Cannot be mute) or thought? (for Cogitation
+364    Resides not in that man, that do's not thinke)
+      <P Aa2v>
+365    My Wife is slipperie? If thou wilt confesse,
+366    Or else be impudently negatiue,
+367    To haue nor Eyes, nor Eares, nor Thought, then say
+368    My Wife's a Holy- Horse, deserues a Name
+369    As ranke as any Flax- Wench, that puts to
+370    Before her troth- plight: say't, and iustify't.
+371    <S {Cam}.> I would not be a stander- by, to heare
+372    My Soueraigne Mistresse clouded so, without
+373    My present vengeance taken: 'shrew my heart,
+374    You neuer spoke what did become you lesse
+375    Then this; which to reiterate, were sin
+376    As deepe as that, though true.
+377    <S {Leo}.> Is whispering nothing?
+378    Is leaning Cheeke to Cheeke? is meating Noses?
+379    Kissing with in- side Lip? stopping the Cariere
+380    Of Laughter, with a sigh? (a Note infallible
+381    Of breaking Honestie) horsing foot on foot?
+382    Skulking in corners? wishing Clocks more swift?
+383    Houres, Minutes? Noone, Mid- night? and all Eyes
+384    Blind with the Pin and Web, but theirs; theirs onely,
+385    That would vnseene be wicked? Is this nothing?
+386    Why then the World, and all that's in't, is nothing,
+387    The couering Skie is nothing, {Bohemia} nothing,
+388    My Wife is nothing, nor Nothing haue these Nothings,
+389    If this be nothing.
+390    <S {Cam}.> Good my Lord, be cur'd
+391    Of this diseas'd Opinion, and betimes,
+392    For 'tis most dangerous.
+393    <S {Leo}.> Say it be, 'tis true.
+394    <S {Cam}.> No, no, my Lord.
+395    <S {Leo}.> It is: you lye, you lye:
+396    I say thou lyest {Camillo}, and I hate thee,
+397    Pronounce thee a grosse Lowt, a mindlesse Slaue,
+398    Or else a houering Temporizer, that
+399    Canst with thine eyes at once see good and euill,
+400    Inclining to them both: were my Wiues Liuer
+401    Infected (as her life) she would not liue
+402    The running of one Glasse.
+403    <S {Cam}.> Who do's infect her?
+404   *<S {Leo}.> Why he that weares her like her Medull, hanging
+405    About his neck ({Bohemia}) who, if I
+406    Had Seruants true about me, that bare eyes
+407    To see alike mine Honor, as their Profits,
+408    (Their owne particular Thrifts) they would doe that
+409    Which should vndoe more doing: #I, and thou
+410    His Cup- bearer, whom I from meaner forme
+411    Haue Bench'd, and rear'd to Worship, who may'st see
+412    Plainely, as Heauen sees Earth, and Earth sees Heauen,
+413    How I am gall'd, might'st be- spice a Cup,
+414    To giue mine Enemy a lasting Winke:
+415    Which Draught to me, were cordiall.
+416    <S {Cam}.> Sir (my Lord)
+417    I could doe this, and that with no rash Potion,
+418    But with a lingring Dram, that should not worke
+419    Maliciously, like Poyson: But I cannot
+420    Beleeue this Crack to be in my dread Mistresse
+421    (So soueraignely being Honorable.)
+422    I haue lou'd thee,
+423    <S {Leo}.> Make that thy question, and goe rot:
+424    Do'st thinke I am so muddy, so vnsetled,
+425    To appoint my selfe in this vexation?
+426    Sully the puritie and whitenesse of my Sheetes
+427    (Which to preserue, is Sleepe; which being spotted,
+428    Is Goades, Thornes, Nettles, Tayles of Waspes)
+429    Giue scandall to the blood o'th' Prince, my Sonne,
+430    (Who I doe thinke is mine, and loue as mine)
+431    Without ripe mouing to't? Would I doe this?
+432    Could man so blench?
+433    <S {Cam}.> I must beleeue you (Sir)
+434    I doe, and will fetch off {Bohemia} for't:
+435    Prouided, that when hee's remou'd, your Highnesse
+436    Will take againe your Queene, as yours at first,
+437    Euen for your Sonnes sake, and thereby for sealing
+438    The Iniurie of Tongues, in Courts and Kingdomes
+439    Knowne, and ally'd to yours.
+440    <S {Leo}.> Thou do'st aduise me,
+441    Euen so as I mine owne course haue set downe:
+442    Ile giue no blemish to her Honor, none.
+443    <S {Cam}.> My Lord,
+444    Goe then; and with a countenance as cleare
+445    As Friendship weares at Feasts, keepe with {Bohemia},
+446    And with your Queene: I am his Cup- bearer,
+447    If from me he haue wholesome Beueridge,
+448    Account me not your Seruant.
+449    <S {Leo}.> This is all:
+450    Do't, and thou hast the one halfe of my heart;
+451    Do't not, thou splitt'st thine owne.
+452    <S {Cam}.> Ile do't, my Lord.
+453   *<S {Leo}.> I wil seeme friendly, as thou hast aduis'd me.  <D {Exit}>
+454    <S {Cam}.> O miserable Lady. But for me,
+455    What case stand I in?  I must be the poysoner
+456    Of good {Polixenes}, and my ground to do't,
+457    Is the obedience to a Master; one,
+458    Who in Rebellion with himselfe, will haue
+459    All that are his, so too. To doe this deed,
+460    Promotion followes: If I could find example
+461    Of thousand's that had struck anoynted Kings,
+462    And flourish'd after, Il'd not do't: But since
+463    Nor Brasse, nor Stone, nor Parchment beares not one,
+464    Let Villanie it selfe forswear't. I must
+465    Forsake the Court: to do't, or no, is certaine
+466    To me a breake- neck. Happy Starre raigne now,
+467    Here comes {Bohemia}.  <D {Enter Polixenes}.>
+468    <S {Pol}.> This is strange: Me thinkes
+469    My fauor here begins to warpe. Not speake?
+470    Good day {Camillo}.
+471    <S {Cam}.> Hayle most Royall Sir.
+472    <S {Pol}.> What is the Newes i'th' Court?
+473    <S {Cam}.> None rare (my Lord.)
+474    <S {Pol}.> The King hath on him such a countenance,
+475    As he had lost some Prouince, and a Region
+476    Lou'd, as he loues himselfe: euen now I met him
+477    With customarie complement, when hee
+478    Wafting his eyes to th' contrary, and falling
+479    A Lippe of much contempt, speedes from me, and
+480    So leaues me, to consider what is breeding,
+481    That changes thus his Manners.
+482    <S {Cam}.> I dare not know (my Lord.)
+483   *<S {Pol}.> How, dare not? doe not? doe you know, and dare not?
+484    Be intelligent to me, 'tis thereabouts:
+485    For to your selfe, what you doe know, you must,
+486    And cannot say, you dare not. Good {Camillo},
+487    Your chang'd complexions are to me a Mirror,
+488    Which shewes me mine chang'd too: for I must be
+489    A partie in this alteration, finding
+490    My selfe thus alter'd with't.
+491    <S {Cam}.> There is a sicknesse
+492    Which puts some of vs in distemper, but
+493    I cannot name the Disease, and it is caught
+494    Of you, that yet are well.
+495    <S {Pol}.> How caught of me?
+496    Make me not sighted like the Basilisque.
+      <P Aa3>
+497    I haue look'd on thousands, who haue sped the better
+498    By my regard, but kill'd none so: {Camillo},
+499    As you are certainely a Gentleman, thereto
+500    Clerke- like experienc'd, which no lesse adornes
+501    Our Gentry, then our Parents Noble Names,
+502    In whose successe we are gentle: I beseech you,
+503    If you know ought which do's behoue my knowledge,
+504    Thereof to be inform'd, imprison't not
+505    In ignorant concealement.
+506    <S {Cam}.> I may not answere.
+507    <S {Pol}.> A Sicknesse caught of me, and yet I well?
+508    I must be answer'd. Do'st thou heare {Camillo},
+509    I coniure thee, by all the parts of man,
+510    Which Honor do's acknowledge, whereof the least
+511    Is not this Suit of mine, that thou declare
+512    What incidencie thou do'st ghesse of harme
+513    Is creeping toward me; how farre off, how neere,
+514    Which way to be preuented, if to be:
+515    If not, how best to beare it.
+516    <S {Cam}.> Sir, I will tell you,
+517    Since I am charg'd in Honor, and by him
+518   *That I thinke Honorable: therefore marke my counsaile,
+519    Which must be eu'n as swiftly followed, as
+520    I meane to vtter it; or both your selfe, and me,
+521    Cry lost, and so good night.
+522    <S {Pol}.> On, good {Camillo}.
+523    <S {Cam}.> I am appointed him to murther you.
+524    <S {Pol}.> By whom, {Camillo}?
+525    <S {Cam}.> By the King.
+526    <S {Pol}.> For what?
+527   *<S {Cam}.> He thinkes, nay with all confidence he sweares,
+528    As he had seen't, or beene an Instrument
+529    To vice you to't, that you haue toucht his Queene
+530    Forbiddenly.
+531    <S {Pol}.> Oh then, my best blood turne
+532    To an infected Gelly, and my Name
+533    Be yoak'd with his, that did betray the Best:
+534    Turne then my freshest Reputation to
+535    A sauour, that may strike the dullest Nosthrill
+536    Where I arriue, and my approch be shun'd,
+537    Nay hated too, worse then the great'st Infection
+538    That ere was heard, or read.
+539    <S {Cam}.> Sweare his thought ouer
+540    By each particular Starre in Heauen, and
+541    By all their Influences; you may as well
+542    Forbid the Sea for to obey the Moone,
+543    As (or by Oath) remoue, or (Counsaile) shake
+544    The Fabrick of his Folly, whose foundation
+545    Is pyl'd vpon his Faith, and will continue
+546    The standing of his Body.
+547    <S {Pol}.> How should this grow?
+548    <S {Cam}.> I know not: but I am sure 'tis safer to
+549    Auoid what's growne, then question how 'tis borne.
+550    If therefore you dare trust my honestie,
+551    That lyes enclosed in this Trunke, which you
+552    Shall beare along impawnd, away to Night,
+553    Your Followers I will whisper to the Businesse,
+554    And will by twoes, and threes, at seuerall Posternes,
+555    Cleare them o'th' Citie: For my selfe, Ile put
+556    My fortunes to your seruice (which are here
+557    By this discouerie lost.) Be not vncertaine,
+558    For by the honor of my Parents, I
+559    Haue vttred Truth: which if you seeke to proue,
+560    I dare not stand by; nor shall you be safer,
+561    Then one condemnd by the Kings owne mouth:
+562    Thereon his Execution sworne.
+563    <S {Pol}.> I doe beleeue thee:
+564    I saw his heart in's face. Giue me thy hand,
+565    Be Pilot to me, and thy places shall
+566    Still neighbour mine. My Ships are ready, and
+567    My people did expect my hence departure
+568    Two dayes agoe. This Iealousie
+569    Is for a precious Creature: as shee's rare,
+570    Must it be great; and, as his Person's mightie,
+571    Must it be violent: and, as he do's conceiue,
+572    He is dishonor'd by a man, which euer
+573    Profess'd to him: why his Reuenges must
+574    In that be made more bitter. Feare ore- shades me:
+575    Good Expedition be my friend, and comfort
+576    The gracious Queene, part of his Theame; but nothing
+577    Of his ill- ta'ne suspition. Come {Camillo},
+578    I will respect thee as a Father, if
+579    Thou bear'st my life off, hence: Let vs auoid.
+580    <S {Cam}.> It is in mine authoritie to command
+581    The Keyes of all the Posternes: Please your Highnesse
+582    To take the vrgent houre. Come Sir, away.  <D {Exeunt}.>
+583    <Z {Actus Secundus. Scena Prima}.>
+584    <D {Enter Hermione, Mamillius, Ladies: Leontes},
+585    {Antigonus, Lords}.>
+586    <S {Her}.> Take the Boy to you: he so troubles me,
+587    'Tis past enduring.
+588    <S {Lady}.> Come (my gracious Lord)
+589    Shall I be your play- fellow?
+590    <S {Mam}.> No, Ile none of you.
+591    <S {Lady}.> Why (my sweet Lord?)
+592    <S {Mam}.> You'le kisse me hard, and speake to me, as if
+593    I were a Baby still. I loue you better.
+594    <S 2.{Lady}.> And why so (my Lord?)
+595    <S {Mam}.> Not for because
+596    Your Browes are blacker (yet black- browes they say
+597    Become some Women best, so that there be not
+598    Too much haire there, but in a Cemicircle,
+599    Or a halfe- Moone, made with a Pen.)
+600    <S 2.{Lady}.> Who taught 'this?
+601    <S {Mam}.> I learn'd it out of Womens faces: pray now,
+602    What colour are your eye- browes?
+603    <S {Lady}.> Blew (my Lord.)
+604   *<S {Mam}.> Nay, that's a mock: I haue seene a Ladies Nose
+605    That ha's beene blew, but not her eye- browes.
+606    <S {Lady}.> Harke ye,
+607    The Queene (your Mother) rounds apace: we shall
+608    Present our seruices to a fine new Prince
+609    One of these dayes, and then youl'd wanton with vs,
+610    If we would haue you.
+611    <S 2.{Lady}.> She is spread of late
+612    Into a goodly Bulke (good time encounter her.)
+613   *<S {Her}.> What wisdome stirs amongst you? Come Sir, now
+614    I am for you againe: 'Pray you sit by vs,
+615    And tell's a Tale.
+616    <S {Mam}.> Merry, or sad, #shal't be?
+617    <S {Her}.> As merry as you will.
+618    <S {Mam}.> A sad Tale's best for Winter:
+619    I haue one of Sprights, and Goblins.
+620    <S {Her}.> Let's haue that (good Sir.)
+621    Come- on, sit downe, come- on, and doe your best,
+622    To fright me with your Sprights: you're powrefull at it.
+      <P Aa3v>
+623    <S {Mam}.> There was a man.
+624    <S {Her}.> Nay, come sit downe: then on.
+625    <S {Mam}.> Dwelt by a Church- yard: I will tell it softly,
+626    Yond Crickets shall not heare it.
+627    <S {Her}.> Come on then, and giu't me in mine eare.
+628   *<S {Leon}.> Was hee met there? his Traine? {Camillo} with
+629    him?
+630    <S {Lord}.> Behind the tuft of Pines I met them, neuer
+631    Saw I men scowre so on their way: I eyed them
+632    Euen to their Ships.
+633    <S {Leo}.> How blest am I
+634    In my iust Censure? in my true Opinion?
+635    Alack, for lesser knowledge, how accurs'd,
+636    In being so blest? There may be in the Cup
+637    A Spider steep'd, and one may drinke; depart,
+638    And yet partake no venome: (for his knowledge
+639    Is not infected) but if one present
+640    Th' abhor'd Ingredient to his eye, make knowne
+641    How he hath drunke, he cracks his gorge, his sides
+642    With violent Hefts: I haue drunke, and seene the Spider.
+643    {Camillo} was his helpe in this, his Pandar:
+644    There is a Plot against my Life, my Crowne;
+645    All's true that is mistrusted: that false Villaine,
+646    Whom I employ'd, was pre- employ'd by him:
+647    He ha's discouer'd my Designe, and I
+648    Remaine a pinch'd Thing; yea, a very Trick
+649    For them to play at #will: how came the Posternes
+650    So easily open?
+651    <S {Lord}.> By his great authority,
+652    Which often hath no lesse preuail'd, then so,
+653    On your command.
+654    <S {Leo}.> I know't too well.
+655    Giue me the Boy, I am glad you did not nurse him:
+656    Though he do's beare some signes of me, yet you
+657    Haue too much blood in him.
+658    <S {Her}.> What is this? Sport?
+659   *<S {Leo}.> Beare the Boy hence, he shall not come about her,
+660    Away with him, and let her sport her selfe
+661    With that shee's big- with, for 'tis {Polixenes}
+662    Ha's made thee swell thus.
+663    <S {Her}.> But Il'd say he had not;
+664    And Ile be sworne you would beleeue my saying,
+665    How e're you leane to th' Nay- ward.
+666    <S {Leo}.> You (my Lords)
+667    Looke on her, marke her well: be but about
+668    To say she is a goodly Lady, and
+669    The iustice of your hearts will thereto adde
+670    'Tis pitty shee's not honest: Honorable;
+671    Prayse her but for this her without- dore- Forme,
+672    (Which on my faith deserues high speech) and straight
+673    The Shrug, the Hum, or Ha, (these Petty- brands
+674    That Calumnie doth vse; Oh, I am out,
+675    That Mercy do's, for Calumnie will seare
+676    Vertue it selfe) these Shrugs, these Hum's, and #Ha's,
+677    When you haue said shee's goodly, come betweene,
+678    Ere you can say shee's honest: But be't knowne
+679    (From him that ha's most cause to grieue it should be)
+680    Shee's an Adultresse.
+681    <S {Her}.> Should a Villaine say so,
+682    (The most replenish'd Villaine in the World)
+683    He were as much more Villaine: you (my Lord)
+684    Doe but mistake.
+685    <S {Leo}.> You haue mistooke (my Lady)
+686    {Polixenes} for {Leontes}: O thou Thing,
+687    (Which Ile not call a Creature of thy place,
+688    Least Barbarisme (making me the precedent)
+689    Should a like Language vse to all degrees,
+690    And mannerly distinguishment leaue out,
+691    Betwixt the Prince and Begger:) I haue said
+692    Shee's an Adultresse, I haue said with whom:
+693    More; shee's a Traytor, and {Camillo} is
+694    A Federarie with her, and one that knowes
+695    What she should shame to know her selfe,
+696    But with her most vild Principall: that shee's
+697    A Bed- swaruer, euen as bad as those
+698    That Vulgars giue bold'st Titles; #I, and priuy
+699    To this their late escape.
+700    <S {Her}.> No (by my life)
+701    Priuy to none of this: how will this grieue you,
+702    When you shall come to clearer knowledge, that
+703    You thus haue publish'd me? Gentle my Lord,
+704    You scarce can right me throughly, then, to say
+705    You did mistake.
+706    <S {Leo}.> No: if I mistake
+707    In those Foundations which I build vpon,
+708    The Centre is not bigge enough to beare
+709    A Schoole- Boyes Top. Away with her, to Prison:
+710    He who shall speake for her, is #a farre- off guiltie,
+711    But that he speakes.
+712    <S {Her}.> There's some #ill Planet raignes:
+713    I must be patient, till the Heauens looke
+714    With an aspect more fauorable. Good my Lords,
+715    I am not prone to weeping (as our Sex
+716    Commonly are) the want of which vaine dew
+717    Perchance shall dry your pitties: but I haue
+718    That honorable Griefe lodg'd here, which burnes
+719   *Worse then Teares drowne: 'beseech you all (my Lords)
+720    With thoughts so qualified, as your Charities
+721    Shall best instruct you, measure me; and so
+722    The Kings #will be perform'd.
+723    <S {Leo}.> Shall I be heard?
+724   *<S {Her}.> Who is't that goes with me? 'beseech your Highnes
+725    My Women may be with me, for you see
+726    My plight requires it. Doe not weepe (good Fooles)
+727    There is no cause: When you shall know your Mistris
+728    Ha's deseru'd Prison, then abound in Teares,
+729    As I come out; this Action I now goe on,
+730    Is for my better grace. Adieu (my Lord)
+731    I neuer wish'd to see you sorry, now
+732    I trust I shall: my Women come, you haue leaue.
+733    <S {Leo}.> Goe, doe our bidding: hence.
+734   *<S {Lord}.> Beseech your Highnesse call the Queene againe.
+735    <S {Antig}.> Be certaine what you do (Sir) least your Iustice
+736    Proue violence, in the which three great ones suffer,
+737    Your Selfe, your Queene, your Sonne.
+738    <S {Lord}.> For her (my Lord)
+739    I dare my life lay downe, and will do't (Sir)
+740    Please you t' accept it, that the Queene is spotlesse
+741    I'th' eyes of Heauen, and to you (I meane
+742    In this, which you accuse her.)
+743    <S {Antig}.> If it proue
+744    Shee's otherwise, Ile keepe my Stables where
+745    I lodge my Wife, Ile goe in couples with her:
+746    Then when I feele, and see her, no farther trust her:
+747    For euery ynch of Woman in the World,
+748    #I, euery dram of Womans flesh is false,
+749    If she be.
+750    <S {Leo}.> Hold your peaces.
+751    <S {Lord}.> Good my Lord.
+752    <S {Antig}.> It is for you we speake, not for our selues:
+753    You are abus'd, and by some putter on,
+754    That will be damn'd for't: would I knew the Villaine,
+      <P Aa4><C B>
+755    I would Land- damne him: be she honor- flaw'd,
+756    I haue three daughters: the eldest is eleuen;
+757    The second, and the third, nine: and some fiue:
+758    If this proue true, they'l pay for't. By mine Honor
+759    Ile gell'd em all: fourteene they shall not see
+760    To bring false generations: they are co- heyres,
+761    And I had rather glib my selfe, then they
+762    Should not produce faire issue.
+763    <S {Leo}.> Cease, no more:
+764    You smell this businesse with a sence as cold
+765    As is a dead- mans nose: but I do see't, and feel't,
+766    As you feele doing thus: and see withall
+767    The Instruments that feele.
+768    <S {Antig}.> If it be so,
+769    We neede no graue to burie honesty,
+770    There's not a graine of it, the face to sweeten
+771    Of the whole dungy- earth.
+772    <S {Leo}.> What? lacke I credit?
+773    <S {Lord}.> I had rather you did lacke then I (my Lord)
+774    Vpon this ground: and more it would content me
+775    To haue her Honor true, then your suspition
+776    Be blam'd for't how you might.
+777    <S {Leo}.> Why what neede we
+778    Commune with you of this? but rather follow
+779    Our forcefull instigation? Our prerogatiue
+780    Cals not your Counsailes, but our naturall goodnesse
+781    Imparts this: which, if you, or stupified,
+782    Or seeming so, in skill, cannot, or will not
+783    Rellish a truth, like vs: informe your selues,
+784    We neede no more of your aduice: the matter,
+785    The losse, the gaine, the ord'ring on't,
+786    Is all properly ours.
+787    <S {Antig}.> And I wish (my Liege)
+788    You had onely in your silent iudgement tride it,
+789    Without more ouerture.
+790    <S {Leo}.> How could that be?
+791    Either thou art most ignorant by age,
+792    Or thou wer't borne a foole: {Camillo's} flight
+793    Added to their Familiarity
+794    (Which was as grosse, as euer touch'd coniecture,
+795    That lack'd sight onely, nought for approbation
+796    But onely seeing, all other circumstances
+797    Made vp to'th deed) doth push- on this proceeding.
+798    Yet, for a greater confirmation
+799    (For in an Acte of this importance, 'twere
+800    Most pitteous to be wilde) I haue dispatch'd in post,
+801    To sacred {Delphos}, to {Appollo's} Temple,
+802    {Cleomines} and {Dion}, whom you know
+803    Of stuff'd- sufficiency: Now, from the Oracle
+804    They will bring all, whose spirituall counsaile had
+805    Shall stop, or spurre me. Haue I done well?
+806    <S {Lord}.> Well done (my Lord.)
+807    <S {Leo}.> Though I am satisfide, and neede no more
+808    Then what I know, yet shall the Oracle
+809    Giue rest to th' mindes of others; such as he
+810    Whose ignorant credulitie, will not
+811    Come vp to th' truth. So haue we thought it good
+812    From our free person, she should be confinde,
+813    Least that the treachery of the two, fled hence,
+814    Be left her to performe. Come follow vs,
+815    We are to speake in publique: for this businesse
+816    Will raise vs all.
+817    <S {Antig}.> To laughter, as I take it,
+818    If the good truth, were knowne.  <D {Exeunt}>
+819    <Z {Scena Secunda}.>
+820    <D {Enter Paulina, a Gentleman, Gaoler, Emilia}.>
+821    <S {Paul}.> The Keeper of the prison, call to him:
+822    Let him haue knowledge who I am. Good Lady,
+823    No Court in Europe is too good for thee,
+824    What dost thou then in prison? Now good Sir,
+825    You know me, do you not?
+826    <S {Gao}.> For a worthy Lady,
+827    And one, who much I honour.
+828    <S {Pau}.> Pray you then,
+829    Conduct me to the Queene.
+830    <S {Gao}.> I may not (Madam)
+831    To the contrary I haue expresse commandment.
+832   *<S {Pau}.> Here's a-do, to locke vp honesty & honour from
+833    Th' accesse of gentle visitors. Is't lawfull pray you
+834    To see her Women? Any of them? {Emilia}?
+835    <S {Gao}.> So please you (Madam)
+836    To put a- part these your attendants, I
+837    Shall bring {Emilia} forth.
+838    <S {Pau}.> I pray now call her:
+839    With- draw your selues.
+840    <S {Gao}.> And Madam,
+841    I must be present at your Conference.
+842    <S {Pau}.> Well: be't so: prethee.
+843    Heere's such a-doe, to make no staine, a staine,
+844    As passes colouring. Deare Gentlewoman,
+845    How fares our gracious Lady?
+846    <S {Emil}.> As well as one so great, and so forlorne
+847    May hold together: On her frights, and greefes
+848    (Which neuer tender Lady hath borne greater)
+849    She is, something before her time, deliuer'd.
+850    <S {Pau}.> A boy?
+851    <S {Emil}.> A daughter, and a goodly babe,
+852    Lusty, and like to liue: the Queene receiues
+853    Much comfort in't: Sayes, my poore prisoner,
+854    I am innocent as you,
+855    <S {Pau}.> I dare be sworne:
+856   *These dangerous, vnsafe Lunes i'th' King, beshrew them:
+857    He must be told on't, and he shall: the office
+858    Becomes a woman best. Ile take't vpon me,
+859    If I proue hony- mouth'd, let my tongue blister.
+860    And neuer to my red- look'd Anger bee
+861    The Trumpet any more: pray you ({Emilia})
+862    Commend my best obedience to the Queene,
+863    If she dares trust me with her little babe,
+864    I'le shew't the King, and vndertake to bee
+865    Her Aduocate to th' lowd'st. We do not know
+866    How he may soften at the sight o'th' Childe:
+867    The silence often of pure innocence
+868    Perswades, when speaking failes.
+869    <S {Emil}.> Most worthy Madam,
+870    Your honor, and your goodnesse is so euident,
+871    That your free vndertaking cannot misse
+872    A thriuing yssue: there is no Lady liuing
+873    So meete for this great errand; please your Ladiship
+874    To visit the next roome, Ile presently
+875    Acquaint the Queene of your most noble offer,
+876    Who, but to day hammered of this designe,
+877    But durst not tempt a minister of honour
+878    Least she should be deny'd.
+      <P Aa4v>
+879    <S {Paul}.> Tell her ({Emilia})
+880    Ile vse that tongue I haue: If wit flow from't
+881    As boldnesse from my bosome, le't not be doubted
+882    I shall do good,
+883    <S {Emil}.> Now be you blest for it.
+884    Ile to the Queene: please you come something neerer.
+885   *<S {Gao}.> Madam, if't please the Queene to send the babe,
+886    I know not what I shall incurre, to passe it,
+887    Hauing no warrant.
+888    <S {Pau}.> You neede not feare it (sir)
+889    This Childe was prisoner to the wombe, and is
+890    By Law and processe of great Nature, thence
+891    Free'd, and enfranchis'd, not a partie to
+892    The anger of the King, nor guilty of
+893    (If any be) the trespasse of the Queene.
+894    <S {Gao}.> I do beleeue it.
+895    <S {Paul}.> Do not you feare: vpon mine honor, I
+896    Will stand betwixt you, and danger.  <D {Exeunt}>
+897    <Z {Scaena Tertia}.>
+898    <D {Enter Leontes, Seruants, Paulina, Antigonus},
+899    {and Lords}.>
+900   *<S {Leo}.> Nor night, nor day, no rest: It is but weaknesse
+901    To beare the matter thus: meere weaknesse, if
+902    The cause were not in being: part o'th cause,
+903    She, th' Adultresse: for the harlot- King
+904    Is quite beyond mine Arme, out of the blanke
+905    And leuell of my braine: plot- proofe: but shee,
+906    I can hooke to me: say that she were gone,
+907    Giuen to the fire, a moity of my rest
+908    Might come to me againe. Whose there?
+909    <S {Ser}.> My Lord.
+910    <S {Leo}.> How do's the boy?
+911    <S {Ser}.> He tooke good rest to night: 'tis hop'd
+912    His sicknesse is discharg'd.
+913    <S {Leo}.> To see his Noblenesse,
+914    Conceyuing the dishonour of his Mother.
+915    He straight declin'd, droop'd, tooke it deeply,
+916    Fasten'd, and fix'd the shame on't in himselfe:
+917    Threw- off his Spirit, his Appetite, his Sleepe,
+918    And down- right languish'd. Leaue me solely: goe,
+919    See how he fares: Fie, fie, no thought of him,
+920    The very thought of my Reuenges that way
+921    Recoyle vpon me: in himselfe too mightie,
+922    And in his parties, his Alliance; Let him be,
+923    Vntill a time may serue. For present vengeance
+924    Take it on her: {Camillo}, and {Polixenes}
+925    Laugh at me: make their pastime at my sorrow:
+926    They should not laugh, if I could reach them, nor
+927    Shall she, within my powre.
+928    <D {Enter Paulina}.>
+929    <S {Lord}.> You must not enter.
+930   *<S {Paul}.> Nay rather (good my Lords) be second to me:
+931    Feare you his tyrannous passion more (alas)
+932    Then the Queenes life? A gracious innocent soule,
+933    More free, then he is iealous.
+934    <S {Antig}.> That's enough.
+935   *<S {Ser}.> Madam; he hath not slept to night, commanded
+936    None should come at him.
+937    <S {Pau}.> Not so hot (good Sir)
+938    I come to bring him sleepe. 'Tis such as you
+939    That creepe like shadowes by him, and do sighe
+940    At each his needlesse heauings: such as you
+941    Nourish the cause of his awaking. I
+942    Do come with words, as medicinall, as true;
+943    (Honest, as either;) to purge him of that humor,
+944    That presses him from sleepe.
+945    <S {Leo}.> Who noyse there, hoe?
+946    <S {Pau}.> No noyse (my Lord) but needfull conference,
+947    About some Gossips for your Highnesse.
+948    <S {Leo}.> How?
+949    Away with that audacious Lady. {Antigonus},
+950    I charg'd thee that she should not come about me,
+951    I knew she would.
+952    <S {Ant}.> I told her so (my Lord)
+953    On your displeasures perill, and on mine,
+954    She should not visit you.
+955    <S {Leo}.> What? canst not rule her?
+956    <S {Paul}.> From all dishonestie he can: in this
+957    (Vnlesse he take the course that you haue done)
+958    Commit me, for committing honor, trust it,
+959    He shall not rule me:
+960    <S {Ant}.> La- you now, you heare,
+961    When she will take the raine, I let her run,
+962    But shee'l not stumble.
+963    <S {Paul}.> Good my Liege, I come:
+964    And I beseech you heare me, who professes
+965    My selfe your loyall Seruant, your Physitian,
+966    Your most obedient Counsailor: yet that dares
+967    Lesse appeare so, in comforting your Euilles,
+968    Then such as most seeme yours. I say, I come
+969    From your good Queene.
+970    <S {Leo}.> Good Queene?
+971    <S {Paul}.> Good Queene (my Lord) good Queene,
+972    I say good Queene,
+973    And would by combate, make her good so, were I
+974    A man, the worst about you.
+975    <S {Leo}.> Force her hence.
+976    <S {Pau}.> Let him that makes but trifles of his eyes
+977    First hand me: on mine owne accord, Ile off,
+978    But first, Ile do my errand. The good Queene
+979    (For she is good) hath brought you forth a daughter,
+980    Heere 'tis. Commends it to your blessing.
+981    <S {Leo}.> Out:
+982    A mankinde Witch? Hence with her, out o' dore:
+983    A most intelligencing bawd.
+984    <S {Paul}.> Not so:
+985    I am as ignorant in that, as you,
+986    In so entit'ling me: and no lesse honest
+987    Then you are mad: which is enough, Ile warrant
+988    (As this world goes) to passe for honest:
+989    <S {Leo}.> Traitors;
+990    Will you not push her out? Giue her the Bastard,
+991    Thou dotard, thou art woman- tyr'd: vnroosted
+992    By thy dame {Partlet} heere. Take vp the Bastard,
+993    Take't vp, I say: giue't to thy Croane.
+994    <S {Paul}.> For euer
+995    Vnvenerable be thy hands, if thou
+996    Tak'st vp the Princesse, by that forced basenesse
+997    Which he ha's put vpon't.
+998    <S {Leo}.> He dreads his Wife.
+999   *<S {Paul}.> So I would you did: then 'twere past all doubt
+1000   Youl'd call your children, yours.
+1001   <S {Leo}.> A nest of Traitors.
+1002   <S {Ant}.> I am none, by this good light.
+1003   <S {Pau}.> Nor I: nor any
+1004   But one that's heere: and that's himselfe: for he,
+      <P Aa5><C A>
+1005   The sacred Honor of himselfe, his Queenes,
+1006   His hopefull Sonnes, his Babes, betrayes to Slander,
+1007   Whose sting is sharper then the Swords; and will not
+1008   (For as the case now stands, it is a Curse
+1009   He cannot be compell'd too't) once remoue
+1010   The Root of his Opinion, which is rotten,
+1011   As euer Oake, or Stone was sound.
+1012   <S {Leo}.> A Callat
+1013  *Of boundlesse tongue, who late hath beat her Husband,
+1014   And now bayts me: This Brat is none of mine,
+1015   It is the Issue of {Polixenes}.
+1016   Hence with it, and together with the Dam,
+1017   Commit them to the fire.
+1018   <S {Paul}.> It is yours:
+1019   And might we lay th' old  Prouerb to your charge,
+1020   So like you, 'tis the worse. Behold (my Lords)
+1021   Although the Print be little, the whole Matter
+1022   And Coppy of the Father: (Eye, Nose, Lippe,
+1023   The trick of's Frowne, his Fore- head, nay, the Valley,
+1024   The pretty dimples of his Chin, and Cheeke; his Smiles:
+1025   The very Mold, and frame of Hand, Nayle, Finger.)
+1026   And thou good Goddesse {Nature}, which hast made it
+1027   So like to him that got it, if thou hast
+1028   The ordering of the Mind too, 'mongst all Colours
+1029   No Yellow in't, least she suspect, as he do's,
+1030   Her Children, not her Husbands.
+1031   <S {Leo}.> A grosse Hagge:
+1032   And Lozell, thou art worthy to be hang'd,
+1033   That wilt not stay her Tongue.
+1034   <S {Antig}.> Hang all the Husbands
+1035   That cannot doe that Feat, you'le leaue your selfe
+1036   Hardly one Subiect.
+1037   <S {Leo}.> Once more take her hence.
+1038   <S {Paul}.> A most vnworthy, and vnnaturall Lord
+1039   Can doe no more.
+1040   <S {Leo}.> Ile #ha' thee burnt.
+1041   <S {Paul}.> I care not:
+1042   It is an Heretique that makes the fire,
+1043   Not she which burnes in't. Ile not call you Tyrant:
+1044   But this most cruell vsage of your Queene
+1045   (Not able to produce more accusation
+1046  *Then your owne weake- hindg'd Fancy) something sauors
+1047   Of Tyrannie, and will ignoble make you,
+1048   Yea, scandalous to the World.
+1049   <S {Leo}.> On your Allegeance,
+1050   Out of the Chamber with her. Were I a Tyrant,
+1051   Where were her life? she durst not call me so,
+1052   If she did know me one. Away with her.
+1053   <S {Paul}.> I pray you doe not push me, Ile be gone.
+1054   Looke to your Babe (my Lord) 'tis yours: {Ioue} send her
+1055   A better guiding Spirit. What needs these hands?
+1056   You that are thus so tender o're his Follyes,
+1057   Will neuer doe him good, not one of you.
+1058   So, so: Farewell, we are gone.  <D {Exit}.>
+1059   <S {Leo}.> Thou (Traytor) hast set on thy Wife to this.
+1060   My Child? away with't? euen thou, that hast
+1061   A heart so tender o're it, take it hence,
+1062   And see it instantly consum'd with fire.
+1063   Euen thou, and none but thou. Take it vp straight:
+1064   Within this houre bring me word 'tis done,
+1065   (And by good testimonie) or Ile seize thy life,
+1066   With what thou else call'st thine: if thou refuse,
+1067   And wilt encounter with my Wrath, say so;
+1068   The Bastard- braynes with these my proper hands
+1069   Shall I dash out. Goe, take it to the fire,
+1070   For thou sett'st on thy Wife.
+1071   <S {Antig}.> I did not, Sir:
+1072   These Lords, my Noble Fellowes, if they please,
+1073   Can cleare me in't.
+1074   <S {Lords}.> We can: my Royall Liege,
+1075   He is not guiltie of her comming hither.
+1076   <S {Leo}.> You're lyers all.
+1077   <S {Lord}.> Beseech your Highnesse, giue vs better credit:
+1078   We haue alwayes truly seru'd you, and beseech'
+1079   So to esteeme of vs: and on our knees we begge,
+1080   (As recompence of our deare seruices
+1081   Past, and to come) that you doe change this purpose,
+1082   Which being so horrible, so bloody, must
+1083   Lead on to some foule Issue. We all kneele.
+1084   <S {Leo}.> I am a Feather for each Wind that blows:
+1085   Shall I liue on, to see this Bastard kneele,
+1086   And call me Father? better burne it now,
+1087   Then curse it then. But be it: let it liue.
+1088   It shall not neyther. You Sir, come you hither:
+1089   You that haue beene so tenderly officious
+1090   With Lady {Margerie}, your Mid- wife there,
+1091   To saue this Bastards life; for 'tis a Bastard,
+1092   So sure as this Beard's gray. What will you aduenture,
+1093   To saue this Brats life?
+1094   <S {Antig}.> Any thing (my Lord)
+1095   That my abilitie may vndergoe,
+1096   And Noblenesse impose: at least thus much;
+1097   Ile pawne the little blood which I haue left,
+1098   To saue the Innocent: any thing possible.
+1099   <S {Leo}.> It shall be possible: Sweare by this Sword
+1100   Thou wilt performe my bidding.
+1101   <S {Antig}.> I will (my Lord.)
+1102   <S {Leo}.> Marke, and performe it: seest thou? for the faile
+1103   Of any point in't, shall not onely be
+1104   Death to thy selfe, but to thy lewd- tongu'd Wife,
+1105   (Whom for this time we pardon) We enioyne thee,
+1106   As thou art Liege- man to vs, that thou carry
+1107   This female Bastard hence, and that thou beare it
+1108   To some remote and desart place, quite out
+1109   Of our Dominions; and that there thou leaue it
+1110   (Without more mercy) to #it owne protection,
+1111   And fauour of the Climate: as by strange fortune
+1112   It came to vs, I doe in Iustice charge thee,
+1113   On thy Soules perill, and thy Bodyes torture,
+1114   That thou commend it strangely to some place,
+1115   Where Chance may nurse, or end it: take it vp.
+1116   <S {Antig}.> I sweare to doe this: though a present death
+1117   Had beene more mercifull. Come on (poore Babe)
+1118   Some powerfull Spirit instruct the Kytes and Rauens
+1119   To be thy Nurses. Wolues and Beares, they say,
+1120   (Casting their sauagenesse aside) haue done
+1121   Like offices of Pitty. Sir, be prosperous
+1122   In more then this deed do's require; and Blessing
+1123   Against this Crueltie, fight on thy side
+1124   (Poore Thing, condemn'd to losse.)  <D {Exit}.>
+1125   <S {Leo}.> No: Ile not reare
+1126   Anothers Issue.  <D {Enter a Seruant}.>
+1127   <S {Seru}.> Please' your Highnesse, Posts
+1128   From those you sent to th' Oracle, are come
+1129   An houre since: {Cleomines} and {Dion},
+1130   Being well arriu'd from Delphos, are both landed,
+1131   Hasting to th' Court.
+1132   <S {Lord}.> So please you (Sir) their speed
+1133   Hath beene beyond accompt.
+1134   <S {Leo}.> Twentie three dayes
+1135   They haue beene absent: 'tis good speed: fore- tells
+1136   The great {Apollo} suddenly will haue
+      <P Aa5v>
+1137   The truth of this appeare: Prepare you Lords,
+1138   Summon a Session, that we may arraigne
+1139   Our most disloyall Lady: for as she hath
+1140   Been publikely accus'd, so shall she haue
+1141   A iust and open Triall. While she liues,
+1142   My heart will be a burthen to me. Leaue me,
+1143   And thinke vpon my bidding.  <D {Exeunt}.>
+1144   <Z {Actus Tertius. Scena Prima}.>
+1145   <D {Enter Cleomines and Dion}.>
+1146   <S {Cleo}.> The Clymat's delicate, the Ayre most sweet,
+1147   Fertile the Isle, the Temple much surpassing
+1148   The common prayse it beares.
+1149   <S {Dion}.> I shall report,
+1150   For most it caught me, the Celestiall Habits,
+1151   (Me thinkes I so should terme them) and the reuerence
+1152   Of the graue Wearers. O, the Sacrifice,
+1153   How ceremonious, solemne, and vn- earthly
+1154   It was i'th' Offring?
+1155   <S {Cleo}.> But of all, the burst
+1156   And the eare- deaff'ning Voyce o'th' Oracle,
+1157   Kin to {Ioues} Thunder, so surpriz'd my Sence,
+1158   That I was nothing.
+1159   <S {Dio}.> If th' euent o'th' Iourney
+1160   Proue as successefull to the Queene (O be't so)
+1161   As it hath beene to vs, rare, pleasant, speedie,
+1162   The time is worth the vse on't.
+1163   <S {Cleo}.> Great {Apollo}
+1164   Turne all to th' best: these Proclamations,
+1165   So forcing faults vpon {Hermione},
+1166   I little like.
+1167   <S {Dio}.> The violent carriage of it
+1168   Will cleare, or end the Businesse, when the Oracle
+1169   (Thus by {Apollo's} great Diuine seal'd vp)
+1170   Shall the Contents discouer: something rare
+1171   Euen then will rush to knowledge. Goe: fresh Horses,
+1172   And gracious be the issue.  <D {Exeunt}.>
+1173   <Z {Scoena Secunda}.>
+1174   <D {Enter Leontes, Lords, Officers: Hermione (as to her}
+1175   {Triall) Ladies: Cleomines, Dion}.>
+1176  *<S {Leo}.> This Sessions (to our great griefe we pronounce)
+1177   Euen pushes 'gainst our heart. The partie try'd,
+1178   The Daughter of a King, our Wife, and one
+1179   Of vs too much belou'd. Let vs be clear'd
+1180   Of being tyrannous, since we so openly
+1181   Proceed in Iustice, which shall haue due course,
+1182   Euen to the Guilt, or the Purgation:
+1183   Produce the Prisoner.
+1184   <S {Officer}.> It is his Highnesse pleasure, that the Queene
+1185   Appeare in person, here in Court.  {Silence}.
+1186   <S {Leo}.> Reade the Indictment.
+1187  *<S {Officer}.> Hermione, {Queene to the worthy} Leontes, {King}
+1188  *{of Sicilia, thou art here accused and arraigned of High Trea-son},
+1189  *{in committing Adultery with} Polixenes {King of Bohemia},
+1190  *{and conspiring with} Camillo {to take away the Life of our Soue-raigne}
+1191  *{#Lord the King, thy Royall Husband: the pretence whereof}
+1192  *{being by circumstances partly layd open, thou} (Hermione) {con-trary}
+1193  *{to the Faith and Allegeance of a true Subiect, didst coun-saile}
+1194  *{and ayde them, for their better safetie, to flye away by}
+1195   {Night}.
+1196   <S {Her}.> Since what I am to say, must be but that
+1197   Which contradicts my Accusation, and
+1198   The testimonie on my part, no other
+1199   But what comes from my selfe, it shall scarce boot me
+1200   To say, Not guiltie: mine Integritie
+1201   Being counted Falsehood, shall (as I expresse it)
+1202   Be so receiu'd. But thus, if Powres Diuine
+1203   Behold our humane Actions (as they doe)
+1204   I doubt not then, but Innocence shall make
+1205   False Accusation blush, and Tyrannie
+1206   Tremble at Patience. You (my Lord) best know
+1207   (Whom least will seeme to doe so) my past life
+1208   Hath beene as continent, as chaste, as true,
+1209   As I am now vnhappy; which is more
+1210   Then Historie can patterne, though deuis'd,
+1211   And play'd, to take Spectators. For behold me,
+1212   A Fellow of the Royall Bed, which owe
+1213   A Moitie of the Throne: a great Kings Daughter,
+1214   The Mother to a hopefull Prince, here standing
+1215   To prate and talke for Life, and Honor, fore
+1216   Who please to come, and heare. For Life, I prize it
+1217   As I weigh Griefe (which I would spare:) For Honor,
+1218   'Tis a deriuatiue from me to mine,
+1219   And onely that I stand for. I appeale
+1220   To your owne Conscience (Sir) before {Polixenes}
+1221   Came to your Court, how I was in your grace,
+1222   How merited to be so: Since he came,
+1223   With what encounter so vncurrant, I
+1224   Haue strayn'd t' appeare  thus; if one iot beyond
+1225   The bound of Honor, or in act, or #will
+1226   That way enclining, hardned be the hearts
+1227   Of all that heare me, and my neer'st of Kin
+1228   Cry fie vpon my Graue.
+1229   <S {Leo}.> I ne're heard yet,
+1230   That any of these bolder Vices wanted
+1231   Lesse Impudence to gaine- say what they did,
+1232   Then to performe it first.
+1233   <S {Her}.> That's true enough,
+1234   Though 'tis a saying (Sir) not due to me.
+1235   <S {Leo}.> You will not owne it.
+1236   <S {Her}.> More then Mistresse of,
+1237   Which comes to me in name of Fault, I must not
+1238   At all acknowledge. For {Polixenes}
+1239   (With whom I am accus'd) I doe confesse
+1240   I lou'd him, as in Honor he requir'd:
+1241   With such a kind of Loue, as might become
+1242   A Lady like me; with a Loue, euen such,
+1243   So, and no other, as your selfe commanded:
+1244   Which, not to haue done, I thinke had been in me
+1245   Both Disobedience, and Ingratitude
+1246  *To you, and toward your Friend, whose Loue had spoke,
+1247   Euen since it could speake, from an Infant, freely,
+1248   That it was yours. Now for Conspiracie,
+1249   I know not how it tastes, though it be dish'd
+1250   For me to try how: All I know of it,
+1251   Is, that {Camillo} was an honest man;
+1252   And why he left your Court, the Gods themselues
+1253   (Wotting no more then I) are ignorant.
+1254   <S {Leo}.> You knew of his departure, as you know
+1255   What you haue vnderta'ne to doe in's absence.
+      <P Aa6>
+1256   <S {Her}.> Sir,
+1257   You speake a Language that I vnderstand not:
+1258   My Life stands in the leuell of your Dreames,
+1259   Which Ile lay downe.
+1260   <S {Leo}.> Your Actions are my Dreames.
+1261   You had a Bastard by {Polixenes},
+1262   And I but dream'd it: As you were past all shame,
+1263   (Those of your Fact are so) so past all truth;
+1264   Which to deny, concernes more then auailes: for as
+1265   Thy Brat hath been cast out, like to it selfe,
+1266   No Father owning it (which is indeed
+1267   More criminall in thee, then it) so thou
+1268   Shalt feele our Iustice; in whose easiest passage,
+1269   Looke for no lesse then death.
+1270   <S {Her}.> Sir, spare your Threats:
+1271   The Bugge which you would fright me with, I seeke:
+1272   To me can Life be no commoditie;
+1273   The crowne and comfort of my Life (your Fauor)
+1274   I doe giue lost, for I doe feele it gone,
+1275   But know not how it went. My second Ioy,
+1276   And first Fruits of my body, from his presence
+1277   I am bar'd, like one infectious. My third comfort
+1278   (Star'd most vnluckily) is from my breast
+1279   (The innocent milke in #it most innocent mouth)
+1280   Hal'd out to murther. My selfe on euery Post
+1281   Proclaym'd a Strumpet: With immodest hatred
+1282   The Child- bed priuiledge deny'd, which longs
+1283   To Women of all fashion. Lastly, hurried
+1284   Here, to this place, i'th' open ayre, before
+1285   I haue got strength of limit. Now (my Liege)
+1286   Tell me what blessings I haue here aliue,
+1287   That I should feare to die? Therefore proceed:
+1288   But yet heare this: mistake me not: no Life,
+1289   (I prize it not a straw) but for mine Honor,
+1290   Which I would free: if I shall be condemn'd
+1291   Vpon surmizes (all proofes sleeping else,
+1292   But what your Iealousies awake) I tell you
+1293   'Tis Rigor, and not Law. Your Honors all,
+1294   I doe referre me to the Oracle:
+1295   {Apollo} be my Iudge.
+1296   <S {Lord}.> This  your request
+1297   Is altogether iust: therefore bring forth
+1298   (And in {Apollo's} Name) his Oracle.
+1299   <S {Her}.> The Emperor of Russia was my Father.
+1300   Oh that he were aliue, and here beholding
+1301   His Daughters Tryall: that he did but see
+1302   The flatnesse of my miserie; yet with eyes
+1303   Of Pitty, not Reuenge.
+1304  *<S {Officer}.> You here shal sweare vpon this Sword of Iustice,
+1305   That you ({Cleomines} and {Dion}) haue
+1306   Been both at Delphos, and from thence haue brought
+1307   This seal'd- vp Oracle, by the Hand deliuer'd
+1308   Of great {Apollo's} Priest; and that since then,
+1309   You haue not dar'd to breake the holy Seale,
+1310   Nor read the Secrets in't.
+1311   <S {Cleo}. {Dio}.> All this we sweare.
+1312   <S {Leo}.> Breake vp the Seales, and read.
+1313  *<S {Officer}.> Hermione {is chast}, Polixenes {blamelesse}, Camillo
+1314  *{a true Subiect}, Leontes {a iealous Tyrant, his innocent Babe}
+1315  *{truly begotten, and the King shall liue without an Heire, if that}
+1316   {which is lost, be not found}.
+1317   <S {Lords}.> Now blessed be the great {Apollo}.
+1318   <S {Her}.> Praysed.
+1319   <S {Leo}.> Hast thou read truth?
+1320   <S {Offic}.> #I (my Lord) euen so as it is here set downe.
+1321   <S {Leo}.> There is no truth at all i'th' Oracle:
+1322   The Sessions shall proceed: this is meere falsehood.
+1323   <S {Ser}.> My Lord the King: the King?
+1324   <S {Leo}.> What is the businesse?
+1325   <S {Ser}.> O Sir, I shall be hated to report it.
+1326   The Prince your Sonne, with meere conceit, and feare
+1327   Of the Queenes speed, is gone.
+1328   <S {Leo}.> How? gone?
+1329   <S {Ser}.> Is dead.
+1330   <S {Leo}.> {Apollo's} angry, and the Heauens themselues
+1331   Doe strike at my Iniustice. How now there?
+1332  *<S {Paul}.> This newes is mortall to the Queene: Look downe
+1333   And see what Death is doing.
+1334   <S {Leo}.> Take her hence:
+1335   Her heart is but o're- charg'd: she will recouer.
+1336   I haue too much beleeu'd mine owne suspition:
+1337   'Beseech you tenderly apply to her
+1338   Some remedies for life. {Apollo} pardon
+1339   My great prophanenesse 'gainst thine Oracle.
+1340   Ile reconcile me to {Polixenes},
+1341   New woe my Queene, recall the good {Camillo}
+1342   (Whom I proclaime a man of Truth, of Mercy:)
+1343   For being transported by my Iealousies
+1344   To bloody thoughts, and to reuenge, I chose
+1345   {Camillo} for the minister, to poyson
+1346   My friend {Polixenes}: which had been done,
+1347   But that the good mind of {Camillo} tardied
+1348   My swift command: though I with Death, and with
+1349   Reward, did threaten and encourage him,
+1350   Not doing it, and being done: he (most humane,
+1351   And fill'd with Honor) to my Kingly Guest
+1352   Vnclasp'd my practise, quit his fortunes here
+1353   (Which you knew great) and to the hazard
+1354   Of all Incertainties, himselfe commended,
+1355   No richer then his Honor: How he glisters
+1356   Through my Rust? and how his Pietie
+1357   Do's my deeds make the blacker?
+1358   <S {Paul}.> Woe the while:
+1359   O cut my Lace, least my heart (cracking it)
+1360   Breake too.
+1361   <S {Lord}.> What fit is this? good Lady?
+1362   <S {Paul}.> What studied torments (Tyrant) hast for me?
+1363   What Wheeles? Racks? Fires? What flaying? boyling?
+1364   In Leads, or Oyles? What old, or newer Torture
+1365   Must I receiue? whose euery word deserues
+1366   To taste of thy most worst. Thy Tyranny
+1367   (Together working with thy Iealousies,
+1368   Fancies too weake for Boyes, too greene and idle
+1369   For Girles of Nine) O thinke what they haue done,
+1370   And then run mad indeed: starke- mad: for all
+1371   Thy by- gone fooleries were but spices of it.
+1372   That thou betrayed'st {Polixenes}, 'twas nothing,
+1373   (That did but shew thee, of a Foole, inconstant,
+1374   And damnable ingratefull:) Nor #was't much.
+1375   Thou would'st haue poyson'd good {Camillo's} Honor,
+1376   To haue him kill a King: poore Trespasses,
+1377   More monstrous standing by: whereof I reckon
+1378   The casting forth to Crowes, thy Baby- daughter,
+1379   To be or none, or little; though a Deuill
+1380   Would haue shed water out of fire, ere don't;
+1381   Nor is't directly layd to thee, the death
+1382   Of the young Prince, whose honorable thoughts
+1383   (Thoughts high for one so tender) cleft the heart
+1384   That could conceiue a grosse and foolish Sire
+1385   Blemish'd his gracious Dam: this is not, no,
+1386   Layd to thy answere: but the last: O Lords,
+1387   When I haue said, cry woe: the Queene, the Queene,
+      <P Aa6v><C B>
+1388   The sweet'st, deer'st creature's dead: & vengeance for't
+1389   Not drop'd downe yet.
+1390   <S {Lord}.> The higher powres forbid.
+1391   <S {Pau}.> I say she's dead: Ile swear't. If word, nor oath
+1392   Preuaile not, go and see: if you can bring
+1393   Tincture, or lustre in her lip, her eye
+1394   Heate outwardly, or breath within, Ile serue you
+1395   As I would do the Gods. But, O thou Tyrant,
+1396   Do not repent these things, for they are heauier
+1397   Then all thy woes can stirre: therefore betake thee
+1398   To nothing but dispaire. A thousand knees,
+1399   Ten thousand yeares together, naked, fasting,
+1400   Vpon a barren Mountaine, and still Winter
+1401   In storme perpetuall, could not moue the Gods
+1402   To looke that way thou wer't.
+1403   <S {Leo}.> Go on, go on:
+1404   Thou canst not speake too much, I haue deseru'd
+1405   All tongues to talke their bittrest.
+1406   <S {Lord}.> Say no more;
+1407   How ere the businesse goes, you haue made fault
+1408   I'th boldnesse of your speech.
+1409   <S {Pau}.> I am sorry for't;
+1410   All faults I make, when I shall come to know them,
+1411   I do repent: Alas, I haue shew'd too much
+1412   The rashnesse of a woman: he is toucht
+1413  *To th' Noble heart. What's gone, and what's past helpe
+1414   Should be past greefe: Do not receiue affliction
+1415   At my petition; I beseech you, rather
+1416   Let me be punish'd, that haue minded you
+1417   Of what you should forget. Now (good my Liege)
+1418   Sir, Royall Sir, forgiue a foolish woman:
+1419   The loue I bore your Queene (Lo, foole againe)
+1420   Ile speake of her no more, nor of your Children:
+1421   Ile not remember you of my owne Lord,
+1422   (Who is lost too:) take your patience to you,
+1423   And Ile say nothing.
+1424   <S {Leo}.> Thou didst speake but well,
+1425   When most the truth: which I receyue much better,
+1426   Then to be pittied of thee. Prethee bring me
+1427   To the dead bodies of my Queene, and Sonne,
+1428   One graue shall be for both: Vpon them shall
+1429   The causes of their death appeare (vnto
+1430   Our shame perpetuall) once a day, Ile visit
+1431   The Chappell where they lye, and teares shed there
+1432   Shall be my recreation. So long as Nature
+1433   Will beare vp with this exercise, so long
+1434   I dayly vow to vse it. Come, and leade me
+1435   To these sorrowes.  <D {Exeunt}>
+1436   <Z {Scaena Tertia}.>
+1437   <D {Enter Antigonus, a Marriner, Babe, Sheepe-heard,
+1438   and Clowne}.>
+1439  *<S {Ant}.> Thou art perfect then, our ship hath toucht vpon
+1440   The Desarts of {Bohemia}.
+1441   <S {Mar}.> #I (my Lord) and feare
+1442   We haue Landed in #ill time: the skies looke grimly,
+1443   And threaten present blusters. In my conscience
+1444   The heauens with that we haue in hand, are angry,
+1445   And frowne vpon's.
+1446   <S {Ant}.> Their sacred wil's be done: go get a- boord,
+1447   Looke to thy barke, Ile not be long before
+1448   I call vpon thee.
+1449   <S {Mar}.> Make your best haste, and go not
+1450   Too- farre i'th Land: 'tis like to be lowd weather,
+1451   Besides this place is famous for the Creatures
+1452   Of prey, that keepe vpon't.
+1453   <S {Antig}.> Go thou away,
+1454   Ile follow instantly.
+1455   <S {Mar}.> I am glad at heart
+1456   To be so ridde o'th businesse.  <D {Exit}>
+1457   <S {Ant}.> Come, poore babe;
+1458   I haue heard (but not beleeu'd) the Spirits o'th' dead
+1459   May walke againe: if such thing be, thy Mother
+1460   Appear'd to me last night: for ne're was dreame
+1461   So like a waking. To me comes a creature,
+1462   Sometimes her head on one side, some another,
+1463   I neuer saw a vessell of like sorrow
+1464   So fill'd, and so becomming: in pure white Robes
+1465   Like very sanctity she did approach
+1466   My Cabine where I lay: thrice bow'd before me,
+1467   And  (gasping to begin some speech) her eyes
+1468   Became two spouts; the furie spent, anon
+1469   Did this breake from her. Good {Antigonus},
+1470   Since Fate  (against thy better disposition)
+1471   Hath made thy person for the Thrower- out
+1472   Of my poore babe, according to thine oath,
+1473   Places remote enough are in {Bohemia},
+1474   There weepe, and leaue it crying: and for the babe
+1475   Is counted lost for euer, {Perdita}
+1476   I prethee call't: For this vngentle businesse
+1477   Put on thee, by my Lord, thou ne're shalt see
+1478   Thy Wife {Paulina} more: and so, with shriekes
+1479   She melted into Ayre. Affrighted much,
+1480   I did in time collect my selfe, and thought
+1481   This was so, and no slumber: Dreames, are toyes,
+1482   Yet for this once, yea superstitiously,
+1483   I will be squar'd by this. I do beleeue
+1484   {Hermione} hath suffer'd death, and that
+1485   {Apollo} would (this being indeede the issue
+1486   Of King {Polixenes}) it should heere be laide
+1487   (Either for life, or death) vpon the earth
+1488   Of it's right Father. Blossome, speed thee well,
+1489   There lye, and there thy charracter: there these,
+1490   Which may if Fortune please, both breed thee (pretty)
+1491  *And still rest thine. The storme beginnes, poore wretch,
+1492   That for thy mothers fault, art thus expos'd
+1493   To losse, and what may follow. Weepe I cannot,
+1494   But my heart bleedes: and most accurst am I
+1495   To be by oath enioyn'd to this. Farewell,
+1496   The day frownes more and more: thou'rt like to haue
+1497   A lullabie too rough: I neuer saw
+1498   The heauens so dim, by day. A sauage clamor?
+1499   Well may I get a- boord: This is the Chace,
+1500   I am gone for euer.  <D {Exit pursued by a Beare}.>
+1501  *<S {Shep}.> I would there were no age betweene ten and
+1502  *three and twenty, or that youth would sleep out the rest:
+1503  *for there is nothing (in the betweene) but getting wen-ches
+1504  *with childe, wronging the Auncientry, stealing,
+1505  *fighting, hearke you now: would any but these boylde-braines
+1506  *of nineteene, and two and twenty hunt this wea-ther?
+1507  *They haue scarr'd away two of my best Sheepe,
+1508  *which I feare the Wolfe will sooner finde then the Mai-ster;
+1509  *if any where I haue them, 'tis by the sea- side, brou-zing
+1510  *of Iuy. Good- lucke (and't be thy #will) what haue
+1511  *we heere? Mercy on's, a Barne? A very pretty barne; A
+1512  *boy, or a Childe I wonder? (A pretty one, a verie prettie
+1513  *one) sure some Scape; Though I am not bookish, yet I
+      <P Bb1>
+1514  *can reade Waiting- Gentlewoman in the scape: this has
+1515  *beene some staire- worke, some Trunke- worke, some be-hinde- doore
+1516  *worke: they were warmer that got this,
+1517  *then the poore Thing is heere. Ile take it vp for pity, yet
+1518  *Ile tarry till my sonne come: he hallow'd but euen now.
+1519   Whoa- ho- hoa.
+1520   <D {Enter Clowne}.>
+1521   <S {Clo}.> Hilloa, loa.
+1522  *<S {Shep}.> What? art so neere? If thou'lt see a thing to
+1523  *talke on, when thou art dead and rotten, come hither:
+1524   what ayl'st thou, man?
+1525  *<S {Clo}.> I haue seene two such sights, by Sea & by Land:
+1526  *but I am not to say it is a Sea, for it is now the skie, be-twixt
+1527  *the Firmament and it, you cannot thrust a bodkins
+1528   point.
+1529   <S {Shep}.> Why boy, how is it?
+1530  *<S {Clo}.> I would you did but see how it chafes, how it ra-ges,
+1531  *how it takes vp the shore, but that's not to the point:
+1532  *Oh, the most pitteous cry of the poore soules, sometimes
+1533  *to see 'em, and not to see 'em: Now the Shippe boaring
+1534  *the Moone with her maine Mast, and anon swallowed
+1535  *with yest and froth, as you'ld thrust a Corke into a hogs-head.
+1536  *And then for the Land- seruice, to see how the
+1537  *Beare tore out his shoulder- bone, how he cride to mee
+1538  *for helpe, and said his name was {Antigonus}, a Nobleman:
+1539  *But to make an end of the Ship, to see how the Sea flap-dragon'd
+1540  *it: but first, how the poore soules roared, and
+1541  *the sea mock'd them: and how the poore Gentleman roa-red,
+1542  *and the Beare mock'd him, both roaring lowder
+1543   then the sea, or weather.
+1544   <S {Shep}.> Name of mercy, when was this boy?
+1545  *<S {Clo}.> Now, now: I haue not wink'd since I saw these
+1546  *sights: the men are not yet cold vnder water, nor the
+1547   Beare halfe din'd on the Gentleman: he's at it now.
+1548   <S {Shep}.> Would I had bin by, to haue help'd the olde
+1549   man.
+1550  *<S {Clo}.> I would you had beene by the ship side, to haue
+1551  *help'd her; there your charity would haue lack'd footing.
+1552  *<S {Shep}.> Heauy matters, heauy matters: but looke thee
+1553  *heere boy. Now blesse thy selfe: thou met'st with things
+1554  *dying, I with things new borne. Here's a sight for thee:
+1555  *Looke thee, a bearing- cloath for a Squires childe: looke
+1556  *thee heere, take vp, take vp (Boy:) open't: so, let's see, it
+1557  *was told me I should be rich by the Fairies. This is some
+1558   Changeling: open't: what's within, boy?
+1559  *<S {Clo}.> You're a mad olde man: If the sinnes of your
+1560  *youth are forgiuen you, you're well to liue. Golde, all
+1561   Gold.
+1562  *<S {Shep}.> This is Faiery Gold boy, and 'twill proue so: vp
+1563  *with't, keepe it close: home, home, the next way. We
+1564  *are luckie (boy) and to bee so still requires nothing but
+1565  *secrecie. Let my sheepe go: Come (good boy) the next
+1566   way home.
+1567  *<S {Clo}.> Go you the next way with your Findings, Ile go
+1568  *see if the Beare bee gone from the Gentleman, and how
+1569  *much he hath eaten: they are neuer curst but when they
+1570   are hungry: if there be any of him left, Ile bury it.
+1571  *<S {Shep}.> That's a good deed: if thou mayest discerne by
+1572  *that which is left of him, what he is, fetch me to th' sight
+1573   of him.
+1574  *<S {Clowne}.> 'Marry will I: and you shall helpe to put him
+1575   i'th' ground.
+1576  *<S {Shep}.> 'Tis a lucky day, boy, and wee'l do good deeds
+1577   on't.  <D {Exeunt}>
+1578   <Z {Actus Quartus. Scena Prima}.>
+1579   <D {Enter Time, the Chorus}.>
+1580  *<S {Time}.> I that please some, try all: both ioy and terror
+1581   Of good, and bad: that makes, and vnfolds error,
+1582   Now take vpon me (in the name of Time)
+1583   To vse my wings: Impute it not a crime
+1584   To me, or my swift passage, that I slide
+1585   Ore sixteene yeeres, and leaue the growth vntride
+1586   Of that wide gap, since it is in my powre
+1587   To orethrow Law, and in one selfe- borne howre
+1588   To plant, and ore-whelme Custome. Let me passe
+1589   The same I am, ere ancient'st Order was,
+1590   Or what is now receiu'd. I witnesse to
+1591   The times that brought them in, so shall I do
+1592   To th' freshest things now reigning, and make stale
+1593   The glistering of this present, as my Tale
+1594   Now seemes to it: your patience this allowing,
+1595   I turne my glasse, and giue my Scene such growing
+1596   As you had slept betweene: {Leontes} leauing
+1597   Th' effects of his fond iealousies, so greeuing
+1598   That he shuts vp himselfe. Imagine me
+1599   (Gentle Spectators) that I now may be
+1600   In faire Bohemia, and remember well,
+1601   I mentioned a sonne o'th' Kings, which {Florizell}
+1602   I now name to you: and with speed so pace
+1603   To speake of {Perdita}, now growne in grace
+1604   Equall with wond'ring. What of her insues
+1605   I list not prophesie: but let Times newes
+1606  *Be knowne when 'tis brought forth. A shepherds daugh-|(ter
+1607   And what to her adheres, which followes after,
+1608   Is th' argument of Time: of this allow,
+1609   If euer you haue spent time worse, ere now:
+1610   If neuer, yet that Time himselfe doth say,
+1611   He wishes earnestly, you neuer may.  <D {Exit}.>
+1612   <Z {Scena Secunda}.>
+1613   <D {Enter Polixenes, and Camillo}.>
+1614  *<S {Pol}.> I pray thee (good {Camillo}) be no more importu-nate:
+1615  *'tis a sicknesse denying thee any thing: a death to
+1616   grant this.
+1617  *<S {Cam}.> It is fifteene yeeres since I saw my Countrey:
+1618  *though I haue (for the most part) bin ayred abroad, I de-sire
+1619  *to lay my bones there. Besides, the penitent King
+1620  *(my Master) hath sent for me, to whose feeling sorrowes
+1621  *I might be some allay, or I oreweene to thinke so) which
+1622   is another spurre to my departure.
+1623  *<S {Pol}.> As thou lou'st me ({Camillo}) wipe not out the rest
+1624  *of thy seruices, by leauing me now: the neede I haue of
+1625  *thee, thine owne goodnesse hath made: better not to
+1626  *haue had thee, then thus to want thee, thou hauing made
+1627  *me Businesses, (which none (without thee) can suffici-ently
+1628  *manage) must either stay to execute them thy selfe,
+1629  *or take away with thee the very seruices thou hast done:
+1630  *which if I haue not enough considered (as too much I
+1631  *cannot) to bee more thankefull to thee, shall bee my stu-die,
+1632  *and my profite therein, the heaping friendshippes.
+1633  *Of that fatall Countrey Sicillia, prethee speake no more,
+1634  *whose very naming, punnishes me with the remembrance
+      <P Bb1v>
+1635  *of that penitent (as thou calst him) and reconciled King
+1636  *my brother, whose losse of his most precious Queene &
+1637  *Children, are euen now to be a- fresh lamented. Say to
+1638  *me, when saw'st thou the Prince {Florizell} my son? Kings
+1639  *are no lesse vnhappy, their issue, not being gracious, then
+1640  *they are in loosing them, when they haue approued their
+1641   Vertues.
+1642  *<S {Cam}.> Sir, it is three dayes since I saw the Prince: what
+1643  *his happier affayres may be, are to me vnknowne: but I
+1644  *haue (missingly) noted, he is of late much retyred from
+1645  *Court, and is lesse frequent to his Princely exercises then
+1646   formerly he hath appeared.
+1647  *<S {Pol}.> I haue considered so much ({Camillo}) and with
+1648  *some care, so farre, that I haue eyes vnder my seruice,
+1649  *which looke vpon his remouednesse: from whom I haue
+1650  *this Intelligence, that he is seldome from the house of a
+1651  *most homely shepheard: a man (they say) that from very
+1652  *nothing, and beyond the imagination of his neighbors,
+1653   is growne into an vnspeakable estate.
+1654  *<S {Cam}.> I haue heard (sir) of such a man, who hath a
+1655  *daughter of most rare note: the report of her is extended
+1656  *more, then can be thought to begin from such a cottage
+1657  *<S {Pol}.> That's likewise part of my Intelligence: but (I
+1658  *feare) the Angle that pluckes our sonne thither. Thou
+1659  *shalt accompany vs to the place, where we will (not ap-pearing
+1660  *what we are) haue some question with the shep-heard;
+1661  *from whose simplicity, I thinke it not vneasie to
+1662  *get the cause of my sonnes resort thether. 'Prethe be my
+1663  *present partner in this busines, and lay aside the thoughts
+1664   of Sicillia.
+1665   <S {Cam}.> I willingly obey your command.
+1666  *<S {Pol}.> My best {Camillo}, we must disguise our selues.  <D {Exit}>
+1667   <Z {Scena Tertia}.>
+1668   <D {Enter Autolicus singing}>.
+1669   {When Daffadils begin to peere},
+1670   {With heigh the Doxy ouer the dale},
+1671   {Why then comes in the sweet o'the yeere},
+1672   {For the red blood raigns in y winters pale}.
+1673   {The white sheete bleaching on the hedge},
+1674   {With hey the sweet birds, O how they sing:}
+1675   {Doth set my pugging tooth #an edge},
+1676   {For a quart of Ale is a dish for a King}.
+1677   {The Larke, that tirra Lyra chaunts},
+1678   {With heigh, the Thrush and the Iay:}
+1679   {Are Summer songs for me and my Aunts}
+1680   {While we lye tumbling in the hay}.
+1681  *I haue seru'd Prince {Florizell}, and in my time wore three
+1682   pile, but now I am out of seruice.
+1683   {But shall I go mourne for that (my deere)}
+1684   {the pale Moone shines by night:}
+1685   {And when I wander here, and there}
+1686   {I then do most go right}.
+1687   {If Tinkers may haue leaue to liue},
+1688   {and beare the Sow- skin Bowget},
+1689   {Then my account I well may giue},
+1690   {and in the Stockes auouch- it}.
+1691  *My Trafficke is sheetes: when the Kite builds, looke to
+1692  *lesser Linnen. My Father nam'd me {Autolicus}, who be-ing
+1693  *(as I am) lytter'd vnder Mercurie, was likewise a
+1694  *snapper- vp of vnconsidered trifles: With Dye and drab,
+1695  *I purchas'd this Caparison, and my Reuennew is the silly
+1696  *Cheate. Gallowes, and Knocke, are too powerfull on
+1697  *the Highway. Beating and hanging are terrors to mee:
+1698  *For the life to come, I sleepe out the thought of it. A
+1699   prize, a prize.
+1700   <D {Enter Clowne}.>
+1701  *<S {Clo}.> Let me see, euery Leauen- weather toddes, euery
+1702  *tod yeeldes pound and odde shilling: fifteene hundred
+1703   shorne, what comes the wooll #too?
+1704   <S {Aut}.> If the sprindge hold, the Cocke's mine.
+1705  *<S {Clo}.> I cannot do't without Compters. Let mee see,
+1706  *what am I to buy for our Sheepe- shearing- Feast? Three
+1707  *pound of Sugar, fiue pound of Currence, Rice: What
+1708  *will this sister of mine do with Rice? But my father hath
+1709  *made her Mistris of the Feast, and she layes it on. Shee
+1710  *hath made- me four and twenty Nose- gayes for the shea-rers
+1711  *(three- man song- men, all, and very good ones) but
+1712  *they are most of them Meanes and Bases; but one Puri-tan
+1713  *amongst them, and he sings Psalmes to horne- pipes.
+1714  *I must haue Saffron to colour the Warden Pies, Mace:
+1715  *Dates, none: that's out of my note: Nutmegges, seuen;
+1716  *a Race or two of Ginger, but that I may begge: Foure
+1717   pound of Prewyns, and as many of Reysons o'th Sun.
+1718   <S {Aut}.> Oh, that euer I was borne.
+1719   <S {Clo}.> I'th' name of me.
+1720  *<S {Aut}.> Oh helpe me, helpe mee: plucke but off these
+1721   ragges: and then, death, death.
+1722  *<S {Clo}.> Alacke poore soule, thou hast need of more rags
+1723   to lay on thee, rather then haue these off.
+1724  *<S {Aut}.> Oh sir, the loathsomnesse of them offend mee,
+1725  *more then the stripes I haue receiued, which are mightie
+1726   ones and millions.
+1727  *<S {Clo}.> Alas poore man, a million of beating may come
+1728   to a great matter.
+1729  *<S {Aut}.> I am rob'd sir, and beaten: my money, and ap-parrell
+1730  *tane from me, and these detestable things put vp-on
+1731   me.
+1732   <S {Clo}.> What, by a horse- man, or a foot- man?
+1733   <S {Aut}.> A footman (sweet sir) a footman.
+1734  *<S {Clo}.> Indeed, he should be a footman, by the garments
+1735  *he has left with thee: If this bee a horsemans Coate, it
+1736  *hath seene very hot seruice. Lend me thy hand, Ile helpe
+1737   thee. Come, lend me thy hand.
+1738   <S {Aut}.> Oh good sir, tenderly, oh.
+1739   <S {Clo}.> Alas poore soule.
+1740  *<S {Aut}.> Oh good sir, softly, good sir: I feare (sir) my
+1741   shoulder- blade is out.
+1742   <S {Clo}.> How now? Canst stand?
+1743  *<S {Aut}.> Softly, deere sir: good sir, softly: you #ha done
+1744   me a charitable office.
+1745  *<S {Clo}.> Doest lacke any mony? I haue a little mony for
+1746   thee.
+1747  *<S {Aut}.> No, good sweet sir: no, I beseech you sir: I haue
+1748  *a Kinsman not past three quarters of a mile hence, vnto
+1749  *whome I was going: I shall there haue money, or anie
+1750  *thing I want: Offer me no money I pray you, that killes
+1751   my heart.
+1752  *<S {Clow}.> What manner of Fellow was hee that robb'd
+1753   you?
+1754  *<S {Aut}.> A fellow (sir) that I haue knowne to goe about
+1755  *with Troll- my- dames: I knew him once a seruant of the
+1756  *Prince: I cannot tell good sir, for which of his Ver-tues
+1757  *it was, but hee was certainely Whipt out of the
+1758   Court.
+      <P Bb2>
+1759  *<S {Clo}.> His vices you would say: there's no vertue whipt
+1760  *out of the Court: they cherish it to make it stay there;
+1761   and yet it will no more but abide.
+1762  *<S {Aut}.> Vices I would say (Sir.) I know this man well,
+1763  *he hath bene since an Ape- bearer, then a Processe- seruer
+1764  *(a  Bayliffe) then hee compast a Motion of the Prodigall
+1765  *sonne, and married a Tinkers wife, within a Mile where
+1766  *my Land and Liuing lyes; and (hauing flowne ouer ma-ny
+1767  *knauish professions) he setled onely in Rogue: some
+1768   call him {Autolicus}.
+1769  *<S {Clo}.> Out vpon him: Prig, for my life Prig: he haunts
+1770   Wakes, Faires, and Beare- baitings.
+1771  *<S {Aut}.> Very true sir: he sir hee: that's the Rogue that
+1772   put me into this apparrell.
+1773  *<S {Clo}.> Not a more cowardly Rogue in all {Bohemia}; If
+1774  *you had but look'd bigge, and spit at him, hee'ld haue
+1775   runne.
+1776  *<S {Aut}.> I must confesse to you (sir) I am no fighter: I am
+1777   false of heart that way, & that he knew I warrant him.
+1778   <S {Clo}.> How do you now?
+1779   <S {Aut}.> Sweet sir, much better then I was: I can stand,
+1780  *and walke: I will euen take my leaue of you, & pace soft-ly
+1781   towards my Kinsmans.
+1782   <S {Clo}.> Shall I bring thee on the way?
+1783   <S {Aut}.> No, good fac'd sir, no sweet sir.
+1784  *<S {Clo}.> Then fartheewell, I must go buy Spices for our
+1785   sheepe- shearing.  <D {Exit}.>
+1786  *<S {Aut}.> Prosper you sweet sir. Your purse is not hot e-nough
+1787  *to purchase your Spice: Ile be with you at your
+1788  *sheepe- shearing too: If I make not this Cheat bring out
+1789  *another, and the sheerers proue sheepe, let me be vnrold,
+1790   and my name put in the booke of Vertue.
+1791   Song. {Iog- on, Iog- on, the foot- path way},
+1792   {And merrily hent the Stile- a:}
+1793   {A merry heart goes all the day},
+1794   {Your sad tyres in a Mile- a}.  <D {Exit}.>
+1795   <Z {Scena Quarta}.>
+1796   <D {Enter Florizell, Perdita, Shepherd, Clowne, Polixenes, Ca-millo,
+1797   Mopsa, Dorcas, Seruants, Autolicus}.>
+1798   <S {Flo}.> These your vnvsuall weeds, to each part of you
+1799   Do's giue a life: no Shepherdesse, but {Flora}
+1800   Peering in Aprils front. This your sheepe- shearing,
+1801   Is as a meeting of the petty Gods,
+1802   And you the Queene on't.
+1803   <S {Perd}.> Sir: my gracious Lord,
+1804   To chide at your extreames, it not becomes me:
+1805   (Oh pardon, that I name them:) your high selfe
+1806   The gracious marke o'th' Land, you haue obscur'd
+1807   With a Swaines wearing: and me (poore lowly Maide)
+1808   Most Goddesse- like prank'd vp: But that our Feasts
+1809   In euery Messe, haue folly; and the Feeders
+1810   Digest with a Custome, I should blush
+1811   To see you so attyr'd: sworne I thinke,
+1812   To shew my selfe a glasse.
+1813   <S {Flo}.> I blesse the time
+1814   When my good Falcon, made her flight a- crosse
+1815   Thy Fathers ground.
+1816   <S {Perd}.> Now Ioue affoord you cause:
+1817   To me the difference forges dread (your Greatnesse
+1818   Hath not beene vs'd to feare:) euen now I tremble
+1819   To thinke your Father, by some accident
+1820   Should passe this way, as you did: Oh the Fates,
+1821   How would he looke, to see his worke, so noble,
+1822   Vildely bound vp? What would he say? Or how
+1823   Should I (in these my borrowed Flaunts) behold
+1824   The sternnesse of his presence?
+1825   <S {Flo}.> Apprehend
+1826   Nothing but iollity: the Goddes themselues
+1827   (Humbling their Deities to loue) haue taken
+1828   The shapes of Beasts vpon them. Iupiter,
+1829   Became a Bull, and bellow'd: the greene Neptune
+1830   A Ram, and bleated: and the Fire- roab'd- God
+1831   Golden Apollo, a poore humble Swaine,
+1832   As I seeme now. Their transformations,
+1833   Were neuer for a peece of beauty, rarer,
+1834   Nor in a way so chaste: since my desires
+1835   Run not before mine honor: nor my Lusts
+1836   Burne hotter then my Faith.
+1837   <S {Perd}.> O but Sir,
+1838   Your resolution cannot hold, when 'tis
+1839   Oppos'd (as it must be) by th' powre of the King:
+1840   One of these two must be necessities,
+1841  *Which then will speake, that you must change this pur-|(pose,
+1842   Or I my life.
+1843   <S {Flo}.> Thou deer'st {Perdita},
+1844   With these forc'd thoughts, I prethee darken not
+1845   The Mirth o'th' Feast: Or Ile be thine (my Faire)
+1846   Or not my Fathers. For I cannot be
+1847   Mine owne, nor any thing to any, if
+1848   I be not thine. To this I am most constant,
+1849   Though destiny say no. Be merry (Gentle)
+1850   Strangle such thoughts as these, with any thing
+1851  *That you behold the while. Your guests are comming:
+1852   Lift vp your countenance, as it were the day
+1853   Of celebration of that nuptiall, which
+1854   We two haue sworne shall come.
+1855   <S {Perd}.> O Lady Fortune,
+1856   Stand you auspicious.
+1857   <S {Flo}.> See, your Guests approach,
+1858   Addresse your selfe to entertaine them sprightly,
+1859   And let's be red with mirth.
+1860  *<S {Shep}.> Fy  (daughter) when my old wife liu'd: vpon
+1861   This day, she was both Pantler, Butler, Cooke,
+1862   Both Dame and Seruant: Welcom'd all: seru'd all,
+1863  *Would sing her song, and dance her turne: now heere
+1864   At vpper end o'th Table; now, i'th middle:
+1865   On his shoulder, and his: her face #o' fire
+1866   With labour, and the thing she tooke to quench it
+1867   She would to each one sip. You are retyred,
+1868   As if you were a feasted one: and not
+1869   The Hostesse of the meeting: Pray you bid
+1870   These vnknowne friends to's welcome, for it is
+1871   A way to make vs better Friends, more knowne.
+1872   Come, quench your blushes, and present your selfe
+1873   That which you are, Mistris o'th' Feast. Come on,
+1874   And bid vs welcome to your sheepe- shearing,
+1875   As your good flocke shall prosper.
+1876   <S {Perd}.> Sir, welcome:
+1877   It is my Fathers #will, I should take on mee
+1878   The Hostesseship o'th' day: you're welcome sir.
+1879   Giue me those Flowres there ({Dorcas}.) Reuerend Sirs,
+1880   For you, there's Rosemary, and Rue, these keepe
+1881   Seeming, and sauour all the Winter long:
+1882   Grace, and Remembrance be to you both,
+1883   And welcome to our Shearing.
+      <P Bb2v>
+1884   <S {Pol}.> Shepherdesse,
+1885   (A faire one are you:) well you fit our ages
+1886   With flowres of Winter.
+1887   <S {Perd}.> Sir, the yeare growing ancient,
+1888   Not yet on summers death, nor on the birth
+1889   Of trembling winter, the fayrest flowres o'th season
+1890   Are our Carnations, and streak'd Gilly- vors,
+1891   (Which some call Natures bastards) of that kind
+1892   Our rusticke Gardens barren, and I care not
+1893   To get slips of them.
+1894   <S {Pol}.> Wherefore (gentle  Maiden)
+1895   Do you neglect them.
+1896   <S {Perd}.> For I haue heard it said,
+1897   There is an #Art, which in their pidenesse shares
+1898   With great creating- Nature.
+1899   <S {Pol}.> Say there be:
+1900   Yet Nature is made better by no meane,
+1901   But Nature makes that Meane: so ouer that #Art,
+1902   (Which you say addes to Nature) is an #Art
+1903   That Nature makes: you see (sweet Maid) we marry
+1904   A gentler Sien, to the wildest Stocke,
+1905   And make conceyue a barke of baser kinde
+1906   By bud of Nobler race. This is an #Art
+1907   Which do's mend Nature: change it rather, but
+1908   The #Art it selfe, is Nature.
+1909   <S {Perd}.> So it is.
+1910   <S {Pol}.> Then make you Garden rich in Gilly' vors,
+1911   And do not call them bastards.
+1912   <S {Perd}.> Ile not put
+1913   The Dible in earth, to set one slip of them:
+1914   No more then were I painted, I would wish
+1915   This youth should say 'twer well: and onely therefore
+1916   Desire to breed by me. Here's flowres for you:
+1917   Hot Lauender, Mints, Sauory, Mariorum,
+1918   The Mary- gold, that goes to bed with' Sun,
+1919   And with him rises, weeping: These are flowres
+1920   Of middle summer, and I thinke they are giuen
+1921   To men of middle age. Y'are very welcome.
+1922   <S {Cam}.> I should leaue grasing, were I of your flocke,
+1923   And onely liue by gazing.
+1924   <S {Perd}.> Out alas:
+1925   You'ld be so leane, that blasts of Ianuary
+1926  *Would blow you through and through. Now (my fairst |(Friend,
+1927   I would I had some Flowres o'th Spring, that might
+1928   Become your time of  day: and yours, and yours,
+1929   That weare vpon your Virgin- branches yet
+1930   Your Maiden- heads growing: O {Proserpina},
+1931   For the Flowres now, that (frighted) thou let'st fall
+1932   From {Dysses} Waggon: Daffadils,
+1933   That come before the Swallow dares, and take
+1934   The windes of March with beauty: Violets (dim,
+1935   But sweeter then the lids of {Iuno's} eyes,
+1936   Or {Cytherea's} breath) pale Prime- roses,
+1937   That dye vnmarried, ere they can behold
+1938   Bright Phoebus in his strength (a Maladie
+1939   Most incident to Maids:) bold Oxlips, and
+1940   The Crowne Imperiall: Lillies of all kinds,
+1941   (The Flowre- de- Luce being one.) O, these I lacke,
+1942   To make you Garlands of) and my sweet friend,
+1943   To strew him o're, and ore.
+1944   <S {Flo}.> What? like a Coarse?
+1945  *<S {Perd}.> No, like a banke, for Loue to lye, and play on:
+1946   Not like a Coarse: or if: not to be buried,
+1947  *But quicke, and in mine armes. Come, take your flours,
+1948   Me thinkes I play as I haue seene them do
+1949   In Whitson- Pastorals: Sure this Robe of mine
+1950   Do's change my disposition:
+1951   <S {Flo}.> What you do,
+1952   Still betters what is done. When you speake (Sweet)
+1953   I'ld haue you do it euer: When you sing,
+1954   I'ld haue you buy, and sell so: so giue Almes,
+1955   Pray so: and for the ord'ring your Affayres,
+1956   To sing them too. When you do dance, I wish you
+1957   A waue o'th Sea, that you might euer do
+1958   Nothing but that: moue still, still so:
+1959   And owne no other Function. Each your doing,
+1960   (So singular, in each particular)
+1961   Crownes what you are doing, in the present deeds,
+1962   That all your Actes, are Queenes.
+1963   <S {Perd}.> O {Doricles},
+1964   Your praises are too large: but that your youth
+1965   And the true blood which peepes fairely through't,
+1966   Do plainly giue you out an vnstain'd Shepherd
+1967   With wisedome, I might feare (my {Doricles})
+1968   You woo'd me the false way.
+1969   <S {Flo}.> I thinke you haue
+1970   As little skill to feare, as I haue purpose
+1971   To put you to't. But come, our dance I pray,
+1972   Your hand (my {Perdita}:) so Turtles paire
+1973   That neuer meane to part.
+1974   <S {Perd}.> Ile sweare for 'em.
+1975   <S {Pol}.> This is the prettiest Low- borne Lasse, that euer
+1976   Ran on the greene- sord: Nothing she do's, or seemes
+1977   But smackes of something greater then her selfe,
+1978   Too Noble for this place.
+1979   <S {Cam}.> He tels her something
+1980   That makes her blood looke on't: Good sooth she is
+1981   The Queene of Curds and Creame.
+1982   <S {Clo}.> Come on: strike vp.
+1983  *<S {Dorcas}.> {Mopsa} must be your Mistris: marry Garlick
+1984   to mend her kissing with.
+1985   <S {Mop}.> Now in good time.
+1986  *<S {Clo}.> Not a word, a word, we stand vpon our manners,
+1987   Come, strike vp.
+1988   <D {Heere a Daunce of Shepheards and}
+1989   {Shephearddesses}.>
+1990  *<S {Pol}.> Pray good Shepheard, what faire Swaine is this,
+1991   Which dances with your daughter?
+1992   <S {Shep}.> They call him {Doricles}, and boasts himselfe
+1993   To haue a worthy Feeding; but I haue it
+1994   Vpon his owne report, and I beleeue it:
+1995   He lookes like sooth: he sayes he loues my daughter,
+1996   I thinke so too; for neuer gaz'd the Moone
+1997   Vpon the water, as hee'l stand and reade
+1998   As 'twere my daughters eyes: and to be plaine,
+1999   I thinke there is not halfe a kisse to choose
+2000   Who loues another best.
+2001   <S {Pol}.> She dances featly.
+2002   <S {Shep}.> So she do's any thing, though I report it
+2003   That should be silent: If yong {Doricles}
+2004   Do light vpon her, she shall bring him that
+2005   Which he not dreames of.  <D {Enter Seruant}.>
+2006  *<S {Ser}.> O Master: if you did but heare the Pedler at the
+2007  *doore, you would neuer dance againe after a Tabor and
+2008  *Pipe: no, the Bag- pipe could not moue you: hee singes
+2009  *seuerall Tunes, faster then you'l tell money: hee vtters
+2010  *them as he had eaten ballads, and all mens eares grew to
+2011   his Tunes.
+2012  *<S {Clo}.> He could neuer come better: hee shall come in:
+2013  *I loue a ballad but euen too well, if it be dolefull matter
+2014  *merrily set downe: or a very pleasant thing indeede, and
+2015   sung lamentably.
+      <P Bb3>
+2016  *<S {Ser}.> He hath songs for man, or woman, of all sizes:
+2017  *No Milliner can so fit his customers with Gloues: he has
+2018  *the prettiest Loue- songs for Maids, so without bawdrie
+2019  *(which is strange,) with such delicate burthens of Dil-do's
+2020  *and Fadings: Iump- her, and thump- her; and where
+2021  *some stretch- mouth'd Rascall, would (as  it were) meane
+2022  *mischeefe, and breake a fowle gap into the Matter, hee
+2023  *makes the maid to answere, {Whoop, doe me no harme good}
+2024  *{man}: put's him off, slights him, with {Whoop, doe mee no}
+2025   {harme good man}.
+2026   <S {Pol}.> This is a braue fellow.
+2027  *<S {Clo}.> Beleeue mee, thou talkest of an admirable con-ceited
+2028   fellow, has he any vnbraided Wares?
+2029  *<S {Ser}.> Hee hath Ribbons of all the colours i'th Raine-bow;
+2030  *Points, more then all the Lawyers in {Bohemia}, can
+2031  *learnedly handle, though they come to him by th' grosse:
+2032  *Inckles, Caddysses, Cambrickes, Lawnes: why he sings
+2033  *em ouer, as they were Gods, or Goddesses: you would
+2034  *thinke a Smocke were a shee- Angell, he so chauntes to
+2035   the sleeue- hand, and the worke about the square on't.
+2036  *<S {Clo}.> Pre'thee bring him in, and let him approach sin-ging.
+2037  _
+2038  *<S {Perd}.> Forewarne him, that he vse no scurrilous words
+2039   in's tunes.
+2040  *<S {Clow}.> You haue of these Pedlers, that haue more in
+2041   them, then youl'd thinke (Sister.)
+2042   <S {Perd}.> #I, good brother, or go about to thinke.
+2043   <D {Enter Autolicus singing}.>
+2044   {Lawne as white as driuen Snow},
+2045   {Cypresse blacke as ere was Crow},
+2046   {Gloues as sweete as Damaske Roses},
+2047   {Maskes for faces, and for noses:}
+2048   {Bugle- bracelet, Necke- lace Amber},
+2049   {Perfume for a Ladies Chamber:}
+2050   {Golden Quoifes, and Stomachers}
+2051   {For my Lads, to giue their deers:}
+2052   {Pins, and poaking- stickes of steele}.
+2053   {What Maids lacke from head to heele:}
+2054   {Come buy of me, come: come buy, come buy},
+2055   {Buy Lads, or else your Lasses cry: Come buy}.
+2056  *<S {Clo}.> If I were not in loue with {Mopsa}, thou shouldst
+2057  *take no money of me, but being enthrall'd as I am, it will
+2058   also be the bondage of certaine Ribbons and Gloues.
+2059  *<S {Mop}.> I was promis'd them against the Feast, but they
+2060   come not too late now.
+2061  *<S {Dor}.> He hath promis'd you more then that, or there
+2062   be lyars.
+2063  *<S {Mop}.> He hath paid you all he promis'd you: 'May be
+2064  *he has paid you more, which will shame you to giue him
+2065   againe.
+2066  *<S {Clo}.> Is there no manners left among maids? Will they
+2067  *weare their plackets, where they should bear their faces?
+2068  *Is there not milking- time? When you are going to bed?
+2069  *Or kill- hole? To whistle of these secrets, but you must
+2070  *be tittle- tatling before all our guests? 'Tis well they are
+2071   whispring: clamor your tongues, and not a word more.
+2072  *<S {Mop}.> I haue done; Come you promis'd me a tawdry-lace,
+2073   and a paire of sweet Gloues.
+2074  *<S {Clo}.> Haue I not told thee how I was cozen'd by the
+2075   way, and lost all my money.
+2076  *<S {Aut}.> And indeed Sir, there are Cozeners abroad, ther-fore
+2077   it behooues men to be wary.
+2078  *<S {Clo}.> Feare not thou man, thou shalt lose nothing here
+2079  *<S {Aut}.> I hope so sir, for I haue about me many parcels
+2080   of charge.
+2081   <S {Clo}.> What hast heere? Ballads?
+2082  *<S {Mop}.> Pray now buy some: I loue a ballet in print, a
+2083   life, for then we are sure they are true.
+2084  *<S {Aut}.> Here's one, to a very dolefull tune, how a Vsu-rers
+2085  *wife was brought to bed of twenty money baggs at
+2086  *a burthen, and how she long'd to eate Adders heads, and
+2087   Toads carbonado'd.
+2088   <S {Mop}.> Is it true, thinke you?
+2089   <S {Aut}.> Very true, and but a moneth old.
+2090   <S {Dor}.> Blesse me from marrying a Vsurer.
+2091  *<S {Aut}.> Here's the Midwiues name to't: one Mist[ris]. {Tale- Porter},
+2092  *and fiue or six honest Wiues, that were present.
+2093   Why should I carry lyes abroad?
+2094   <S {Mop}.> 'Pray you now buy it.
+2095  *<S {Clo}.> Come- on, lay it by: and let's first see moe Bal-lads:
+2096   Wee'l buy the other things anon.
+2097  *<S {Aut}.> Here's another ballad of a Fish, that appeared
+2098  *vpon the coast, on wensday the fourescore of April, fortie
+2099  *thousand fadom aboue water, & sung this ballad against
+2100  *the hard hearts of maids: it was thought she was a Wo-man,
+2101  *and was turn'd into a cold fish, for she wold not ex-change
+2102  *flesh with one that lou'd her: The Ballad is very
+2103   pittifull, and as true.
+2104   <S {Dor}.> Is it true too, thinke you.
+2105  *<S {Autol}.> Fiue Iustices hands at it, and witnesses more
+2106   then my packe will hold.
+2107   <S {Clo}.> Lay it by too; another.
+2108   <S {Aut}.> This is a merry ballad, but a very pretty one.
+2109   <S {Mop}.> Let's haue some merry ones.
+2110  *<S {Aut}.> Why this is a passing merry one, and goes to the
+2111  *tune of two maids wooing a man: there's scarse a Maide
+2112   westward but she sings it: 'tis in request, I can tell you.
+2113  *<S {Mop}.> We can both sing it: if thou'lt beare a part, thou
+2114   shalt heare, 'tis in three parts.
+2115   <S {Dor}.> We had the tune on't, a month agoe.
+2116  *<S {Aut}.> I can beare my part, you must know 'tis my oc-cupation:
+2117   Haue at it with you:
+2118   <D Song> {Get you hence, for I must goe}
+2119   <S Aut.> {Where it fits not you to know}.
+2120   <S Dor.> {Whether?}
+2121   <S Mop.> {O whether?}
+2122   <S Dor.> {Whether?}
+2123   <S Mop.> {It becomes thy oath full well},
+2124   {Thou to me thy secrets tell}.
+2125   <S Dor:> {Me too: Let me go thether:}
+2126   <S Mop:> {Or thou goest to th' Grange, or Mill},
+2127   <S Dor:> {If to either thou dost #ill},
+2128   <S Aut:> {Neither}.
+2129   <S Dor:> {What neither?}
+2130   <S Aut:> {Neither:}
+2131   <S Dor:> {Thou hast sworne my Loue to be},
+2132   <S Mop:> {Thou hast sworne it more to mee}.
+2133   {Then whether goest? Say whether?}
+2134  *<S {Clo}.> Wee'l haue this song out anon by our selues: My
+2135  *Father, and the Gent. are in sad talke, & wee'll not trouble
+2136  *them: Come bring away thy pack after me, Wenches Ile
+2137  *buy for you both: Pedler let's haue the first choice; folow
+2138   me girles. <S {Aut}.> And you shall pay well for 'em.
+2139   <D Song.> {Will you buy any Tape, or Lace for your Cape?}
+2140   {My dainty Ducke, my deere- a?}
+2141   {Any Silke, any Thred, any Toyes for your head}
+2142   {Of the news't, and fins't, fins't weare- a}.
+2143   {Come to the Pedler, Money's a medler},
+2144   {That doth vtter all mens ware- a}.  <D {Exit}>
+2145  *<S {Seruant}.> Mayster, there is three Carters, three Shep-herds,
+2146  *three Neat- herds, three Swine- herds y haue made
+      <P Bb3v>
+2147  *themselues all men of haire, they cal themselues Saltiers,
+2148  *and they haue a Dance, which the Wenches say is a gal-ly- maufrey
+2149  *of Gambols, because they are not in't: but
+2150  *they themselues are o'th' minde (if it bee not too rough
+2151  *for some, that know little but bowling) it will please
+2152   plentifully.
+2153  *<S {Shep}.> Away: Wee'l none on't; heere has beene too
+2154  *much homely foolery already. I know (Sir) wee wea-rie
+2155   you.
+2156  *<S {Pol}.> You wearie those that refresh vs: pray let's see
+2157   these foure- threes of Heardsmen.
+2158  *<S {Ser}.> One three of them, by their owne report (Sir,)
+2159  *hath danc'd before the King: and not the worst of the
+2160   three, but iumpes twelue foote and a halfe by th' squire.
+2161  *<S {Shep}.> Leaue your prating, since these good men are
+2162   pleas'd, let them come in: but quickly now.
+2163   <S {Ser}.> Why, they stay at doore Sir.
+2164   <D {Heere a Dance of twelue Satyres}.>
+2165   <S {Pol}.> O Father, you'l know more of that heereafter:
+2166   Is it not too farre gone? 'Tis time to part them,
+2167  *He's simple, and tels much. How now (faire shepheard)
+2168   Your heart is full of something, that do's take
+2169   Your minde from feasting. Sooth, when I was yong,
+2170   And handed loue, as you do; I was wont
+2171   To load my #Shee with knackes: I would haue ransackt
+2172   The Pedlers silken Treasury, and haue powr'd it
+2173   To her acceptance: you haue let him go,
+2174   And nothing marted with him. If your Lasse
+2175   Interpretation should abuse, and call this
+2176   Your lacke of loue, or bounty, you were straited
+2177   For a reply at least, if you make a care
+2178   Of happie holding her.
+2179   <S {Flo}.> Old Sir, I know
+2180   She prizes not such trifles as these are:
+2181   The gifts she lookes from me, are packt and lockt
+2182   Vp in my heart, which I haue giuen already,
+2183   But not deliuer'd. O heare me breath my life
+2184   Before this ancient #Sir, whom (it should seeme)
+2185   Hath sometime lou'd: I take thy hand, this hand,
+2186   As soft as Doues- downe, and as white as it,
+2187   Or Ethyopians tooth, or the fan'd snow, that's bolted
+2188   By th' Northerne blasts, twice ore.
+2189   <S {Pol}.> What followes this?
+2190   How prettily th' yong Swaine seemes to wash
+2191   The hand, was faire before? I haue put you out,
+2192   But to your protestation: Let me heare
+2193   What you professe.
+2194   <S {Flo}.> Do, and be witnesse too't.
+2195   <S {Pol}.> And this my neighbour too?
+2196   <S {Flo}.> And he, and more
+2197   Then he, and men: the earth, the heauens, and all;
+2198   That were I crown'd the most Imperiall Monarch
+2199   Thereof most worthy: were I the fayrest youth
+2200   That euer made eye swerue, had force and knowledge
+2201   More then was euer mans, I would not prize them
+2202   Without her Loue; for her, employ them all,
+2203   Commend them, and condemne them to her seruice,
+2204   Or to their owne perdition.
+2205   <S {Pol}.> Fairely offer'd.
+2206   <S {Cam}.> This shewes a sound affection.
+2207   <S {Shep}.> But my daughter,
+2208   Say you the like to him.
+2209   <S {Per}.> I cannot speake
+2210   So well,  (nothing so well) no, nor meane better
+2211   By th' patterne of mine owne thoughts, I cut out
+2212   The puritie of his.
+2213   <S {Shep}.> Take hands, a bargaine;
+2214   And friends vnknowne, you shall beare witnesse to't:
+2215   I giue my daughter to him, and will make
+2216   Her Portion, equall his.
+2217   <S {Flo}.> O, that must bee
+2218   I'th Vertue of your daughter: One being dead,
+2219   I shall haue more then you can dreame of yet,
+2220   Enough then for your wonder: but come- on,
+2221   Contract vs fore these Witnesses.
+2222   <S {Shep}.> Come, your hand:
+2223   And daughter, yours.
+2224   <S {Pol}.> Soft Swaine a- while, beseech you,
+2225   Haue you a Father?
+2226   <S {Flo}.> I haue: but what of him?
+2227   <S {Pol}.> Knowes he of this?
+2228   <S {Flo}.> He neither do's, nor shall.
+2229   <S {Pol}.> Me- thinkes a Father,
+2230   Is at the Nuptiall of his sonne, a guest
+2231   That best becomes the Table: Pray you once more
+2232   Is not your Father growne incapeable
+2233   Of reasonable affayres? Is he not stupid
+2234  *With Age, and altring Rheumes? Can he speake? heare?
+2235   Know man, from man? Dispute his owne estate?
+2236   Lies he not bed- rid? And againe, do's nothing
+2237   But what he did, being childish?
+2238   <S {Flo}.> No good Sir:
+2239   He has his health, and ampler strength indeede
+2240   Then most haue of his age.
+2241   <S {Pol}.> By my white beard,
+2242   You offer him (if  this be so) a wrong
+2243   Something vnfilliall: Reason my sonne
+2244   Should choose himselfe a wife, but as good reason
+2245   The Father (all whose ioy is nothing else
+2246   But faire posterity) should hold some counsaile
+2247   In such a businesse.
+2248   <S {Flo}.> I yeeld all this;
+2249   But for some other reasons (my graue Sir)
+2250   Which 'tis not fit you know, I not acquaint
+2251   My Father of this businesse.
+2252   <S {Pol}.> Let him know't.
+2253   <S {Flo}.> He shall not.
+2254   <S {Pol}.> Prethee let him.
+2255   <S {Flo}.> No, he must not.
+2256  *<S {Shep}.> Let him (my sonne) he shall not need to greeue
+2257   At knowing of thy choice.
+2258   <S {Flo}.> Come, come, he must not:
+2259   Marke our Contract.
+2260   <S {Pol}.> Marke your diuorce (yong sir)
+2261   Whom sonne I dare not call: Thou art too base
+2262   To be acknowledge. Thou a Scepters heire,
+2263   That thus affects a sheepe- hooke? Thou, old Traitor,
+2264   I am sorry, that by hanging thee, I can
+2265   But shorten thy life one weeke. And thou, fresh peece
+2266   Of excellent Witchcraft, whom of force must know
+2267   The royall Foole thou coap'st with.
+2268   <S {Shep}.> Oh my heart.
+2269  *<S {Pol}.> Ile haue thy beauty scratcht with briers & made
+2270   More homely then thy state. For thee (fond boy)
+2271   If I may euer know thou dost but sigh,
+2272   That thou no more shalt neuer see this knacke (as neuer
+2273   I meane thou shalt) wee'l barre thee from succession,
+2274   Not hold thee of our blood, no not our Kin,
+2275   Farre then {Deucalion} off:  (marke thou my words)
+2276   Follow vs to the Court. Thou Churle, for this time
+2277   (Though full of our displeasure) yet we free thee
+2278   From the dead blow of it. And you Enchantment,
+      <P Bb4>
+2279   Worthy enough a Heardsman: yea him too,
+2280   That makes himselfe (but for our Honor therein)
+2281   Vnworthy thee. If euer henceforth, thou
+2282   These rurall Latches, to his entrance open,
+2283   Or hope his body more, with thy embraces,
+2284   I will deuise a death, as cruell for thee
+2285   As thou art tender to't.  <D {Exit}.>
+2286   <S {Perd}.> Euen heere vndone:
+2287   I was not much a- fear'd: for once, or twice
+2288   I was about to speake, and tell him plainely,
+2289   The selfe- same Sun, that shines vpon his Court,
+2290   Hides not his visage from our Cottage, but
+2291   Lookes on alike. #Wilt please you (Sir) be gone?
+2292   I told you what would come of this: Beseech you
+2293   Of your owne state take care: This dreame of mine
+2294   Being now awake, Ile Queene it no inch farther,
+2295   But milke my Ewes, and weepe.
+2296   <S {Cam}.> Why how now Father,
+2297   Speake ere thou dyest.
+2298   <S {Shep}.> I cannot speake, nor thinke,
+2299   Nor dare to know, that which I know: O Sir,
+2300   You haue vndone a man of fourescore three,
+2301   That thought to fill his graue in quiet: yea,
+2302   To dye vpon the bed my father dy'de,
+2303   To lye close by his honest bones; but now
+2304   Some Hangman must put on my shrowd, and lay me
+2305   Where no Priest shouels- in dust. Oh cursed wretch,
+2306  *That knew'st this was the Prince, and wouldst aduenture
+2307   To mingle faith with him. Vndone, vndone:
+2308   If I might dye within this houre, I haue liu'd
+2309   To die when I desire.  <D {Exit}.>
+2310   <S {Flo}.> Why looke you so vpon me?
+2311   I am but sorry, not affear'd: delaid,
+2312   But nothing altred: What I was, I am:
+2313   More straining on, for plucking backe; not following
+2314   My leash vnwillingly.
+2315   <S {Cam}.> Gracious my Lord,
+2316   You know my Fathers temper: at this time
+2317   He will allow no speech: (which I do ghesse
+2318   You do not purpose  to him:) and as hardly
+2319   Will he endure your sight, as yet I feare;
+2320   Then till the fury of his Highnesse settle
+2321   Come not before him.
+2322   <S {Flo}.> I not purpose it:
+2323   I thinke {Camillo}.
+2324   <S {Cam}.> Euen he, my Lord.
+2325   <S {Per}.> How often haue I told you 'twould be thus?
+2326   How often said my dignity would last
+2327   But till 'twer knowne?
+2328   <S {Flo}.> It cannot faile, but by
+2329   The violation of my faith, and then
+2330   Let Nature crush the sides o'th earth together,
+2331   And marre the seeds within. Lift vp thy lookes:
+2332   From my succession wipe me (Father) I
+2333   Am heyre to my affection.
+2334   <S {Cam}.> Be aduis'd.
+2335   <S {Flo}.> I am: and by my fancie, if my Reason
+2336   Will thereto be obedient: I haue reason:
+2337   If not, my sences better pleas'd with madnesse,
+2338   Do bid it welcome.
+2339   <S {Cam}.> This is desperate (sir.)
+2340   <S {Flo}.> So call it: but it do's fulfill my vow:
+2341   I needs must thinke it honesty. {Camillo},
+2342   Not for {Bohemia}, nor the pompe that may
+2343   Be thereat gleaned: for all the Sun sees, or
+2344   The close earth wombes, or the profound seas, hides
+2345   In vnknowne fadomes, will I breake my oath
+2346   To this my faire belou'd: Therefore, I pray you,
+2347   As you haue euer bin my Fathers honour'd friend,
+2348   When he shall misse me, as (in  faith I meane not
+2349   To see him any more) cast your good counsailes
+2350   Vpon his passion: Let my selfe, and Fortune
+2351   Tug for the time to come. This you may know,
+2352   And so deliuer, I am put to Sea
+2353   With her, who heere I cannot hold on shore:
+2354   And most opportune to her neede, I haue
+2355   A Vessell rides fast by, but not prepar'd
+2356   For this designe. What course I meane to hold
+2357   Shall nothing benefit your knowledge, nor
+2358   Concerne me the reporting.
+2359   <S {Cam}.> O my Lord,
+2360   I would your spirit were easier for aduice,
+2361   Or stronger for your neede.
+2362   <S {Flo}.> Hearke {Perdita},
+2363   Ile heare you #by and by.
+2364   <S {Cam}.> Hee's irremoueable,
+2365   Resolu'd for flight: Now were I happy if
+2366   His going, I could frame to serue my turne,
+2367   Saue him from danger, do him loue and honor,
+2368   Purchase the sight againe of deere Sicillia,
+2369   And that vnhappy King, my Master, whom
+2370   I so much thirst to see.
+2371   <S {Flo}.> Now good {Camillo},
+2372   I am so fraught with curious businesse, that
+2373   I leaue out ceremony.
+2374   <S {Cam}.> Sir, I thinke
+2375   You haue heard of my poore seruices, i'th loue
+2376   That I haue borne your Father?
+2377   <S {Flo}.> Very nobly
+2378   Haue you deseru'd: It is my Fathers Musicke
+2379   To speake your deeds: not little of his care
+2380   To haue them recompenc'd, as thought on.
+2381   <S {Cam}.> Well (my  Lord)
+2382   If you may please to thinke I loue the King,
+2383   And through him, what's neerest to him, which is
+2384   Your gracious selfe; embrace but my direction,
+2385   If your more ponderous and setled proiect
+2386   May suffer alteration. On mine honor,
+2387   Ile point you where you shall haue such receiuing
+2388   As shall become your Highnesse, where you may
+2389   Enioy your Mistris; from the whom, I see
+2390   There's no disiunction to be made, but by
+2391   (As heauens forefend) your ruine: Marry her,
+2392   And with my best endeuours, in your absence,
+2393   Your discontenting Father, striue to qualifie
+2394   And bring him vp to liking.
+2395   <S {Flo}.> How {Camillo}
+2396   May this (almost a miracle) be done?
+2397   That I may call thee something more then man,
+2398   And after that trust to thee.
+2399   <S {Cam}.> Haue you thought on
+2400   A place whereto you'l go?
+2401   <S {Flo}.> Not any yet:
+2402   But as th' vnthought- on accident is guiltie
+2403   To what we wildely do, so we professe
+2404   Our selues to be the slaues of chance, and flyes
+2405   Of euery winde that blowes.
+2406   <S {Cam}.> Then list to me:
+2407   This followes, if you will not change your purpose
+2408   But vndergo this flight: make for Sicillia,
+2409   And there present your selfe, and your fayre Princesse,
+2410   (For so I see she must be) 'fore {Leontes};
+      <P Bb4v><C A>
+2411   She shall be habited, as it becomes
+2412   The partner of your Bed. Me thinkes I see
+2413   {Leontes} opening his free Armes, and weeping
+2414   His Welcomes forth: asks thee there Sonne forgiuenesse,
+2415   As 'twere i'th' Fathers person: kisses the hands
+2416   Of your fresh Princesse; ore and ore diuides him,
+2417   'Twixt his vnkindnesse, and his Kindnesse: th' one
+2418   He chides to #Hell, and bids the other grow
+2419   Faster then Thought, or Time.
+2420   <S {Flo}.> Worthy {Camillo},
+2421   What colour for my Visitation, shall I
+2422   Hold vp before him?
+2423   <S {Cam}.> Sent by the King your Father
+2424   To greet him, and to giue him comforts. Sir,
+2425   The manner of your bearing towards him, with
+2426   What you (as from your Father) shall deliuer,
+2427   Things knowne betwixt vs three, Ile write you downe,
+2428   The which shall point you forth at euery sitting
+2429   What you must say: that he shall not perceiue,
+2430   But that you haue your Fathers Bosome there,
+2431   And speake his very Heart.
+2432   <S {Flo}.> I am bound to you:
+2433   There is some sappe in this.
+2434   <S {Cam}.> A Course more promising,
+2435   Then a wild dedication of your selues
+2436   To vnpath'd Waters, vndream'd Shores; most certaine,
+2437   To Miseries enough: no hope to helpe you,
+2438   But as you shake off one, to take another:
+2439   Nothing so certaine, as your Anchors, who
+2440   Doe their best office, if they can but stay you,
+2441   Where you'le be loth to be: besides you know,
+2442   Prosperitie's the very bond of Loue,
+2443   Whose fresh complexion, and whose heart together,
+2444   Affliction alters.
+2445   <S {Perd}.> One of these is true:
+2446   I thinke Affliction may subdue the Cheeke,
+2447   But not take- in the Mind.
+2448   <S {Cam}.> Yea? say you so?
+2449  *There shall not, at your Fathers House, these seuen yeeres
+2450   Be borne another such.
+2451   <S {Flo}.> My good {Camillo},
+2452   She's as forward, of her Breeding, as
+2453   She is i'th' reare' our Birth.
+2454   <S {Cam}.> I cannot say, 'tis pitty
+2455   She lacks Instructions, for she seemes a Mistresse
+2456   To most that teach.
+2457   <S {Perd}.> Your pardon Sir, for this,
+2458   Ile blush you Thanks.
+2459   <S {Flo}.> My prettiest {Perdita}.
+2460   But O, the Thornes we stand vpon: ({Camillo})
+2461   Preseruer of my Father, now of me,
+2462   The Medicine of our House: how shall we doe?
+2463   We are not furnish'd like {Bohemia's} Sonne,
+2464   Nor shall appeare in {Sicilia}.
+2465   <S {Cam}.> My Lord,
+2466   Feare none of this: I thinke you know my fortunes
+2467   Doe all lye there: it shall be so my care,
+2468   To haue you royally appointed, as if
+2469   The Scene you play, were mine. For instance Sir,
+2470   That you may know you shall not want: one word.
+2471   <D {Enter Autolicus}.>
+2472  *<S {Aut}.> Ha, ha, what a Foole Honestie is? and Trust (his
+2473  *sworne brother) a very simple Gentleman. I haue sold
+2474  *all my Tromperie: not a counterfeit Stone, not a Ribbon,
+2475  *Glasse, Pomander, Browch, Table- booke, Ballad, Knife,
+2476  *Tape, Gloue, Shooe- tye, Bracelet, Horne- Ring, to keepe
+2477  *my Pack from fasting: they throng who should buy first,
+2478  *as if my Trinkets had beene hallowed, and brought a be-nediction
+2479  *to the buyer: by which meanes, I saw whose
+2480  *Purse was best in Picture; and what I saw, to my good
+2481  *vse, I remembred. My Clowne (who wants but some-thing
+2482  *to be a reasonable man) grew so in loue with the
+2483  *Wenches Song, that hee would not stirre his Petty- toes,
+2484  *till he had both Tune and Words, which so drew the rest
+2485  *of the Heard to me, that all their other Sences stucke in
+2486  *Eares: you might haue pinch'd a Placket, it was sence-lesse;
+2487  *'twas nothing to gueld a Cod- peece of a Purse: I
+2488  *would haue fill'd Keyes of that hung in Chaynes: no
+2489  *hearing, no feeling, but my Sirs Song, and admiring the
+2490  *Nothing of it. So that in this time of Lethargie, I pickd
+2491  *and cut most of their Festiuall Purses: And had not the
+2492  *old- man come in with a Whoo- bub against his Daugh-ter,
+2493  *and the Kings Sonne, and scar'd my Chowghes from
+2494  *the Chaffe, I had not left a Purse aliue in the whole
+2495   Army.
+2496  *<S {Cam}.> Nay, but my Letters by this meanes being there
+2497   So soone as you arriue, shall cleare that doubt.
+2498  *<S {Flo}.> And those that you'le procure from King {Leontes}?
+2499   <S {Cam}.> Shall satisfie your Father.
+2500   <S {Perd}.> Happy be you:
+2501   All that you speake, shewes faire.
+2502   <S {Cam}.> Who haue we here?
+2503   Wee'le make an Instrument of this: omit
+2504   Nothing may giue vs aide.
+2505  *<S {Aut}.> If they haue ouer- heard me now: why hanging.
+2506   <S {Cam}.> How now (good Fellow)
+2507   Why shak'st thou so? Feare not (man)
+2508   Here's no harme intended to thee.
+2509   <S {Aut}.> I am a poore Fellow, Sir.
+2510  *<S {Cam}.> Why, be so still: here's no body will steale that
+2511  *from thee: yet for the out- side of thy pouertie, we must
+2512  *make an exchange; therefore dis- case thee instantly (thou
+2513  *must thinke there's a necessitie in't) and change Garments
+2514  *with this Gentleman: Though the penny- worth (on his
+2515   side) be the worst, yet hold thee, there's some boot.
+2516  *<S {Aut}.> I am a poore Fellow, Sir: (I know ye well
+2517   enough.)
+2518  *<S {Cam}.> Nay prethee dispatch: the Gentleman is halfe
+2519   fled already.
+2520  *<S {Aut}.> Are you in earnest, Sir? (I smell the trick on't.)
+2521   <S {Flo}.> Dispatch, I prethee.
+2522  *<S {Aut}.> Indeed I haue had Earnest, but I cannot with
+2523   conscience take it.
+2524   <S {Cam}.> Vnbuckle, vnbuckle.
+2525   Fortunate Mistresse (let my prophecie
+2526   Come home to ye:) you must retire your selfe
+2527   Into some Couert; take your sweet- hearts Hat
+2528   And pluck it ore your Browes, muffle your face,
+2529   Dis- mantle you, and (as you can) disliken
+2530   The truth of your owne seeming, that you may
+2531   (For I doe feare eyes ouer) to Ship- boord
+2532   Get vndescry'd.
+2533   <S {Perd}.> I see the Play so lyes,
+2534   That I must beare a part.
+2535   <S {Cam}.> No remedie:
+2536   Haue you done there?
+2537   <S {Flo}.> Should I now meet my Father,
+2538   He would not call me Sonne.
+2539   <S {Cam}.> Nay, you shall haue no Hat:
+2540   Come Lady, come: Farewell (my  friend.)
+2541   <S {Aut}.> Adieu, Sir.
+2542   <S {Flo}.> O {Perdita}: what haue we twaine forgot?
+      <P Bb5>
+2543   'Pray you a word.
+2544   <S {Cam}.> What I doe next, shall be to tell the King
+2545   Of this escape, and whither they are bound;
+2546   Wherein, my hope is, I shall so preuaile,
+2547   To force him after: in whose company
+2548   I shall re- view {Sicilia}; for whose sight,
+2549   I haue a Womans Longing.
+2550   <S {Flo}.> Fortune speed vs:
+2551   Thus we set on ({Camillo}) to th' Sea- side.
+2552   <S {Cam}.> The swifter speed, the better.  <D {Exit}.>
+2553  *<S {Aut}.> I vnderstand the businesse, I heare it: to haue an
+2554  *open eare, a quick eye, and a nimble hand, is necessary for
+2555  *a Cut- purse; a good Nose is requisite also, to smell out
+2556  *worke for th' other Sences. I see this is the time that the
+2557  *vniust man doth thriue. What an exchange had this been,
+2558  *without boot? What a boot is here, with this exchange?
+2559  *Sure the Gods doe this yeere conniue at vs, and we may
+2560  *doe any thing extempore. The Prince himselfe is about
+2561  *a peece of Iniquitie (stealing away from his Father, with
+2562  *his Clog at his heeles:) if I thought it were a peece of ho-nestie
+2563  *to acquaint the King withall, I would not do't: I
+2564  *hold it the more knauerie to conceale it; and therein am
+2565   I constant to my Profession.
+2566   <D {Enter Clowne and Shepheard}.>
+2567  *Aside, aside, here is more matter for a hot braine: Euery
+2568  *Lanes end, euery Shop, Church, Session, Hanging, yeelds
+2569   a carefull man worke.
+2570  *<S {Clowne}.> See, see: what a man you are now? there is no
+2571  *other way, but to tell the King she's a Changeling, and
+2572   none of your flesh and blood.
+2573   <S {Shep}.> Nay, but heare me.
+2574   <S {Clow}.> Nay; but heare me.
+2575   <S {Shep}.> Goe #too then.
+2576  *<S {Clow}.> She being none of your flesh and blood, your
+2577  *flesh and blood ha's not offended the King, and so your
+2578  *flesh and blood is not to be punish'd by him. Shew those
+2579  *things you found about her (those secret things, all but
+2580  *what she ha's with her:) This being done, let the Law goe
+2581   whistle: I warrant you.
+2582  *<S {Shep}.> I will tell the King all, euery word, yea, and his
+2583  *Sonnes prancks too; who, I may say, is no honest man,
+2584  *neither to his Father, nor to me, to goe about to make me
+2585   the Kings Brother in Law.
+2586  *<S {Clow}.> Indeed Brother in Law was the farthest off you
+2587  *could haue beene to him, and then your Blood had beene
+2588   the dearer, by I know how much an ounce.
+2589   <S {Aut}.> Very wisely (Puppies.)
+2590  *<S {Shep}.> Well: let vs to the King: there is that in this
+2591   Farthell, will make him scratch his Beard.
+2592  *<S {Aut}.> I know not what impediment this Complaint
+2593   may be to the flight of my Master.
+2594   <S {Clo}.> 'Pray heartily he be #at' Pallace.
+2595  *<S {Aut}.> Though I am not naturally honest, I am so some-times
+2596  *by chance: Let me pocket vp my Pedlers excre-ment.
+2597   How now (Rustiques) whither are you bound?
+2598   <S {Shep}.> To th' Pallace (#and it like your Worship.)
+2599  *<S {Aut}.> Your Affaires there? what? with whom? the
+2600  *Condition of that Farthell? the place of your dwelling?
+2601  *your names? your ages? of what #hauing? breeding, and
+2602   any thing that is fitting to be knowne, discouer?
+2603   <S {Clo}.> We are but plaine fellowes, Sir.
+2604  *<S {Aut}.> A Lye; you are rough, and hayrie: Let me haue
+2605  *no lying; it becomes none but Trades- men, and they of-ten
+2606  *giue vs (Souldiers) the Lye, but wee pay them for it
+2607  *with stamped Coyne, not stabbing Steele, therefore they
+2608   doe not giue vs the Lye.
+2609  *<S {Clo}.> Your Worship had like to haue giuen vs one, if
+2610   you had not taken your selfe with the manner.
+2611   <S {Shep}.> Are you a Courtier, and't like you Sir?
+2612  *<S {Aut}.> Whether it like me, or no, I am a Courtier. Seest
+2613  *thou not the ayre of the Court, in these enfoldings? Hath
+2614  *not my gate in it, the measure of the Court? Receiues not
+2615  *thy Nose Court- Odour from me? Reflect I not on thy
+2616  *Basenesse, Court- Contempt? Think'st thou, for that I
+2617  *insinuate, at toaze from thee thy Businesse, I am there-fore
+2618  *no Courtier? I am Courtier {Cap-a-pe}; and one that
+2619  *will eyther push- on, or pluck- back, thy Businesse there:
+2620   whereupon I command thee to open thy Affaire.
+2621   <S {Shep}.> My Businesse, Sir, is to the King.
+2622   <S {Aut}.> What Aduocate ha'st thou to him?
+2623   <S {Shep}.> I know not (and't like you.)
+2624  *<S {Clo}.> Aduocate's the Court- word for a Pheazant: say
+2625   you haue none.
+2626   <S {Shep}.> None, Sir: I haue no Pheazant Cock, nor Hen.
+2627   <S {Aut}.> How blessed are we, that are not simple men?
+2628   Yet Nature might haue made me as these are,
+2629   Therefore I will not disdaine.
+2630   <S {Clo}.> This cannot be but a great Courtier.
+2631  *<S {Shep}.> His Garments are rich, but he weares them not
+2632   handsomely.
+2633  *<S {Clo}.> He seemes to be the more Noble, in being fanta-sticall:
+2634  *A great man, Ile warrant; I know by the picking
+2635   on's Teeth.
+2636  *<S {Aut}.> The Farthell there? What's i'th' Farthell?
+2637   Wherefore that Box?
+2638  *<S {Shep}.> Sir, there lyes such Secrets in this Farthell and
+2639  *Box, which none must know but the King, and which hee
+2640  *shall know within this houre, if I may come to th' speech
+2641   of him.
+2642   <S {Aut}.> Age, thou hast lost thy labour.
+2643   <S {Shep}.> Why Sir?
+2644  *<S {Aut}.> The King is not at the Pallace, he is gone aboord
+2645  *a new Ship, to purge Melancholy, and ayre himselfe: for
+2646  *if thou bee'st capable of things serious, thou must know
+2647   the King is full of griefe.
+2648  *<S {Shep}.> So 'tis said (Sir:) about his Sonne, that should
+2649   haue marryed a Shepheards Daughter.
+2650  *<S {Aut}.> If that Shepheard be not in hand- fast, let him
+2651  *flye; the Curses he shall haue, the Tortures he shall feele,
+2652   will breake the back of Man, the heart of Monster.
+2653   <S {Clo}.> Thinke you so, Sir?
+2654  *<S {Aut}.> Not hee alone shall suffer what Wit can make
+2655  *heauie, and Vengeance bitter; but those that are Iermaine
+2656  *to him (though remou'd fiftie times) shall all come vnder
+2657  *the Hang- man: which, though it be great pitty, yet it is
+2658  *necessarie. An old Sheepe- whistling Rogue, a Ram- ten-der,
+2659  *to offer to haue his Daughter come into grace? Some
+2660  *say hee shall be ston'd: but that death is too soft for him
+2661  *(say I:) Draw our Throne into a Sheep- Coat? all deaths
+2662   are too few, the sharpest too easie.
+2663  *<S {Clo}.> Ha's the old- man ere a Sonne Sir (doe you heare)
+2664   and't like you, Sir?
+2665  *<S {Aut}.> Hee ha's a Sonne: who shall be flayd aliue, then
+2666  *'noynted ouer with Honey, set on the head of a Waspes
+2667  *Nest, then stand till he be three quarters and a dram dead:
+2668  *then recouer'd againe with Aquavite, or some other hot
+2669  *Infusion: then, raw as he is (and in the hotest day Progno-stication
+2670  *proclaymes) shall he be set against a Brick- wall,
+2671  *(the Sunne looking with a South- ward eye vpon him;
+2672  *where hee is to behold him, with Flyes blown to death.)
+2673  *But what talke we of these Traitorly- Rascals, whose mi-series
+2674  *are to be smil'd at, their offences being so capitall?
+      <P Bb5v>
+2675  *Tell me (for you seeme to be honest plaine men) what you
+2676  *haue to the King: being something gently consider'd, Ile
+2677  *bring you where he is aboord, tender your persons to his
+2678  *presence, whisper him in your behalfes; and if it be in
+2679  *man, besides the King, to effect your Suites, here is man
+2680   shall doe it.
+2681  *<S {Clow}.> He seemes to be of great authoritie: close with
+2682  *him, giue him Gold; and though Authoritie be a stub-borne
+2683  *Beare, yet hee is oft led by the Nose with Gold:
+2684  *shew the in- side of your Purse to the out- side of his
+2685  *hand, and no more adoe. Remember ston'd, and flay'd
+2686   aliue.
+2687  *<S {Shep}.> And't please you (Sir) to vndertake the Businesse
+2688  *for vs, here is that Gold I haue: Ile make it as much
+2689  *more, and leaue this young man in pawne, till I bring it
+2690   you.
+2691   <S {Aut}.> After I haue done what I promised?
+2692   <S {Shep}.> #I Sir.
+2693  *<S {Aut}.> Well, giue me the Moitie: Are you a partie in
+2694   this Businesse?
+2695  *<S {Clow}.> In some sort, Sir: but though my case be a pit-tifull
+2696   one, I hope I shall not be flayd out of it.
+2697  *<S {Aut}.> Oh, that's the case of the Shepheards Sonne:
+2698   hang him, hee'le be made an example.
+2699  *<S {Clow}.> Comfort, good comfort: We must to the King,
+2700  *and shew our strange sights: he must know 'tis none of
+2701  *your Daughter, nor my Sister: wee are gone else. Sir, I
+2702  *will giue you as much as this old man do's, when the Bu-sinesse
+2703  *is performed, and remaine (as he sayes) your pawne
+2704   till it be brought you.
+2705  *<S {Aut}.> I will trust you. Walke before toward the Sea-side,
+2706  *goe on the right hand, I will but looke vpon the
+2707   Hedge, and follow you.
+2708  *<S {Clow}.> We are bless'd, in this man: as I may say, euen
+2709   bless'd.
+2710  *<S {Shep}.> Let's before, as he bids vs: he was prouided to
+2711   doe vs good.
+2712  *<S {Aut}.> If I had a mind to be honest, I see {Fortune} would
+2713  *not suffer mee: shee drops Booties in my mouth. I am
+2714  *courted now with a double occasion: (Gold, and a means
+2715  *to doe the Prince my Master good; which, who knowes
+2716  *how that may turne backe to my aduancement?) I will
+2717  *bring these two Moales, these blind- ones, aboord him: if
+2718  *he thinke it fit to shoare them againe, and that the Com-plaint
+2719  *they haue to the King, concernes him nothing, let
+2720  *him call me Rogue, for being so farre officious, for I am
+2721  *proofe against that Title, and what shame else belongs
+2722  *to't: To him will I present them, there may be matter in
+2723   it.  <D {Exeunt}.>
+2724   <Z {Actus Quintus. Scena Prima}.>
+2725   <D {Enter Leontes, Cleomines, Dion, Paulina, Seruants}:
+2726   {Florizel, Perdita}.>
+2727   <S {Cleo}.> Sir, you haue done enough, and haue perform'd
+2728   A Saint- like Sorrow: No fault could you make,
+2729   Which you haue not redeem'd; indeed pay'd downe
+2730   More penitence, then done trespas: At the last
+2731   Doe, as the Heauens haue done; forget your euill,
+2732   With them, forgiue your selfe.
+2733   <S {Leo}.> Whilest I remember
+2734   Her, and her Vertues, I cannot forget
+2735   My blemishes in them, and so still thinke of
+2736   The wrong I did my selfe: which was so much,
+2737   That Heire- lesse it hath made my Kingdome, and
+2738   Destroy'd the sweet'st Companion, that ere man
+2739   Bred his hopes out of, true.
+2740   <S {Paul}.> Too true (my Lord:)
+2741   If one by one, you wedded all the World,
+2742   Or from the All that are, tooke something good,
+2743   To make a perfect Woman; she you kill'd,
+2744   Would be vnparallell'd.
+2745   <S {Leo}.> I thinke so. Kill'd?
+2746   She I kill'd? I did so: but thou strik'st me
+2747   Sorely, to say I did: it is as bitter
+2748  *Vpon thy Tongue, as in my Thought. Now, good now,
+2749   Say so but seldome.
+2750   <S {Cleo}.> Not at all, good Lady:
+2751   You might haue spoken a thousand things, that would
+2752   Haue done the time more benefit, and grac'd
+2753   Your kindnesse better.
+2754   <S {Paul}.> You are one of those
+2755   Would haue him wed againe.
+2756   <S {Dio}.> If you would not so,
+2757   You pitty not the State, nor the Remembrance
+2758   Of his most Soueraigne Name: Consider little,
+2759   What Dangers, by his Highnesse faile of Issue,
+2760   May drop vpon his Kingdome, and deuoure
+2761   Incertaine lookers on. What were more holy,
+2762   Then to reioyce the former Queene is well?
+2763   What holyer, then for Royalties repayre,
+2764   For present comfort, and for future good,
+2765   To blesse the Bed of Maiestie againe
+2766   With a sweet Fellow to't?
+2767   <S {Paul}.> There is none worthy,
+2768   (Respecting her that's gone:) besides the Gods
+2769   Will haue fulfill'd their secret purposes:
+2770   For ha's not the Diuine {Apollo} said?
+2771   Is't not the tenor of his Oracle,
+2772   That King {Leontes} shall not haue an Heire,
+2773   Till his lost Child be found? Which, that it shall,
+2774   Is all as monstrous to our humane reason,
+2775   As my {Antigonus} to breake his Graue,
+2776   And come againe to me: who, on my life,
+2777   Did perish with the Infant. 'Tis your councell,
+2778   My Lord should to the Heauens be contrary,
+2779   Oppose against their wills. Care not for Issue,
+2780   The Crowne will find an Heire. Great {Alexander}
+2781   Left his to th' Worthiest: so his Successor
+2782   Was like to be the best.
+2783   <S {Leo}.> Good {Paulina},
+2784   Who hast the memorie of {Hermione}
+2785   I know in honor: O, that euer I
+2786   Had squar'd me to thy councell: then, euen now,
+2787   I might haue look'd vpon my Queenes full eyes,
+2788   Haue taken Treasure from her Lippes.
+2789   <S {Paul}.> And left them
+2790   More rich, for what they yeelded.
+2791   <S {Leo}.> Thou speak'st truth:
+2792   No more such Wiues, therefore no Wife: one worse,
+2793   And better vs'd, would make her Sainted Spirit
+2794   Againe possesse her Corps, and on this Stage
+2795   (Where we Offendors now appeare) Soule- vext,
+2796   And begin, why to me?
+2797   <S {Paul}.> Had she such power,
+2798   She had iust such cause.
+2799   <S {Leo}.> She had, and would incense me
+2800   To murther her I marryed.
+      <P Bb6>
+2801   <S {Paul}.> I should so:
+2802   Were I the Ghost that walk'd, Il'd bid you marke
+2803   Her eye, and tell me for what dull part in't
+2804   You chose her: then Il'd shrieke, that euen your eares
+2805   Should rift to heare me, and the words that follow'd,
+2806   Should be, Remember mine.
+2807   <S {Leo}.> Starres, Starres,
+2808   And all eyes else, dead coales: feare thou no Wife;
+2809   Ile haue no Wife, {Paulina}.
+2810   <S {Paul}.> Will you sweare
+2811   Neuer to marry, but by my free leaue?
+2812   <S {Leo}.> Neuer ({Paulina}) so be bless'd my Spirit.
+2813   <S {Paul}.> Then good my Lords, beare witnesse to his Oath.
+2814   <S {Cleo}.> You tempt him ouer- much.
+2815   <S {Paul}.> Vnlesse another,
+2816   As like {Hermione}, as is her Picture,
+2817   Affront his eye.
+2818   <S {Cleo}.> Good Madame, I haue done.
+2819   <S {Paul}.> Yet if my Lord will marry: if you will, Sir;
+2820   No remedie but you will: Giue me the Office
+2821   To chuse you a Queene: she shall not be so young
+2822   As was your former, but she shall be such
+2823   As (walk'd your first Queenes Ghost) it should take ioy
+2824   To see her in your armes.
+2825   <S {Leo}.> My true {Paulina},
+2826   We shall not marry, till thou bidst vs.
+2827   <S {Paul}.> That
+2828   Shall be when your first Queene's againe in breath:
+2829   Neuer till then.
+2830   <D {Enter a Seruant}.>
+2831   <S {Ser}.> One that giues out himselfe Prince {Florizell},
+2832   Sonne of {Polixenes}, with his Princesse (she
+2833   The fairest I haue yet beheld) desires accesse
+2834   To your high presence.
+2835   <S {Leo}.> What with him? he comes not
+2836   Like to his Fathers Greatnesse: his approach
+2837   (So out of circumstance, and suddaine) tells vs,
+2838   'Tis not a Visitation fram'd, but forc'd
+2839   By need, and accident. What Trayne?
+2840   <S {Ser}.> But few,
+2841   And those but meane.
+2842   <S {Leo}.> His Princesse (say you) with him?
+2843   <S {Ser}.> #I: the most peerelesse peece of Earth, I thinke,
+2844   That ere the Sunne shone bright on.
+2845   <S {Paul}.> Oh {Hermione},
+2846   As euery present Time doth boast it selfe
+2847   Aboue a better, gone; so must thy Graue
+2848   Giue way to what's seene now. Sir, you your selfe
+2849   Haue said, and writ so; but your writing now
+2850   Is colder then that Theame: she had not beene,
+2851   Nor was not to be equall'd, thus your Verse
+2852   Flow'd with her Beautie once; 'tis shrewdly ebb'd,
+2853   To say you haue seene a better.
+2854   <S {Ser}.> Pardon, Madame:
+2855   The one, I haue almost forgot (your pardon:)
+2856   The other, when she ha's obtayn'd your Eye,
+2857   Will haue your Tongue too. This is a Creature,
+2858   Would she begin a Sect, might quench the zeale
+2859   Of all Professors else; make Proselytes
+2860   Of who she but bid follow.
+2861   <S {Paul}.> How? not women?
+2862   <S {Ser}.> Women will loue her, that she is a Woman
+2863   More worth then any Man: Men, that she is
+2864   The rarest of all Women.
+2865   <S {Leo}.> Goe {Cleomines},
+2866   Your selfe (assisted with your honor'd Friends)
+2867   Bring them to our embracement. Still 'tis strange,
+2868   He thus should steale vpon vs.  <D {Exit}.>
+2869   <S {Paul}.> Had our Prince
+2870   (Iewell of Children) seene this houre, he had payr'd
+2871   Well with this Lord; there was not full a moneth
+2872   Betweene their births.
+2873   <S {Leo}.> 'Prethee no more; cease: thou know'st
+2874   He dyes to me againe, when talk'd- of: sure
+2875   When I shall see this Gentleman, thy speeches
+2876   Will bring me to consider that, which may
+2877   Vnfurnish me of Reason. They are come.
+2878   <D {Enter Florizell, Perdita, Cleomines, and others}.>
+2879   Your Mother was most true to Wedlock, Prince,
+2880   For she did print your Royall Father off,
+2881   Conceiuing you. Were I but twentie one,
+2882   Your Fathers Image is so hit in you,
+2883   (His very ayre) that I should call you Brother,
+2884   As I did him, and speake of something wildly
+2885   By vs perform'd before. Most dearely welcome,
+2886   And your faire Princesse (Goddesse) oh: alas,
+2887   I lost a couple, that 'twixt Heauen and Earth
+2888   Might thus haue stood, begetting  wonder, as
+2889   You (gracious Couple) doe: and then I lost
+2890   (All mine owne Folly) the Societie,
+2891   Amitie too of your braue Father, whom
+2892   (Though bearing Miserie) I desire my life
+2893   Once more to looke on him.
+2894   <S {Flo}.> By his command
+2895   Haue I here touch'd {Sicilia}, and from him
+2896   Giue you all greetings, that a King (at friend)
+2897   Can send his Brother: and but Infirmitie
+2898   (Which waits vpon worne times) hath something seiz'd
+2899   His wish'd Abilitie, he had himselfe
+2900   The Lands and Waters, 'twixt your Throne and his,
+2901   Measur'd, to looke vpon you; whom he loues
+2902   (He bad me say so) more then all the Scepters,
+2903   And those that beare them, liuing.
+2904   <S {Leo}.> Oh my Brother,
+2905   (Good Gentleman) the wrongs I haue done thee, stirre
+2906   Afresh within me: and these thy offices
+2907   (So rarely kind) are as Interpreters
+2908   Of my behind- hand slacknesse. Welcome hither,
+2909   As is the Spring to th' Earth. And hath he too
+2910   Expos'd this Paragon to th' fearefull vsage
+2911   (At least vngentle) of the dreadfull {Neptune},
+2912   To greet a man, not worth her paines; much lesse,
+2913   Th' aduenture of her person?
+2914   <S {Flo}.> Good my Lord,
+2915   She came from {Libia}.
+2916   <S {Leo}.> Where the Warlike {Smalus},
+2917   That Noble honor'd Lord, is fear'd, and lou'd?
+2918   <S {Flo}.> Most Royall Sir,
+2919   From thence: from him, whose Daughter
+2920   His Teares proclaym'd his parting with her: thence
+2921   (A prosperous South- wind friendly) we haue cross'd,
+2922   To execute the Charge my Father gaue me,
+2923   For visiting your Highnesse: My best Traine
+2924   I haue from your {Sicilian} Shores dismiss'd;
+2925   Who for {Bohemia} bend, to signifie
+2926   Not onely my successe in {Libia} (Sir)
+2927   But my arriuall, and my Wifes, in safetie
+2928   Here, where we are.
+2929   <S {Leo}.> The blessed Gods
+2930   Purge all Infection from our Ayre, whilest you
+2931   Doe Clymate here: you haue a holy Father,
+2932   A graceful Gentleman, against whose person
+      <P Bb6v>
+2933   (So sacred as it is) I haue done sinne,
+2934   For which, the Heauens (taking angry note)
+2935   Haue left me Issue- lesse: and your Father's bless'd
+2936   (As he from Heauen merits it) with you,
+2937   Worthy his goodnesse. What might I haue been,
+2938   Might I a Sonne and Daughter now haue look'd on,
+2939   Such goodly things as you?
+2940   <D {Enter a Lord}.>
+2941   <S {Lord}.> Most Noble Sir,
+2942   That which I shall report, will beare no credit,
+2943   Were not the proofe so nigh. Please you (great Sir)
+2944   {Bohemia} greets you from himselfe, by me:
+2945   Desires you to attach his Sonne, who ha's
+2946   (His Dignitie, and Dutie both cast off)
+2947   Fled from his Father, from his Hopes, and with
+2948   A Shepheards Daughter.
+2949   <S {Leo}.> Where's {Bohemia}? speake:
+2950   <S {Lord}.> Here, in your Citie: I now came from him.
+2951   I speake amazedly, and it becomes
+2952   My meruaile, and my Message. To your Court
+2953   Whiles he was hastning (in the Chase, it seemes,
+2954   Of this faire Couple) meetes he on the way
+2955   The Father of this seeming Lady, and
+2956   Her Brother, hauing both their Countrey quitted,
+2957   With this young Prince.
+2958   <S {Flo}.> {Camillo} ha's betray'd me;
+2959   Whose honor, and whose honestie till now,
+2960   Endur'd all Weathers.
+2961   <S {Lord}.> Lay't so to his charge:
+2962   He's with the King your Father.
+2963   <S {Leo}.> Who? {Camillo}?
+2964   <S {Lord}.> {Camillo} (Sir:) I spake with him: who now
+2965   Ha's these poore men in question. Neuer saw I
+2966   Wretches so quake: they kneele, they kisse the Earth;
+2967   Forsweare themselues as often as they speake:
+2968   {Bohemia} stops his eares, and threatens them
+2969   With diuers deaths, in death.
+2970   <S {Perd}.> Oh my poore Father:
+2971   The Heauen sets Spyes vpon vs, will not haue
+2972   Our Contract celebrated.
+2973   <S {Leo}.> You are marryed?
+2974   <S {Flo}.> We are not (Sir) nor are we like to be:
+2975   The Starres (I see) will kisse the Valleyes first:
+2976   The oddes for high and low's alike.
+2977   <S {Leo}.> My Lord,
+2978   Is this the Daughter of a King?
+2979   <S {Flo}.> She is,
+2980   When once she is my Wife.
+2981   <S {Leo}.> That once (I see) by your good Fathers speed,
+2982   Will come- on very slowly. I am sorry
+2983   (Most sorry) you haue broken from his liking,
+2984   Where you were ty'd in dutie: and as sorry,
+2985   Your Choice is not so rich in Worth, as Beautie,
+2986   That you might well enioy her.
+2987   <S {Flo}.> Deare, looke vp:
+2988   Though {Fortune}, visible an Enemie,
+2989   Should chase vs, with my Father; powre no iot
+2990   Hath she to change our Loues. Beseech you (Sir)
+2991   Remember, since you ow'd no more to Time
+2992   Then I doe now: with thought of such Affections,
+2993   Step forth mine Aduocate: at your request,
+2994   My Father will graunt precious things, as Trifles.
+2995   <S {Leo}.> Would he doe so, I'ld beg your precious Mistris,
+2996   Which he counts but a Trifle.
+2997   <S {Paul}.> Sir (my Liege)
+2998   Your eye hath too much youth in't: not a moneth
+2999  *'Fore your Queene dy'd, she was more worth such gazes,
+3000   Then what you looke on now.
+3001   <S {Leo}.> I thought of her,
+3002   Euen in these Lookes I made. But your Petition
+3003   Is yet vn- answer'd: I will to your Father:
+3004   Your Honor not o're- throwne by your desires,
+3005   I am friend to them, and you: Vpon which Errand
+3006   I now goe toward him: therefore follow me,
+3007   And marke what way I make: Come good my Lord.
+3008   <D {Exeunt}.>
+3009   <Z {Scoena Secunda}.>
+3010   <D {Enter Autolicus, and a Gentleman}.>
+3011  *<S {Aut}.> Beseech you (Sir) were you present at this Re-lation?
+3012  _
+3013  *<S {Gent}.1.> I was by at the opening of the Farthell, heard
+3014  *the old Shepheard deliuer the manner how he found it:
+3015  *Whereupon (after a little amazednesse) we were all com-manded
+3016  *out of the Chamber: onely this (me thought) I
+3017   heard the Shepheard say, he found the Child.
+3018   <S {Aut}.> I would most gladly know the issue of it.
+3019  *<S {Gent}.1.> I make a broken deliuerie of the Businesse;
+3020  *but the changes I perceiued in the King, and {Camillo}, were
+3021  *very Notes of admiration: they seem'd almost, with sta-ring
+3022  *on one another, to teare the Cases of their Eyes.
+3023  *There was speech in their dumbnesse, Language in their
+3024  *very gesture: they look'd as they had heard of a World
+3025  *ransom'd, or one destroyed: a notable passion of Won-der
+3026  *appeared in them: but the wisest beholder, that knew
+3027  *no more but seeing, could not say, if th' importance were
+3028  *Ioy, or Sorrow; but in the extremitie of the one, it must
+3029   needs be.  <D {Enter another Gentleman}.>
+3030  *Here comes a Gentleman, that happily knowes more:
+3031   The Newes, {Rogero}.
+3032  *<S {Gent}.2.> Nothing but Bon- fires: the Oracle is fulfill'd:
+3033  *the Kings Daughter is found: such a deale of wonder is
+3034  *broken out within this houre, that Ballad- makers cannot
+3035   be able to expresse it.  <D {Enter another Gentleman}.>
+3036  *Here comes the Lady {Paulina's} Steward, hee can deliuer
+3037  *you more. How goes it now (Sir.) This Newes (which
+3038  *is call'd true) is so like an old Tale, that the veritie of it is
+3039   in strong suspition: Ha's the King found his Heire?
+3040  *<S {Gent}.3.> Most true, if euer Truth were pregnant by
+3041  *Circumstance: That which you heare, you'le sweare
+3042  *you see, there is such vnitie in the proofes. The Mantle
+3043  *of Queene {Hermiones}: her Iewell about the Neck of it:
+3044  *the Letters of {Antigonus} found with it, which they know
+3045  *to be his Character: the Maiestie of the Creature, in re-semblance
+3046  *of the Mother: the Affection of Noblenesse,
+3047  *which Nature shewes aboue her Breeding, and many o-ther
+3048  *Euidences, proclayme her, with all certaintie, to be
+3049  *the Kings Daughter. Did you see the meeting of the
+3050   two Kings?
+3051   <S {Gent}.2.> No.
+3052  *<S {Gent}.3.> Then haue you lost a Sight which was to bee
+3053  *seene, cannot bee spoken of. There might you haue be-held
+3054  *one Ioy crowne another, so and in such manner, that
+3055  *it seem'd Sorrow wept to take leaue of them: for their
+3056  *Ioy waded in teares. There was casting vp of Eyes, hol-ding
+3057  *vp of Hands, with Countenance of such distraction,
+3058  *that they were to be knowne by Garment, not by Fauor.
+      <P Cc1>
+3059  *Our King being ready to leape out of himselfe, for ioy of
+3060  *his found Daughter; as if that Ioy were now become a
+3061  *Losse, cryes, Oh, thy Mother, thy Mother: then askes
+3062  *{Bohemia} forgiuenesse, then embraces his Sonne- in- Law:
+3063  *then againe worryes he his Daughter, with clipping her.
+3064  *Now he thanks the old Shepheard (which stands by, like
+3065  *a Weather- bitten Conduit, of many Kings Reignes.) I
+3066  *neuer heard of such another Encounter; which lames Re-port
+3067   to follow it, and vndo's description to doe it.
+3068  *<S {Gent}.2.> What, 'pray you, became of {Antigonus}, that
+3069   carryed hence the Child?
+3070  *<S {Gent}.3.> Like an old Tale still, which will haue matter
+3071  *to rehearse, though Credit be asleepe, and not an eare o-pen;
+3072  *he was torne to pieces with a Beare: This auouches
+3073  *the Shepheards Sonne; who ha's not onely his Innocence
+3074  *(which seemes much) to iustifie him, but a Hand- kerchief
+3075   and Rings of his, that {Paulina} knowes.
+3076  *<S {Gent}.1.> What became of his Barke, and his Fol-lowers?
+3077  _
+3078  *<S {Gent}.3.> Wrackt the same instant of their Masters
+3079  *death, and in the view of the Shepheard: so that all the
+3080  *Instruments which ayded to expose the Child, were euen
+3081  *then lost, when it was found. But oh the Noble Combat,
+3082  *that 'twixt Ioy and Sorrow was fought in {Paulina}. Shee
+3083  *had one Eye declin'd for the losse of her Husband, ano-ther
+3084  *eleuated, that the Oracle was fulfill'd: Shee lifted the
+3085  *Princesse from the Earth, and so locks her in embracing,
+3086  *as if shee would pin her to her heart, that shee might no
+3087   more be in danger of loosing.
+3088  *<S {Gent}.1.> The Dignitie of this Act was worth the au-dience
+3089   of Kings and Princes, for by such was it acted.
+3090  *<S {Gent}.3.> One of the prettyest touches of all, and that
+3091  *which angl'd for mine Eyes (caught the Water, though
+3092  *not the Fish) was, when at the Relation of the Queenes
+3093  *death (with the manner how shee came to't, brauely con-fess'd,
+3094  *and lamented by the King) how attentiuenesse
+3095  *wounded his Daughter, till (from one signe of dolour to
+3096  *another) shee did (with an {Alas}) I would faine say, bleed
+3097  *Teares; for I am sure, my heart wept blood. Who was
+3098  *most Marble, there changed colour: some swownded, all
+3099  *sorrowed: if all the World could haue seen't, the Woe
+3100   had beene vniuersall.
+3101   <S {Gent}.1.> Are they returned to the Court?
+3102  *<S {Gent}.3.> No: The Princesse hearing of her Mothers
+3103  *Statue (which is in the keeping of {Paulina}) a Peece many
+3104  *yeeres in doing, and now newly perform'd, by that rare
+3105  *Italian Master, {Iulio Romano}, who (had he himselfe Eter-nitie,
+3106  *and could put Breath into his Worke) would be-guile
+3107  *Nature of her Custome, so perfectly he is her Ape:
+3108  *He so neere to {Hermione}, hath done {Hermione}, that they
+3109  *say one would speake to her, and stand in hope of answer.
+3110  *Thither (with all greedinesse of affection) are they gone,
+3111   and there they intend to Sup.
+3112  *<S {Gent}.2.> I thought she had some great matter there in
+3113  *hand, for shee hath priuately, twice or thrice a day, euer
+3114  *since the death of {Hermione}, visited that remoued House.
+3115  *Shall wee thither, and with our companie peece the Re-ioycing?
+3116  _
+3117  *<S {Gent}.1.> Who would be thence, that ha's the benefit
+3118  *of Accesse? euery winke of an Eye, some new Grace
+3119  *will be borne: our Absence makes vs vnthriftie to our
+3120   Knowledge. Let's along.  <D {Exit}.>
+3121  *<S {Aut}.> Now (had I not the dash of my former life in
+3122  *me) would Preferment drop on my head. I brought the
+3123  *old man and his Sonne aboord the Prince; told him, I
+3124  *heard them talke of a Farthell, and I know not what: but
+3125  *he at that time ouer- fond of the Shepheards Daughter (so
+3126  *he then tooke her to be) who began to be much Sea- sick,
+3127  *and himselfe little better, extremitie of Weather conti-nuing,
+3128  *this Mysterie remained vndiscouer'd. But 'tis all
+3129  *one to me: for had I beene the finder- out of this Secret,
+3130   it would not haue rellish'd among my other discredits.
+3131   <D {Enter Shepheard and Clowne}.>
+3132  *Here come those I haue done good to against my #will,
+3133  *and alreadie appearing in the blossomes of their For-tune.
+3134  _
+3135  *<S {Shep}.> Come Boy, I am past moe Children: but thy
+3136   Sonnes and Daughters will be all Gentlemen borne.
+3137  *<S {Clow}.> You are well met (Sir:) you deny'd to fight
+3138  *with mee this other day, because I was no Gentleman
+3139  *borne. See you these Clothes? say you see them not,
+3140  *and thinke me still no Gentleman borne: You were best
+3141  *say these Robes are not Gentlemen borne. Giue me the
+3142  *Lye: doe: and try whether I am not now a Gentleman
+3143   borne.
+3144   <S {Aut}.> I know you are now (Sir) a Gentleman borne.
+3145  *<S {Clow}.> #I, and haue been so any time these foure houres.
+3146   <S {Shep}.> And so haue I, Boy.
+3147  *<S {Clow}.> So you haue: but I was a Gentleman borne be-fore
+3148  *my Father: for the Kings Sonne tooke me by the
+3149  *hand, and call'd mee Brother: and then the two Kings
+3150  *call'd my Father Brother: and then the Prince (my Bro-ther)
+3151  *and the Princesse (my Sister) call'd my Father, Father;
+3152  *and so wee wept: and there was the first Gentleman- like
+3153   teares that euer we shed.
+3154   <S {Shep}.> We may liue (Sonne) to shed many more.
+3155  *<S {Clow}.> #I: or else 'twere hard luck, being in so preposte-rous
+3156   estate as we are.
+3157  *<S {Aut}.> I humbly beseech you (Sir) to pardon me all the
+3158  *faults I haue committed to your Worship, and to giue
+3159   me your good report to the Prince my Master.
+3160  *<S {Shep}.> 'Prethee Sonne doe: for we must be gentle, now
+3161   we are Gentlemen.
+3162   <S {Clow}.> Thou wilt amend thy life?
+3163   <S {Aut}.> #I, #and it like your good Worship.
+3164  *<S {Clow}.> Giue me thy hand: I will sweare to the Prince,
+3165   thou art as honest a true Fellow as any is in {Bohemia}.
+3166   <S {Shep}.> You may say it, but not sweare it.
+3167  *<S {Clow}.> Not sweare it, now I am a Gentleman? Let
+3168   Boores and Francklins say it, Ile sweare it.
+3169   <S {Shep}.> How if it be false (Sonne?)
+3170  *<S {Clow}.> If it be ne're so false, a true Gentleman may
+3171  *sweare it, in the behalfe of his Friend: And Ile sweare to
+3172  *the Prince, thou art a tall Fellow of thy hands, and that
+3173  *thou wilt not be drunke: but I know thou art no tall Fel-low
+3174  *of thy hands, and that thou wilt be drunke: but Ile
+3175  *sweare it, #and I would thou would'st be a tall Fellow of
+3176   thy hands.
+3177   <S {Aut}.> I will proue so (Sir) to my power.
+3178  *<S {Clow}.> #I, by any meanes proue a tall Fellow: if I do not
+3179  *wonder, how thou dar'st venture to be drunke, not being
+3180  *a tall Fellow, trust me not. Harke, the Kings and Prin-ces
+3181  *(our Kindred) are going to see the Queenes Picture.
+3182   Come, follow vs: wee'le be thy good Masters.  <D {Exeunt}.>
+3183   <Z {Scaena Tertia}.>
+3184   <D {Enter Leontes, Polixenes, Florizell, Perdita, Camillo},
+3185   {Paulina: Hermione (like a Statue:) Lords, &c}.>
+3186   <S {Leo}.> O graue and good {Paulina}, the great comfort
+3187   That I haue had of thee?
+      <P Cc1v>
+3188   <S {Paul}.> What (Soueraigne Sir)
+3189   I did not well, I meant well: all my Seruices
+3190   You haue pay'd home. But that you haue vouchsaf'd
+3191  *(With your Crown'd Brother, and these your contracted
+3192   Heires of your Kingdomes) my poore House to visit;
+3193   It is a surplus of your Grace, which neuer
+3194   My life may last to answere.
+3195   <S {Leo}.> O {Paulina},
+3196   We honor you with trouble: but we came
+3197   To see the Statue of our Queene. Your Gallerie
+3198   Haue we pass'd through, not without much content
+3199   In many singularities; but we saw not
+3200   That which my Daughter came to looke vpon,
+3201   The Statue of her Mother.
+3202   <S {Paul}.> As she liu'd peerelesse,
+3203   So her dead likenesse I doe well beleeue
+3204   Excells what euer yet you look'd vpon,
+3205   Or hand of Man hath done: therefore I keepe it
+3206   Louely, apart. But here it is: prepare
+3207   To see the Life as liuely mock'd, as euer
+3208   Still Sleepe mock'd Death: behold, and say 'tis well.
+3209   I like your silence, it the more shewes- off
+3210   Your wonder: but yet speake, first you (my Liege)
+3211   Comes it not something neere?
+3212   <S {Leo}.> Her naturall Posture.
+3213   Chide me (deare Stone) that I may say indeed
+3214   Thou art {Hermione}; or rather, thou art she,
+3215   In thy not chiding: for she was as tender
+3216   As Infancie, and Grace. But yet ({Paulina})
+3217   {Hermione} was not so much wrinckled, nothing
+3218   So aged as this seemes.
+3219   <S {Pol}.> Oh, not by much.
+3220   <S {Paul}.> So much the more our Caruers excellence,
+3221   Which lets goe- by some sixteene yeeres, and makes her
+3222   As she liu'd now.
+3223   <S {Leo}.> As now she might haue done,
+3224   So much to my good comfort, as it is
+3225   Now piercing to my Soule. Oh, thus she stood,
+3226   Euen with such Life of Maiestie (warme Life,
+3227   As now it coldly stands) when first I woo'd her.
+3228   I am asham'd: Do's not the Stone rebuke me,
+3229   For being more Stone then it? Oh Royall Peece:
+3230   There's Magick in thy Maiestie, which ha's
+3231   My Euils coniur'd to remembrance; and
+3232   From thy admiring Daughter tooke the Spirits,
+3233   Standing like Stone with thee.
+3234   <S {Perd}.> And giue me leaue,
+3235   And doe not say 'tis Superstition, that
+3236   I kneele, and then implore her Blessing. Lady,
+3237   Deere Queene, that ended when I but began,
+3238   Giue me that hand of yours, to kisse.
+3239   <S {Paul}.> O, patience:
+3240   The Statue is but newly fix'd; the Colour's
+3241   Not dry.
+3242   <S {Cam}.> My Lord, your Sorrow was too sore lay'd- on,
+3243   Which sixteene Winters cannot blow away,
+3244   So many Summers dry: scarce any Ioy
+3245   Did euer so long liue; no Sorrow,
+3246   But kill'd it selfe much sooner.
+3247   <S {Pol}.> Deere my Brother,
+3248   Let him, that was the cause of this, haue powre
+3249   To take- off so much griefe from you, as he
+3250   Will peece vp in himselfe.
+3251   <S {Paul}.> Indeed my Lord,
+3252   If I had thought the sight of my poore Image
+3253   Would thus haue wrought you (for the Stone is mine)
+3254   Il'd not haue shew'd it.
+3255   <S {Leo}.> Doe not draw the Curtaine.
+3256  *<S {Paul}.> No longer shall you gaze on't, least your Fancie
+3257   May thinke anon, it moues.
+3258   <S {Leo}.> Let be, let be:
+3259   Would I were dead, but that me thinkes alreadie.
+3260   (What was he that did make it?) See (my Lord)
+3261  *Would you not deeme it breath'd? and that those veines
+3262   Did verily beare blood?
+3263   <S {Pol}.> 'Masterly done:
+3264   The very Life seemes warme vpon her Lippe.
+3265   <S {Leo}.> The fixure of her Eye ha's motion in't,
+3266   As we are mock'd with #Art.
+3267   <S {Paul}.> Ile draw the Curtaine:
+3268   My Lord's almost so farre transported, that
+3269   Hee'le thinke anon it liues.
+3270   <S {Leo}.> Oh sweet {Paulina},
+3271   Make me to thinke so twentie yeeres together:
+3272   No setled Sences of the World can match
+3273   The pleasure of that madnesse. Let't alone.
+3274  *<S {Paul}.> I am sorry (Sir) I haue thus farre stir'd you: but
+3275   I could afflict you farther.
+3276   <S {Leo}.> Doe {Paulina}:
+3277   For this Affliction ha's a taste as sweet
+3278   As any Cordiall comfort. Still me thinkes
+3279   There is an ayre comes from her. What fine Chizzell
+3280   Could euer yet cut breath? Let no man mock me,
+3281   For I will kisse her.
+3282   <S {Paul}.> Good my Lord, forbeare:
+3283   The ruddinesse vpon her Lippe, is wet:
+3284   You'le marre it, if you kisse it; stayne your owne
+3285   With Oyly Painting: shall I draw the Curtaine.
+3286   <S {Leo}.> No: not these twentie yeeres.
+3287   <S {Perd}.> So long could I
+3288   Stand- by, a looker- on.
+3289   <S {Paul}.> Either forbeare,
+3290   Quit presently the Chappell, or resolue you
+3291   For more amazement: if you can behold it,
+3292   Ile make the Statue moue indeed; descend,
+3293   And take you by the hand: but then you'le thinke
+3294   (Which I protest against) I am assisted
+3295   By wicked Powers.
+3296   <S {Leo}.> What you can make her doe,
+3297   I am content to looke on: what to speake,
+3298   I am content to heare: for 'tis as easie
+3299   To make her speake, as moue.
+3300   <S {Paul}.> It is requir'd
+3301   You doe awake your Faith: then, all stand still:
+3302   On: those that thinke it is vnlawfull Businesse
+3303   I am about, let them depart.
+3304   <S {Leo}.> Proceed:
+3305   No foot shall stirre.
+3306   <S {Paul}.> Musick; awake her: Strike:
+3307   'Tis time: descend: be Stone no more: approach:
+3308   Strike all that looke vpon with meruaile: Come:
+3309   Ile fill your Graue vp: stirre: nay, come away:
+3310   Bequeath to Death your numnesse: (for from him,
+3311   Deare Life redeemes you) you perceiue she stirres:
+3312   Start not: her Actions shall be holy, as
+3313   You heare my Spell is lawfull: doe not shun her,
+3314   Vntill you see her dye againe; for then
+3315   You kill her double: Nay, present your Hand:
+3316   When she was young, you woo'd her: now, in age,
+3317   Is she become the Suitor?
+3318   <S {Leo}.> Oh, she's warme:
+3319   If this be Magick, let it be an #Art
+      <P Cc2><C B>
+3320   Lawfull as Eating.
+3321   <S {Pol}.> She embraces him.
+3322   <S {Cam}.> She hangs about his necke,
+3323   If she pertaine to life, let her speake too.
+3324   <S {Pol}.> #I, and make it manifest where she ha's liu'd,
+3325   Or how stolne from the dead?
+3326   <S {Paul}.> That she is liuing,
+3327   Were it but told you, should be hooted at
+3328   Like an old Tale: but it appeares she liues,
+3329   Though yet she speake not. Marke a little while:
+3330   Please you to interpose (faire Madam) kneele,
+3331   And pray your Mothers blessing: turne good Lady,
+3332   Our {Perdita} is found.
+3333   <S {Her}.> You Gods looke downe,
+3334   And from your sacred Viols poure your graces
+3335   Vpon my daughters head: Tell me (mine owne)
+3336  *Where hast thou bin preseru'd? Where liu'd? How found
+3337   Thy Fathers Court? For thou shalt heare that I
+3338   Knowing by {Paulina}, that the Oracle
+3339   Gaue hope thou wast in being, haue preseru'd
+3340   My selfe, to see the yssue.
+3341   <S {Paul}.> There's time enough for that,
+3342   Least they desire (vpon this push) to trouble
+3343   Your ioyes, with like Relation. Go together
+3344   You precious winners all: your exultation
+3345   Partake to euery one: I (an old Turtle)
+3346   Will wing me to some wither'd bough, and there
+3347   My Mate (that's neuer to be found againe)
+3348   Lament, till I am lost.
+3349   <S {Leo}.> O peace {Paulina}:
+3350   Thou shouldst a husband take by my consent,
+3351   As I by thine a Wife. This is a Match,
+3352  *And made betweene's by Vowes. Thou hast found mine,
+3353   But how, is to be question'd: for I saw her
+3354   (As I thought) dead: and haue (in vaine) said many
+3355   A prayer vpon her graue. Ile not seeke farre
+3356   (For him, I partly know his minde) to finde thee
+3357   An honourable husband. Come {Camillo},
+3358   And take her by the hand: whose worth, and honesty
+3359   Is richly noted: and heere iustified
+3360   By Vs, a paire of Kings. Let's from this place.
+3361   What? looke vpon my Brother: both your pardons,
+3362   That ere I put betweene your holy lookes
+3363   My #ill suspition: #This your Son- in- law,
+3364   And Sonne vnto the King, whom heauens directing
+3365   Is troth- plight to your daughter. Good {Paulina},
+3366   Leade vs from hence, where we may leysurely
+3367   Each one demand, and answere to his part
+3368   Perform'd in this wide gap of Time, since first
+3369   We were disseuer'd: Hastily lead away.  <D {Exeunt}.>
+3370   <Z The Names of the Actors.
+3371   {Leontes, King of Sicillia}.
+3372   {Mamillus, yong Prince of Sicillia}.
+3373   {Camillo}.
+3374   {Antigonus}.
+3375   {Cleomines}.
+3376   {Dion}.
+3377   {Foure}
+3378   {Lords of Sicillia}.
+3379   {Hermione, Queene to Leontes}.
+3380   {Perdita, Daughter to Leontes and Hermione}.
+3381   {Paulina, wife to Antigonus}.
+3382   {Emilia, a Lady}.
+3383   {Polixenes, King of Bohemia}.
+3384   {Florizell, Prince of Bohemia}.
+3385   {Old Shepheard, reputed Father of Perdita}.
+3386   {#Clowne, his Sonne}.
+3387   {Autolicus, a Rogue}.
+3388   {Archidamus, a Lord of Bohemia}.
+3389   {Other Lords, and Gentlemen, and Seruants}.
+3390   {Shepheards, and Shephearddesses}.
+3391   FINIS.
+3392   The Winters Tale.>

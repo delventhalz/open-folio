@@ -1,0 +1,97 @@
+OXFORD UNIVERSITY COMPUTING SERVICE
+ 
+First Folio of Shakespeare : machine readable text format
+ 
+--------------------------------------------------------------------------
+ 
+This file contains embedded markers for use by Oxford Concordance Program,
+delimited by the characaters < and >
+ 
+The following categories of reference are included:
+ 
+    T  : Play title
+    C  : Compositor identifier
+    P  : Signature
+    A  : authorial attribution
+    Y  : (occasionally) type of copy
+ 
+    S  : Speaker prefix
+    Z  : Act/scene prefix stage direction etc
+    D  : embedded stage direction
+ 
+Lines begining with either a space or a star are text lines, one for each
+line in the original text. Lines begining within a * are justified lines.
+Hinman's lineation for the folio is followed. Lines begining with a reference
+(i.e. <) are not included in the lineation.
+ 
+The character # is used in some texts to distinguish homographs (e.g. Will and
+Will); it is also used with the hyphen to indicate cases where hyphenation
+is significant.
+ 
+The characters { and } (curly braces) are used to enclose material in italics
+     Words containing tildes in the original texts have been expanded.
+     Words hyphenated across a line boundary have be joined together and
+     included at the end of the first line.  A "%" marks the hyphen in this
+     case. If the second part of the hyphenated word was the only thing
+     on that line, an underscore "_" on that line is used to indicate that
+     it is a non-blank line in the original text.
+ Turnovers are joined together on the     first line, and the character "|" is used to mark this point.
+ 
+The following OCP commands might be used to process these texts:
+ 
+*INPUT
+   text continue "+".
+   references cocoa.
+*WORDS
+   punctuation '. , ; :: ? ! :" * := ( ) _ @ >'.
+   padding "$ % | { }".
+   diacritics "- :' #".
+   alphabet "& A=a B=b C=c D=d E=e F=f G=g H=h I=i=J=j K=k L=l M=m N=n O=o
+     P=p Q=q R=r S=s T=t U=u=V=v W=w X=x Y=y Z=z 0 1 2 3 4 5 6 7 8 9".
+ 
+If any errors are found in the text, please notify  the Oxford Text Archive.
+ 
+The folio is held as two files, PART1 and PART2. The following list gives
+the line number (starting at 1) in each file at which each play begins.
+ 
+PART1:
+        1  Cym  Cymbeline
+     3854  PRE  Prefatory matter
+     4195  Tem  The tempest
+     6581  TGV  Two gentlemen of Verona
+     8916  MWW  Merry wives of Windsor
+    11671  MM   Measure for measure
+    14668  CE   Comedy of errors
+    16610  MAN  Much ado about nothing
+    19318  LLL  Loves labours lost
+    22243  MV   Merchant of Venice
+    25010  MND  Midsummer nights dream
+    27254  AYL  As you like it
+    30076  TS   Taming of the shrew
+    32851  AWW  Alls wells that ends well
+    35957  WT   Winters tale
+    39376  TN   Twelfth night
+    41978  KJ   King John
+    44730  R2   Richard II
+ 
+PART2:
+ 
+        1  1H4  1 Henry IV
+     3211  2H4  2 Henry IV
+     6651  H5   Henry V
+    10063  1H6  1 Henry VI
+    13021  2H6  2 Henry VI
+    16407  3H6  3 Henry VI
+    19654  R3   Richard III
+    23577  H8   Henry VIII
+    27082  Tro  Troilus & Cressida
+    30709  Cor  Coriolanus
+    34581  Tit  Titus Andronicus
+    37314  Rom  Romeo & Juliet
+    40527  Tim  Timon of Athens
+    43196  JC   Julius Caesar
+    45952  Mac  Macbeth
+    48514  Ham  Hamlet
+    52456  KL   King Lear
+    55789  Oth  Othello
+    59523  A&C  Antony & Cleopatra
