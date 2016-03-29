@@ -63,8 +63,8 @@ var populateSceneSelect = function() {
 
   anchorIds.forEach(function(id) {
     var actNumbers = { I: '1', II: '2', III: '3', IV: '4', V: '5' };
-    var act = actNumbers[ id.slice(0, id.length-1) ];
-    var scene = id.slice(id.length-1);
+    var act = actNumbers[ id.slice(0, -1) ];
+    var scene = id.slice(-1);
 
     if (scene === '1') {
       $('#scene-select>.dropdown-menu')

@@ -77,7 +77,7 @@ var format = function(string) {
     var line = currentText[currentLine];
     console.log(line);
 
-    if (line[0] + 0 > 0) {
+    if (line[0] > 0) {
       line = line.slice(7);
       var result = formatLine(line, newLine);
       formattedText.push(result.formatted);
@@ -170,13 +170,13 @@ var formatLine = function(line, isStart) {
             }
 
           } else if (line[i+3] === 'S' || line[i+4] === 'S') {
-            formatted += '</div>\n<div ' + getId(line.slice(i+9)) + '><h3 class="anchor scene">';
+            formatted += '</div>\n<div ' + getId(line) + '><h3 class="scene">';
             closeTag = '</h3>';
 
           } else if (line[i+3] === 'A' || line[i+4] === 'A') {
             if (actCount !== 0) formatted += '</div>\n';
             actCount++;
-            formatted += '<div ' + getId(line.slice(i+9)) + '><h2 class="anchor act">';
+            formatted += '<div ' + getId(line) + '><h2 class="act">';
             closeTag = '</h2>';
           } else {
             formatted += '<div class="unknown-header">';
@@ -233,13 +233,13 @@ var formatLine = function(line, isStart) {
 
     ' ': function() { html['&'](); },
 
+    '[': function() { if (inTag) html['&'](); },
+
+    ']': function() { html['['](); },
+
     '|': function() { i++; },
 
-    '#': function() {},
-
-    '[': function() {},
-
-    ']': function() {}
+    '#': function() {}
 
   };
   /*********  End Router  *********/
@@ -429,13 +429,13 @@ var isLetter = function(letter) {
 //Write an ID tag for headings
 var getId = function (line) {
   var scenes = {
-    Prim: 1,
-    cund: 2,
-    erti: 3,
-    uart: 4,
-    uint: 5,
-    exta: 6,
-    epti: 7
+    'ena Prima': 1,
+    'ena Secun': 2,
+    'ena Terti': 3,
+    'ena Quart': 4,
+    'ena Quint': 5,
+    'ena Sexta': 6,
+    'ena Septi': 7
   };
   var numeral = {
     1: 'I',
@@ -446,15 +446,16 @@ var getId = function (line) {
   };
 
   var start = 'id="' + numeral[actCount];
+  var end = '" class="anchor"';
 
   for (var i = 0; i < line.length; i++) {
-    var match = scenes[line.slice(i, i+4)];
+    var match = scenes[line.slice(i, i+9)];
     if (match) {
-      return start + match + '"';
+      return start + match + end;
     }
   }
 
-  return start + '1"';
+  return start + '1' + end;
 };
 
 // Write out full character names.
