@@ -605,6 +605,7 @@
 600    As to giue words or talke with the Lord {Hamlet}:
 601    Looke too't, I charge you; come your wayes.
 602    <S {Ophe}.> I shall obey my Lord.  <D {Exeunt}.>
+0000   <Z [Scena Quarta.]>
 603    <D {Enter Hamlet, Horatio, Marcellus}.>
 604    <S {Ham}.> The Ayre bites shrewdly: is it very cold?
 605    <S {Hor}.> It is a nipping and an eager ayre.
@@ -684,6 +685,7 @@
 678   *<S {Mar}.> Something is rotten in the State of Denmarke.
 679    <S {Hor}.> Heauen will direct it.
 680    <S {Mar}.> Nay, let's follow him.  <D {Exeunt}.>
+0000   <Z [Scena Quinta.]>
 681    <D {Enter Ghost and Hamlet}.>
 682   *<S {Ham}.> Where wilt thou lead me? speak; Ile go no fur-|(ther.
 683    <S {Gho}.> Marke me.
@@ -1657,6 +1659,7 @@
 1643   Abuses me to damne me. Ile haue grounds
 1644   More Relatiue then this: The Play's the thing,
 1645   Wherein Ile catch the Conscience of the King.  <D {Exit}>
+0000   <Z [Actus Tertius. Scena Prima.]>
 1646   <D {Enter King, Queene, Polonius, Ophelia, Ro-sincrance},
 1647   {Guildenstern, and Lords}.>
 1648   <S {King}.> And can you by no drift of circumstance
@@ -1861,6 +1864,7 @@
 1845   <S {King}.> It shall be so:
 1846   Madnesse in great Ones, must not vnwatch'd go.
 1847   <D {Exeunt}.>
+0000   <Z [Scena Secunda.]>
 1848   <D {Enter Hamlet, and two or three of the Players}.>
 1849  *<S {Ham}.> Speake the Speech I pray you, as I pronounc'd
 1850  *it to you trippingly on the Tongue: But if you mouth it,
@@ -2287,6 +2291,7 @@
 2268   My Tongue and Soule in this be Hypocrites.
 2269   How in my words someuer she be shent,
 2270   To giue them Seales, neuer my Soule consent.
+0000   <Z [Scena Tertia.]>
 2271   <D {Enter King, Rosincrance, and Guildensterne}.>
 2272   <S {King}.> I like him not, nor stands it safe with vs,
 2273   To let his madnesse range. Therefore prepare you,
@@ -2391,6 +2396,7 @@
 2371   This Physicke but prolongs thy sickly dayes.  <D {Exit}.>
 2372  *<S {King}.> My words flye vp, my thoughts remain below,
 2373   Words without thoughts, neuer to Heauen go.  <D {Exit}.>
+0000   <Z [Scena Quarta.]>
 2374   <D {Enter Queene and Polonius}.>
 2375   <S {Pol}.> He will come straight:
 2376   Looke you lay home to him,
@@ -2605,6 +2611,7 @@
 2583   Come sir, to draw toward an end with you.
 2584   Good night Mother.
 2585   <D {Exit Hamlet tugging in Polonius}.>
+0000   <Z [Actus Quartus. Scena Prima.]>
 2586   <D {Enter King}.>
 2587   <S {King}.> There's matters in these sighes.
 2588   These profound heaues
@@ -2649,6 +2656,7 @@
 2627   To let them know both what we meane to do,
 2628   And what's vntimely done. Oh come away,
 2629   My soule is full of discord and dismay.  <D {Exeunt}.>
+0000   <Z [Scena Secunda.]>
 2630   <D {Enter Hamlet}.>
 2631   <S {Ham}.> Safely stowed.
 2632   <S {Gentlemen} {within}.> {Hamlet}, Lord {Hamlet}.
@@ -2680,6 +2688,7 @@
 2658   <S {Guild}.> A thing my Lord?
 2659  *<S {Ham}.> Of nothing: bring me to him, hide Fox, and all
 2660   after.  <D {Exeunt}>
+0000   <Z [Scena Tertia.]>
 2661   <D {Enter King}.>
 2662  *<S {King}.> I haue sent to seeke him, and to find the bodie:
 2663   How dangerous is it that this man goes loose:
@@ -2754,6 +2763,7 @@
 2731   For like the Hecticke in my blood he rages,
 2732   And thou must cure me: Till I know 'tis done,
 2733   How ere my happes, my ioyes were ne're begun.  <D {Exit}>
+0000   <Z [Scena Quarta.]>
 2734   <D {Enter Fortinbras with an Armie}.>
 2735   <S {For}.> Go Captaine, from me greet the Danish King,
 2736   Tell him that by his license, {Fortinbras}
@@ -2764,6 +2774,7 @@
 2741   And let him know so.
 2742   <S {Cap}.> I will doo't, my Lord.
 2743   <S {For}.> Go safely on.  <D {Exit}.>
+0000   <Z [Scena Quinta.]>
 2744   <D {Enter Queene and Horatio}.>
 2745   <S {Qu}.> I will not speake with her.
 2746  *<S {Hor}.> She is importunate, indeed distract, her moode
@@ -2994,6 +3005,7 @@
 2969   <S {King}.> So you shall:
 2970   And where th' offence is, let the great Axe fall.
 2971   I pray you go with me.  <D {Exeunt}>
+0000   <Z [Scena Sexta.]>
 2972   <D {Enter Horatio, with an Attendant}.>
 2973   <S {Hora}.> What are they that would speake with me?
 2974   <S {Ser}.> Saylors sir, they say they haue Letters for you.
@@ -3028,6 +3040,7 @@
 3003   Come, I will giue you way for these your Letters,
 3004   And do't the speedier, that you may direct me
 3005   To him from whom you brought them.  <D {Exit}.>
+0000   <Z [Scena Septima.]>
 3006   <D {Enter King and Laertes}.>
 3007  *<S {King}.> Now must your conscience my acquittance seal,
 3008   And you must put me in your heart for Friend,
@@ -3213,6 +3226,7 @@
 3186   How much I had to doe to calme his rage?
 3187   Now feare I this will giue it start againe;
 3188   Therefore let's follow.  <D {Exeunt}.>
+0000   <Z [Actus Quintus. Scena Prima.]>
 3189   <D {Enter two Clownes}.>
 3190  *<S {Clown}.> Is she to bee buried in Christian buriall, that
 3191   wilfully seekes her owne saluation?
@@ -3526,6 +3540,7 @@
 3496   This Graue shall haue a liuing Monument:
 3497   An houre of quiet shortly shall we see;
 3498   Till then, in patience our proceeding be.  <D {Exeunt}.>
+0000   <Z [Scena Secunda.]>
 3499   <D {Enter Hamlet and Horatio}.>
 3500  *<S {Ham}.> So much for this Sir; now let me see the other,
 3501   You doe remember all the Circumstance.

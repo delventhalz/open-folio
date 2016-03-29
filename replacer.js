@@ -429,11 +429,13 @@ var isLetter = function(letter) {
 //Write an ID tag for headings
 var getId = function (line) {
   var scenes = {
-    'Prima': 1,
-    'cunda': 2,
-    'ertia': 3,
-    'uarta': 4,
-    'uinta': 5
+    Prim: 1,
+    cund: 2,
+    erti: 3,
+    uart: 4,
+    uint: 5,
+    exta: 6,
+    epti: 7
   };
   var numeral = {
     1: 'I',
@@ -446,7 +448,7 @@ var getId = function (line) {
   var start = 'id="' + numeral[actCount];
 
   for (var i = 0; i < line.length; i++) {
-    var match = scenes[line.slice(i, i+5)];
+    var match = scenes[line.slice(i, i+4)];
     if (match) {
       return start + match + '"';
     }
