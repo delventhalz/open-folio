@@ -15,22 +15,25 @@ var animating = {
 };
 
 // Names and paths of plays for the autocomplete
-var plays = [
-  {
-    value: "Hamlet", 
-    path: "plays/hamlet.html"
-  },
-
-  {
-    value: "Twelfth Night", 
-    path: "plays/twelfth-night.html"
-  },
-  
-  {
-    value: "Winter's Tale", 
-    path: "plays/winters-tale.html"
-  }
-];
+var plays = [{
+  value: "Hamlet", 
+  path: "plays/hamlet.html"
+}, {
+  value: "Macbeth", 
+  path: "plays/macbeth.html"
+}, {
+  value: "A Midsummer Night's Dream", 
+  path: "plays/midsummer.html"
+}, {
+  value: "The Tempest", 
+  path: "plays/tempest.html"
+}, {
+  value: "Twelfth Night", 
+  path: "plays/twelfth-night.html"
+}, {
+  value: "Winter's Tale", 
+  path: "plays/winters-tale.html"
+}];
 
 
 // CSS location and button toggles for different presets
@@ -69,5 +72,4 @@ var styles = {
       'syllable-numbers'
     ]
   }
-
 };

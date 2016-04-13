@@ -200,9 +200,12 @@ var formatLine = function(line, isStart) {
             if(line[i+5] === '{') {
               formatted += '<em>' + nth[line[i+3]];
               i += 3;
-            } else {
+            } else if (line[i+4] === '.') {
               formatted += nth[line[i+3]];
               i += 2;
+            } else {
+              formatted += nth[line[i+3]];
+              i++;
             }
           }
         }
@@ -309,7 +312,7 @@ var formatLine = function(line, isStart) {
     isEnd = true;
   } 
   if (isStart && isLine) formatted = '<p>' + formatted;
-
+  if (line[line.length-1] === '>') isEnd = true;
 
   // Add formatting after the line.
   if (isLine) {
