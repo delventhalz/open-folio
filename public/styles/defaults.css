@@ -8,7 +8,7 @@
   background: #fff;
 }
 
-.folio .addendum {
+.addendum {
 
 }
 
@@ -41,25 +41,25 @@
   margin-top: 1em;
 }
 
-.folio .title {
+.title {
 
 }
 
-.folio .act {
+.act {
 
 }
 
-.folio .scene {
+.scene {
 
 }
 
-.folio .finis {
+.finis {
   font-size: 1.5em;
   font-weight: 900;
   margin-top: 1em;
 }
 
-.folio .direction {
+.direction {
   
 }
 
@@ -67,15 +67,15 @@
   margin-top: 0.6em;
 }
 
-.folio .sub-honofific {
+.sub-honofific {
 
 }
 
-.folio .sub-name {
+.sub-name {
 
 }
 
-.folio .unknown-header {
+.unknown-header {
   font-size: 1.2em;
   font-weight: 400;
 }
@@ -98,35 +98,39 @@
 
 
 /******* PUNCTUATION *******/
-.folio .major {
+.punc {
+  
+}
+
+.major {
 
 }
 
-.folio .minor {
+.minor {
 
 }
 
-.folio .end-stop {
+.end-stop {
 
 }
 
-.folio.mid-stop {
+.mid-stop {
 
 }
 
-.folio .colon {
+.colon {
 
 }
 
-.folio .paren {
+.paren {
 
 }
 
-.folio .comma {
+.comma {
 
 }
 
-.folio .char-stop {
+.char-stop {
 
 }
 

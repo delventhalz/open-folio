@@ -27,45 +27,45 @@ Possible Palette URL: http://paletton.com/#uid=73L1T0kh9bNCxDFn4ktcI4nb300
 
 
 /******* HEADINGS *******/
-.folio .title {
+.title {
   color: #AF7DFF;
 }
 
-.folio .act {
+.act {
   color: #A4E406;
 }
 
-.folio .scene {
+.scene {
   color: #A4E406;
 }
 
-.folio .finis {
+.finis {
   color: #A4E406;
 }
 
-.folio .direction {
+.direction {
   color: #75715D;
 }
 
-.folio .character {
+.character {
   color: #60D9F1;
 }
 
-.folio .unknown-header {
+.unknown-header {
   color: #A4E406;
 }
 
 
 /******* PUNCTUATION *******/
-.folio .punc {
+.punc {
   color: #FC1E70;
 }
 
-.folio .major {
+.major {
   color: #FC1E70;
 }
 
-.folio .minor {
+.minor {
   color: #FC1E70;
 }
 

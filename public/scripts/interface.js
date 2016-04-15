@@ -217,8 +217,10 @@ $('#play-selection').autocomplete({
   onSelect: function (suggestion) {
     animateChange(function() {
       $('.content').children().remove();
+      $('.content').append('<div class="folio">\n<h1 class="title">' + 
+        suggestion.value + '</h1>\n</div>');
       $.get(suggestion.path, function(data) {
-        $('.content').append(data);
+        $('.folio').append(data);
         populateSceneSelect();
         if ( !$('.preset').hasClass('active') ) {
           $('#modern-preset').trigger('click');
@@ -291,8 +293,8 @@ $('#direction-linebreak').on('click', function() {
 
 // TODO: Make dynamic with line-height is changed afterwards.
 $('#paragraph-linebreak').on('click', function() {
-  var height = $('.folio').css('line-height').replace('px', '');
-  toggleSizeStyle('p', 'margin-top', height * 0.5 + 'px');
+  var height = $('.folio').css('font-size').replace('px', '');
+  toggleSizeStyle('p', 'margin-top', height * 0.6 + 'px');
 });
 
 $('#punctuation-whitespace').on('click', function() {
