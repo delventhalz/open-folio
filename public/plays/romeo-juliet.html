@@ -1,192 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-
-    <title>CSS Shakespeare</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-    <link href="lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-    
-    <!-- Fonts -->
-    <link href='https://fonts.googleapis.com/css?family=Lato:900,400,400italic,900italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Merriweather:400,400italic,900,900italic' rel='stylesheet' type='text/css'>
-
-    <!-- Custom Styles -->
-    <link href="styles/main.css" rel="stylesheet">
-    <link href="styles/defaults.css" rel="stylesheet">
-    
-    <!-- Styles to be assign later for the first folio -->
-    <link class="formatting" rel="stylesheet">
-    <div class="one-off-styles"></div>
-  </head>
-
-  <body role="document">
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a id="header-brand" class="navbar-brand" href="#">CSS Shakespeare</a>
-        </div>
-
-        <!-- Print and Info buttons -->
-        <ul class="nav navbar-nav navbar-right">
-          <li id="info-button" title="display help"><a href=""><span class="glyphicon glyphicon-info-sign"></span></a></li>
-          <li id="print-button" title="print" class="active"><a href=""><span class="glyphicon glyphicon-print"></span></a></li>
-        </ul>
-
-        <div id="navbar" class="navbar-collapse collapse">
-            <div class="navbar-top col-sm-12">
-
-              <!-- Play Selection -->
-              <form class="navbar-form navbar col-sm-6">
-                <input id="play-selection" type="text" class="form-control autocomplete" placeholder="Pick a play...">
-                <div id="scene-select" class="btn-group" role="group">
-                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Scene
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu"></ul>
-                </div>
-                <label class="checkbox-inline">
-                  <input id="display-box" type="checkbox" checked> Display all
-                </label>
-              </form>
-
-              <!-- Style Presets Selection -->
-              <div class="nav navbar-right col-sm-6">
-                <div class="nav-header">Presets</div>
-                <button id="modern-preset" type="button" class="btn btn-primary preset">Modern</button>
-                <button id="original-preset" type="button" class="btn btn-primary preset">Original</button>
-                <button id="night-preset" type="button" class="btn btn-primary preset">Night</button>
-              </div>
-
-            </div>
-
-          <div class="navbar-bottom col-sm-12">
-
-            <!-- Fonts -->
-            <div class="nav navbar-nav col-sm-3">
-              <div class="nav-header">Fonts</div>
-              <div class="btn-group">
-                <button id="font-smaller" title="reduce font size" type="button toggle" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-minus"></span></small></sup></button>
-
-                <button id="font-larger" title="increase font size" type="button" class="btn btn-default"><span class="glyphicon glyphicon-font"></span><sup><small><span class="glyphicon glyphicon-plus"></span></small></sup></button>
-
-                <div id="line-spacing" title="adjust line spacing" class="btn-group" role="group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="glyphicon glyphicon-text-height"></span>
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li>0.9</li>
-                    <li>1.0</li>
-                    <li>1.15</li>
-                    <li>1.5</li>
-                    <li>2.0</li>
-                    <li>4.0</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- Characters -->
-            <div class="nav navbar-nav col-sm-3">
-              <div class="nav-header">Characters</div>
-              <div class="btn-group">
-                <button id="character-linebreak" title="set character names on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
-
-                <button id="character-caps" title="make character names uppercase" type="button" class="btn btn-default toggle">CAPS</button>
-
-                <button id="character-bold" title="make character names bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
-              </div>
-            </div> 
-
-            <!-- Stage Directions -->
-            <div class="nav navbar-nav col-sm-1">
-              <div class="nav-header">Directions</div>
-
-              <button id="direction-linebreak" title="set stage directions on their own line" type="button" class="btn btn-default toggle"><strong>⏎</strong></button>
-            </div>
-
-            <!-- First Folio -->
-            <div class="nav navbar-nav col-sm-2">
-              <div class="nav-header">Punctuation</div>
-              <div class="btn-group">
-                <button id="paragraph-linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
-
-                <button id="punctuation-whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
-
-                <button id="punctuation-bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
-              </div>
-            </div> 
-
-            <!-- Numbering -->
-            <div class="nav navbar-nav col-sm-3">
-              <div class="nav-header">Numbering</div>
-              <div class="btn-group">
-                <button id="syllable-numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
-
-                <button id="line-numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
-              </div>
-            </div> 
-
-          </div> <!--/.navbar-bottom -->
-        </div><!--/.navbar-collapse -->
-      </div>
-    </nav>
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="content">
-      <div class="jumbotron text">
-        <div class="container">
-          <h1>Hello, world!</h1>
-          <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-          <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
-        </div>
-      </div>
-
-      <div class="container">
-        <!-- Example row of columns -->
-        <div class="row">
-          <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-          </div>
-          <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-         </div>
-          <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-          </div>
-        </div>
-
-        <hr>
-
-        <footer>
-          <p>&copy; 2015 Company, Inc.</p>
-        </footer>
-      </div> <!-- /container -->
-
-
-<div class="folio">
-<h1 class="title">Hamlet</h1>
 <div class="text">
 <div id="I1" class="anchor"><h2 class="act"><em>Actus  Primus. Scoena Prima</em>.</h2>
 <p><span class="direction"><em>Enter Sampson and Gregory, with Swords and Bucklers</em>,<span class="numbering"></span><br>
@@ -262,15 +73,15 @@ Have at thee Coward<span class="mid-stop major">.</span> <span class="direction"
 <p><span class="character"><em>Officer</em><span class="char-stop">.</span></span> Clubs<span class="comma minor">,</span> Bils<span class="comma minor">,</span> and Partisons<span class="comma minor">,</span> strike<span class="comma minor">,</span> beat them down<span class="numbering"> <span class="syllable-count">10</span></span><br>
 Downe with the <em>Capulets</em><span class="comma minor">,</span> downe with the <em>Mountagues</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">12</span></span></p>
 <span class="direction"><em>Enter old Capulet in his Gowne, and his wife</em>.</span>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> What noise is this<span class="mid-stop major">?</span> Give me my long Sword ho<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> A crutch<span class="comma minor">,</span> a crutch<span class="colon major">:</span> why call you for a Sword<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> My Sword I say<span class="colon major">:</span> Old <em>Mountague</em> is come<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">70</span> </span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> What noise is this<span class="mid-stop major">?</span> Give me my long Sword ho<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> A crutch<span class="comma minor">,</span> a crutch<span class="colon major">:</span> why call you for a Sword<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> My Sword I say<span class="colon major">:</span> Old <em>Mountague</em> is come<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">70</span> </span><br>
 And flourishes his Blade in spight of me<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <span class="direction"><em>Enter old Mountague, & his wife</em>.</span>
 <p><span class="character"><em>Mountague</em><span class="char-stop">.</span></span> Thou villaine <em>Capulet</em><span class="mid-stop major">.</span> Hold me not<span class="comma minor">,</span> let me go<span class="numbering"> <span class="syllable-count">12</span></span><br>
-<span class="character"><em>Second Wife</em><span class="char-stop">.</span></span> Thou shalt not stir a foote to seeke a Foe<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<span class="character"><em>Second <span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> Thou shalt not stir a foote to seeke a Foe<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Enter Prince Eskales, with his Traine</em>.</span>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Rebellious Subjects<span class="comma minor">,</span> Enemies to peace<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Rebellious Subjects<span class="comma minor">,</span> Enemies to peace<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Prophaners of this Neighbor-stained Steele<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">75</span> </span><br>
 Will they not heare<span class="mid-stop major">?</span> What hoe<span class="comma minor">,</span> you Men<span class="comma minor">,</span> you Beasts<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 That quench the fire of your pernitious Rage<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -305,7 +116,7 @@ Who nothing hurt withall<span class="comma minor">,</span> hist him in scorne<sp
 <p>While we were enterchanging thrusts and blowes<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Came more and more<span class="comma minor">,</span> and fought on part and part<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Till the Prince came<span class="comma minor">,</span> who parted either part<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> O where is <em>Romeo</em><span class="comma minor">,</span> saw you him to day<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> O where is <em>Romeo</em><span class="comma minor">,</span> saw you him to day<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>Right glad am I<span class="comma minor">,</span> he was not at this fray<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">110</span> </span></p>
 <p><span class="character"><em>Benvolio</em><span class="char-stop">.</span></span> Madam<span class="comma minor">,</span> an houre before the worshipt Sun<span class="numbering"> <span class="syllable-count">10</span></span><br>
 Peer'd forth the golden window of the East<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -539,7 +350,7 @@ And she shew scant shell<span class="comma minor">,</span> well<span class="comm
 <p><span class="character"><em>Romeo</em><span class="char-stop">.</span></span> Ile goe along<span class="comma minor">,</span> no such sight to be showne<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 But to rejoyce in splendor of mine owne<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Enter Capulets Wife and Nurse</em>.</span>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> Nurse wher's my daughter<span class="mid-stop major">?</span> call her forth to me<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> Nurse wher's my daughter<span class="mid-stop major">?</span> call her forth to me<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Now by my Maidenhead<span class="comma minor">,</span> at twelve yeare old<span class="numbering"> <span class="syllable-count">10</span></span><br>
 I bad her come<span class="comma minor">,</span> what Lamb<span class="colon major">:</span> what Ladi-bird<span class="comma minor">,</span> God forbid<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">13</span> <span class="line-count">340</span> </span><br>
 Where's this Girle<span class="mid-stop major">?</span> what <em>Juliet</em><span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
@@ -547,17 +358,17 @@ Where's this Girle<span class="mid-stop major">?</span> what <em>Juliet</em><spa
 <p><span class="character"><em>Juliet</em><span class="char-stop">.</span></span> How now<span class="comma minor">,</span> who calls<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">4</span></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Your Mother<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">3</span></span></p>
 <p><span class="character"><em>Juliet</em><span class="char-stop">.</span></span> Madam I am heere<span class="comma minor">,</span> what is your will<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> This is the matter<span class="colon major">:</span> Nurse give me leave awhile<span class="comma minor">,</span> we<span class="numbering"> <span class="syllable-count">12</span> <span class="line-count">345</span> </span><br>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> This is the matter<span class="colon major">:</span> Nurse give me leave awhile<span class="comma minor">,</span> we<span class="numbering"> <span class="syllable-count">12</span> <span class="line-count">345</span> </span><br>
 must talke in secret<span class="mid-stop major">.</span> Nurse come backe againe<span class="comma minor">,</span> I have remembred<span class="numbering"></span><br>
 me<span class="comma minor">,</span> thou'se heare our counsell<span class="mid-stop major">.</span> Thou knowest<span class="numbering"></span><br>
 my daughter's of a prety age<span class="end-stop major">.</span><span class="numbering"></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Faith I can tell her age unto an houre<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> Shee's not fourteene<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span> <span class="line-count">350</span> </span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> Shee's not fourteene<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span> <span class="line-count">350</span> </span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Ile lay fourteene of my teeth<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">7</span></span><br>
 And yet to my teene be it spoken<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
 I have but foure<span class="comma minor">,</span> shee's not fourteene<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
 <p>How long is it now to <em>Lammas</em> tide<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> A fortnight and odde dayes<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">6</span> <span class="line-count">355</span> </span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> A fortnight and odde dayes<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">6</span> <span class="line-count">355</span> </span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Even or odde<span class="comma minor">,</span> of all daies in the yeare come<span class="numbering"> <span class="syllable-count">11</span></span><br>
 <em>Lammas</em> Eve at night shall she be fourteene<span class="mid-stop major">.</span> <em>Susan</em> & she<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">13</span></span><br>
 God rest all Christian soules<span class="comma minor">,</span> were of an age<span class="mid-stop major">.</span> Well <em>Susan</em><span class="numbering"></span><br>
@@ -584,7 +395,7 @@ crying<span class="comma minor">,</span> & said I<span class="colon major">:</sp
 <p>I warrant<span class="comma minor">,</span> & I shall live a thousand yeares<span class="comma minor">,</span> I never should<span class="numbering"></span><br>
 forget it<span class="colon major">:</span> wilt thou not <em>Jule</em>  quoth he<span class="mid-stop major">?</span> and pretty foole it<span class="numbering"> <span class="line-count">380</span> </span><br>
 stinted<span class="comma minor">,</span> and said I<span class="end-stop major">.</span><span class="numbering"></span></p>
-<p><span class="character"><em>Old</em> <em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Inough of this<span class="comma minor">,</span> I pray thee hold thy peace<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Inough of this<span class="comma minor">,</span> I pray thee hold thy peace<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Yes Madam<span class="comma minor">,</span> yet I cannot chuse but laugh<span class="comma minor">,</span> to<span class="numbering"></span><br>
 thinke it should leave crying<span class="comma minor">,</span> & say I<span class="colon major">:</span> and yet I warrant<span class="numbering"></span><br>
 it had upon it brow<span class="comma minor">,</span> a bumpe as big as a young Cockrels<span class="numbering"> <span class="line-count">385</span> </span><br>
@@ -596,13 +407,13 @@ stinted<span class="colon major">:</span> and said I<span class="end-stop major"
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Peace I have done<span class="colon major">:</span> God marke thee too his grace<span class="numbering"></span><br>
 thou wast the prettiest Babe that ere I nurst<span class="comma minor">,</span> and I might<span class="numbering"></span><br>
 live to see thee married once<span class="comma minor">,</span> I have my wish<span class="end-stop major">.</span><span class="numbering"></span></p>
-<p><span class="character"><em>Old</em> <em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Marry that marry is the very theame<span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Marry that marry is the very theame<span class="numbering"> <span class="syllable-count">10</span></span><br>
 I came to talke of<span class="comma minor">,</span> tell me daughter <em>Juliet</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">395</span> </span><br>
 How stands your disposition to be Married<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
 <p><span class="character"><em>Juliet</em><span class="char-stop">.</span></span> It is an houre that I dreame not of<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> An houre<span class="comma minor">,</span> were I not thine onely Nurse<span class="comma minor">,</span> I would<span class="numbering"></span><br>
 say thou had'st suckt wisedome from thy teat<span class="end-stop major">.</span><span class="numbering"></span></p>
-<p><span class="character"><em>Old</em> <em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Well thinke of marriage now<span class="comma minor">,</span> yonger then you<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">400</span> </span><br>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Well thinke of marriage now<span class="comma minor">,</span> yonger then you<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">400</span> </span><br>
 Heere in <em>Verona</em><span class="comma minor">,</span> Ladies of esteeme<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Are made already Mothers<span class="mid-stop major">.</span> By my count<span class="numbering"> <span class="syllable-count">10</span></span><br>
 I was your Mother<span class="comma minor">,</span> much upon these yeares<span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -610,9 +421,9 @@ That you are now a Maide<span class="comma minor">,</span> thus then in briefe<s
 The valiant <em>Paris</em> seekes you for his love<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">405</span> </span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> A man young Lady<span class="comma minor">,</span> Lady<span class="comma minor">,</span> such a man as all<span class="numbering"></span><br>
 the world<span class="mid-stop major">.</span> Why hee's a man of waxe<span class="end-stop major">.</span><span class="numbering"></span></p>
-<p><span class="character"><em>Old</em> <em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> <em>Veronas</em> Summer hath not such a flower<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> <em>Veronas</em> Summer hath not such a flower<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Nay hee's a flower<span class="comma minor">,</span> infaith a very flower<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">12</span></span></p>
-<p><span class="character"><em>Old</em> <em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> What say you<span class="comma minor">,</span> can you love the Gentleman<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">410</span> </span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> What say you<span class="comma minor">,</span> can you love the Gentleman<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">410</span> </span></p>
 <p>This night you shall behold him at our Feast<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Read ore the volume of young <em>Paris</em> face<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And find delight<span class="comma minor">,</span> writ there with Beauties pen<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -629,7 +440,7 @@ That in Gold claspes<span class="comma minor">,</span> Lockes in the Golden stor
 So shall you share all that he doth possesse<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 By having him<span class="comma minor">,</span> making your selfe no lesse<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">425</span> </span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> No lesse<span class="comma minor">,</span> nay bigger<span class="colon major">:</span> women grow by men<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Old</em> <em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Speake briefly<span class="comma minor">,</span> can you like of <em>Paris</em> love<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Speake briefly<span class="comma minor">,</span> can you like of <em>Paris</em> love<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Juliet</em><span class="char-stop">.</span></span> Ile looke to like<span class="comma minor">,</span> if looking liking move<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>But no more deepe will I endart mine eye<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Then your consent gives strength to make flye<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span> <span class="line-count">430</span> </span></p>
@@ -797,9 +608,9 @@ Were in a Maske<span class="end-stop major">?</span><span class="numbering"> <sp
 'Tis since the Nuptiall of <em>Lucentio</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
 Come Pentycost as quickely as it will<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 Some five and twenty yeares<span class="comma minor">,</span> and then we Maskt<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character">Second  <em>Captaine</em><span class="char-stop">.</span></span> 'Tis more<span class="comma minor">,</span> 'tis more<span class="comma minor">,</span> his Sonne is elder sir<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">590</span> </span><br>
+<p><span class="character">Second  <em>Capulet</em><span class="char-stop">.</span></span> 'Tis more<span class="comma minor">,</span> 'tis more<span class="comma minor">,</span> his Sonne is elder sir<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">590</span> </span><br>
 His Sonne is thirty<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
-<p><span class="character">Third  <em>Captaine</em><span class="char-stop">.</span></span> Will you tell me that<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
+<p><span class="character">Third  <em>Capulet</em><span class="char-stop">.</span></span> Will you tell me that<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
 <p>His Sonne was but a Ward two yeares agoe<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Romeo</em><span class="char-stop">.</span></span> What Ladie is that which doth inrich the hand<span class="numbering"> <span class="syllable-count">11</span></span><br>
 Of yonder Knight<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">4</span> <span class="line-count">595</span> </span></p>
@@ -820,14 +631,14 @@ Come hither cover'd with an antique face<span class="comma minor">,</span><span 
 To fleere and scorne at our Solemnitie<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">610</span> </span></p>
 <p>Now by the stocke and Honour of my kin<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 To strike him dead I hold it not a sin<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Why how now kinsman<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Why how now kinsman<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
 Wherefore storme you so<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">6</span></span></p>
 <p><span class="character"><em>Tybalt</em><span class="char-stop">.</span></span> Uncle this is a <em>Mountague</em><span class="comma minor">,</span> our foe<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">615</span> </span><br>
 A Villaine that is hither come in spight<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 To scorne at our Solemnitie this night<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Young <em>Romeo</em> is it<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Young <em>Romeo</em> is it<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
 <p><span class="character"><em>Tybalt</em><span class="char-stop">.</span></span> 'Tis he<span class="comma minor">,</span> that Villaine <em>Romeo</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">7</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Content thee gentle Coz<span class="comma minor">,</span> let him alone<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">620</span> </span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Content thee gentle Coz<span class="comma minor">,</span> let him alone<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">620</span> </span><br>
 A beares him like a portly Gentleman<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And to say truth<span class="comma minor">,</span> <em>Verona</em> brags of him<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 To be a vertuous and well govern'd youth<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -839,14 +650,14 @@ Shew a faire presence<span class="comma minor">,</span> and put off these frowne
 An ill beseeming semblance for a Feast<span class="numbering"> <span class="syllable-count">10</span></span><br>
 <span class="character"><em>Tybalt</em><span class="char-stop">.</span></span> It fits when such a Villaine is a guest<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">630</span> </span><br>
 Ile not endure him<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> He shall be endur'd<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> He shall be endur'd<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
 <p>What goodman boy<span class="comma minor">,</span> I say he  shall<span class="comma minor">,</span> go too<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Am I the Maister here or you<span class="mid-stop major">?</span> go too<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Youle not endure him<span class="comma minor">,</span> God shall mend my soule<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">635</span> </span><br>
 Youle make a Mutinie among the Guests<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 You will set cocke a hoope<span class="comma minor">,</span> youle be the man<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Tybalt</em><span class="char-stop">.</span></span> Why Uncle<span class="comma minor">,</span> 'tis a shame<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">6</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Go too<span class="comma minor">,</span> go too<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">4</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Go too<span class="comma minor">,</span> go too<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">4</span></span><br>
 You are a sawcy Boy<span class="comma minor">,</span> 'ist so indeed<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">640</span> </span></p>
 <p>This tricke may chance to scath you<span class="comma minor">,</span> I know what<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 You must contrary me<span class="comma minor">,</span> marry 'tis time<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
@@ -890,7 +701,7 @@ Shall have the chincks<span class="end-stop major">.</span><span class="numberin
 <p>O deare account<span class="mid-stop major">!</span> My life is my foes debt<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">680</span> </span></p>
 <p><span class="character"><em>Benvolio</em><span class="char-stop">.</span></span> Away<span class="comma minor">,</span> be gone<span class="comma minor">,</span> the sport is at the best<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Romeo</em><span class="char-stop">.</span></span> I so I feare<span class="comma minor">,</span> the more is my unrest<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Nay Gentlemen prepare not to be gone<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Nay Gentlemen prepare not to be gone<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 We have a trifling foolish Banquet towards<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 Is it e'ne so<span class="mid-stop major">?</span> why then I thanke you all<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">685</span> </span></p>
 <p>I thanke you honest Gentlemen<span class="comma minor">,</span> good night<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -1139,9 +950,9 @@ By one that Ile procure to come to thee<span class="comma minor">,</span><span c
 Where and what time thou wilt performe the right<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And all my Fortunes at thy foote Ile lay<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And follow thee my Lord throughout the world<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">925</span> </span></p>
-<p><span class="character"><em>Within:</em></span> Madam<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">2</span></span></p>
+<p><span class="direction"><em>Within:</em></span> Madam<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">2</span></span></p>
 <p>I come<span class="comma minor">,</span> anon<span class="colon major">:</span> but if thou meanest not well<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
-I do beseech thee  <span class="character"><em>Within</em>:</span> Madam<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">7</span></span></p>
+I do beseech thee  <span class="direction"><em>Within</em>:</span> Madam<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">7</span></span></p>
 <p><span class="paren minor">(</span>By and by I come<span class="paren minor">)</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
 To cease thy strife<span class="comma minor">,</span> and leave me to my griefe<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">930</span> </span><br>
 To morrow will I send<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">6</span></span></p>
@@ -1772,17 +1583,17 @@ If thou art taken<span class="colon major">:</span> hence<span class="comma mino
 I charge thee in the Princes names obey<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span> <span class="line-count">1535</span> </span></p>
 <p><span class="direction"><em>Enter Prince, old Montague, Capulet, their</em><span class="numbering"></span><br>
 <em>Wives and all</em>.</span><span class="numbering"></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Where are the vile beginners of this Fray<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Where are the vile beginners of this Fray<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Benvolio</em><span class="char-stop">.</span></span> O Noble Prince<span class="comma minor">,</span> I can discover all<span class="numbering"> <span class="syllable-count">10</span></span><br>
 The unluckie Mannage of this fatall brall<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">1540</span> </span><br>
 There lies the man slaine by young <em>Romeo</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
 That slew thy kinsman brave <em>Mercutio</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span> <em>Within</em><span class="char-stop">.</span></span> <em>Tybalt</em><span class="comma minor">,</span> my Cozin<span class="mid-stop major">?</span> O my Brothers Child<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span> <span class="direction"><em>Within</em></span><span class="char-stop">.</span></span> <em>Tybalt</em><span class="comma minor">,</span> my Cozin<span class="mid-stop major">?</span> O my Brothers Child<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 O Prince<span class="comma minor">,</span>  O Cozin<span class="comma minor">,</span> Husband<span class="comma minor">,</span> O the blood is spild<span class="numbering"> <span class="syllable-count">12</span></span><br>
 Of my deare kinsman<span class="mid-stop major">.</span> Prince as thou art true<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1545</span> </span><br>
 For bloud of ours<span class="comma minor">,</span> shed bloud of <em>Mountague</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>O Cozin<span class="comma minor">,</span> Cozin<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> <em>Benvolio</em><span class="comma minor">,</span> who began this Fray<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> <em>Benvolio</em><span class="comma minor">,</span> who began this Fray<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
 <p><span class="character"><em>Benvolio</em><span class="char-stop">.</span></span> <em>Tybalt</em> here slaine<span class="comma minor">,</span> whom <em>Romeo's</em> hand did slay<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 <em>Romeo</em> that spoke him faire<span class="comma minor">,</span> bid him bethinke<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1550</span> </span><br>
 How nice the Quarrell was<span class="comma minor">,</span> and urg'd withall<span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -1807,18 +1618,18 @@ And too't they goe like lightning<span class="comma minor">,</span> for ere <spa
 Could draw to part them<span class="comma minor">,</span> was stout <em>Tybalt</em> slaine<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1570</span> </span><br>
 And as he fell<span class="comma minor">,</span> did <em>Romeo</em> turne and flie<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 This is the truth<span class="comma minor">,</span> or let <em>Benvolio</em> die<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span> <em>Within</em><span class="char-stop">.</span></span> He is a kinsman to the <em>Mountague</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span> <span class="direction"><em>Within</em></span><span class="char-stop">.</span></span> He is a kinsman to the <em>Mountague</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Affection makes him false<span class="comma minor">,</span> he speakes not true<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Some twenty of them fought in this blacke strife<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1575</span> </span><br>
 And all those twenty could but kill one life<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>I beg for Justice<span class="comma minor">,</span> which thou Prince must give<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 <em>Romeo</em> slew <em>Tybalt</em><span class="comma minor">,</span> <em>Romeo</em> must not live<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> <em>Romeo</em> slew him<span class="comma minor">,</span> he slew <em>Mercutio</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> <em>Romeo</em> slew him<span class="comma minor">,</span> he slew <em>Mercutio</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
 Who now the price of his deare blood doth owe<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1580</span> </span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Not <em>Romeo</em> Prince<span class="comma minor">,</span> he was <em>Mercutios</em> Friend<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Not <em>Romeo</em> Prince<span class="comma minor">,</span> he was <em>Mercutios</em> Friend<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 His fault concludes<span class="comma minor">,</span> but what the law should end<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 The life of <em>Tybalt</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> And for that offence<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> And for that offence<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
 Immediately we doe exile him hence<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">1585</span> </span><br>
 I have an interest in your hearts proceeding<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">12</span></span><br>
 My bloud for your rude brawles doth lie a bleeding<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
@@ -2182,7 +1993,7 @@ Give me thy hand<span class="comma minor">,</span> 'tis late<span class="comma m
 It were a griefe<span class="comma minor">,</span> so briefe to part with thee<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1935</span> </span><br>
 Farewell<span class="mid-stop major">.</span> <span class="direction"><em>Exeunt</em>.</span><span class="numbering"> <span class="syllable-count">3</span></span></p>
 <span class="direction"><em>Enter old Capulet, his Wife and Paris</em>.</span>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Things have falne out sir so unluckily<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Things have falne out sir so unluckily<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 That we have had no time to move our Daughter<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 Looke you<span class="comma minor">,</span> she Lov'd her kinsman <em>Tybalt</em> dearely<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">12</span></span><br>
 And so did I<span class="mid-stop major">.</span> Well<span class="comma minor">,</span> we were borne to die<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1940</span> </span></p>
@@ -2193,7 +2004,7 @@ I would have bin a bed an houre ago<span class="end-stop major">.</span><span cl
 Madam goodnight<span class="comma minor">,</span> commend me to your Daughter<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">1945</span> </span></p>
 <p><span class="character"><em>Lady</em><span class="char-stop">.</span></span> I will<span class="comma minor">,</span> and know her mind early to morrow<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 To night<span class="comma minor">,</span> she is mewed up to her heavinesse<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">12</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Sir <em>Paris</em><span class="comma minor">,</span> I will make a desperate tender<span class="numbering"> <span class="syllable-count">12</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Sir <em>Paris</em><span class="comma minor">,</span> I will make a desperate tender<span class="numbering"> <span class="syllable-count">12</span></span><br>
 Of my Childes love<span class="colon major">:</span> I thinke she will be rul'd<span class="numbering"> <span class="syllable-count">10</span></span><br>
 In all respects by me<span class="colon major">:</span> nay more<span class="comma minor">,</span> I doubt it not<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">12</span> <span class="line-count">1950</span> </span></p>
 <p>Wife<span class="comma minor">,</span> go you to her ere you go to bed<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -2201,7 +2012,7 @@ Acquaint her here<span class="comma minor">,</span> of my Sonne <em>Paris</em> L
 And bid her<span class="comma minor">,</span> marke you me<span class="comma minor">,</span> on Wendsday next<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 But soft<span class="comma minor">,</span> what day is this<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">6</span></span></p>
 <p><span class="character"><em>Paris</em><span class="char-stop">.</span></span> Monday my Lord<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span> <span class="line-count">1955</span> </span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Monday<span class="comma minor">,</span> ha ha<span class="colon major">:</span> well Wendsday is too soone<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Monday<span class="comma minor">,</span> ha ha<span class="colon major">:</span> well Wendsday is too soone<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 A Thursday let it be<span class="colon major">:</span> a Thursday tell her<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 She shall be married to this Noble Earle<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 Will you be ready<span class="mid-stop major">?</span> do you like this hast<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
@@ -2213,7 +2024,7 @@ Therefore weele have some halfe a dozen Friends<span class="comma minor">,</span
 And there an end<span class="mid-stop major">.</span> But what say you to Thursday<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">1965</span> </span></p>
 <p><span class="character"><em>Paris</em><span class="char-stop">.</span></span> My Lord<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">2</span></span><br>
 I would that Thursday were to morrow<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Well<span class="comma minor">,</span> get you gone<span class="comma minor">,</span> a Thursday<span class="comma minor">,</span> be it then<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Well<span class="comma minor">,</span> get you gone<span class="comma minor">,</span> a Thursday<span class="comma minor">,</span> be it then<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Go you to <em>Juliet</em> ere you go to bed<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Prepare her wife<span class="comma minor">,</span> against this wedding day<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">1970</span> </span></p>
 <p>Farewell my Lord<span class="comma minor">,</span> light to my Chamber hoa<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
@@ -2352,7 +2163,7 @@ Rather then <em>Paris</em><span class="mid-stop major">.</span> These are newes 
 <p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> Here comes your Father<span class="comma minor">,</span> tell him so your selfe<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And see how he will take it at your hands<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Enter Capulet and Nurse</em>.</span>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> When the Sun sets<span class="comma minor">,</span> the earth doth drizzle deaw<span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> When the Sun sets<span class="comma minor">,</span> the earth doth drizzle deaw<span class="numbering"> <span class="syllable-count">10</span></span><br>
 But for the Sunset of my Brothers Sonne<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 It raines downright<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span> <span class="line-count">2105</span> </span></p>
 <p>How now<span class="mid-stop major">?</span> A Conduit Gyrle<span class="comma minor">,</span> what still in teares<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
@@ -2368,7 +2179,7 @@ Thy tempest tossed body<span class="mid-stop major">.</span> How now wife<span c
 <p><span class="character"><em>Lady</em><span class="char-stop">.</span></span> I sir<span class="colon major">;</span><span class="numbering"> <span class="syllable-count">2</span></span><br>
 But she will none<span class="comma minor">,</span> she gives you thankes<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">8</span></span><br>
 I would the foole were married to her grave<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Soft<span class="comma minor">,</span> take me with you<span class="comma minor">,</span> take me with you wife<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Soft<span class="comma minor">,</span> take me with you<span class="comma minor">,</span> take me with you wife<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 How<span class="comma minor">,</span> will she none<span class="mid-stop major">?</span> doth she not give us thanks<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2120</span> </span></p>
 <p>Is she not proud<span class="mid-stop major">?</span> doth she not count her blest<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Unworthy as she is<span class="comma minor">,</span> that we have wrought<span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -2377,7 +2188,7 @@ So worthy a Gentleman<span class="comma minor">,</span> to be her Bridegroome<sp
 But thankfull that you have<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">6</span> <span class="line-count">2125</span> </span><br>
 Proud can I never be of what I have<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 But thankfull even for hate<span class="comma minor">,</span> that is meant Love<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> How now<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">2</span></span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> How now<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">2</span></span></p>
 <p>How now<span class="mid-stop major">?</span> Chopt Logicke<span class="mid-stop major">?</span> what is this<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
 <p>Proud<span class="comma minor">,</span> and I thanke you<span class="colon major">:</span> and I thanke you not<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2130</span> </span></p>
 <p>Thanke me no thankings<span class="comma minor">,</span> nor proud me no prouds<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -2612,23 +2423,23 @@ And the strength shall helpe afford<span class="colon major">:</span><span class
 Farewell deare father<span class="mid-stop major">.</span> <span class="direction"><em>Exit</em></span><span class="numbering"> <span class="syllable-count">6</span></span></p>
 <p><span class="direction"><em>Enter Father Capulet, Mother, Nurse, and</em><span class="numbering"></span><br>
 <em>Serving men, two or three</em>.</span><span class="numbering"> <span class="line-count">2360</span> </span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> So many guests invite as here are writ<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> So many guests invite as here are writ<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Sirrah<span class="comma minor">,</span> go hire me twenty cunning Cookes<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Servant</em><span class="char-stop">.</span></span> You shall have none ill sir<span class="comma minor">,</span> for Ile trie if they can<span class="numbering"></span><br>
 licke their fingers<span class="end-stop major">.</span><span class="numbering"></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> How canst thou trie them so<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">6</span> <span class="line-count">2365</span> </span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> How canst thou trie them so<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">6</span> <span class="line-count">2365</span> </span></p>
 <p><span class="character"><em>Servant</em><span class="char-stop">.</span></span> Marrie sir<span class="comma minor">,</span> 'tis an ill Cooke that cannot licke his<span class="numbering"></span><br>
 owne fingers<span class="colon major">:</span> therefore he that cannot licke his fingers<span class="numbering"></span><br>
 goes not with me<span class="end-stop major">.</span><span class="numbering"></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Go be gone<span class="comma minor">,</span> we shall be much unfurnisht for this<span class="numbering"></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Go be gone<span class="comma minor">,</span> we shall be much unfurnisht for this<span class="numbering"></span><br>
 time<span class="colon major">:</span> what is my Daughter gone to Frier <em>Lawrence</em><span class="end-stop major">?</span><span class="numbering"> <span class="line-count">2370</span> </span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> I forsooth<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">3</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Well he may chance to do some good on her<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Well he may chance to do some good on her<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 A peevish selfe-wild harlotry it is<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
 <span class="direction"><em>Enter Juliet</em>.</span>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> See where she comes from shrift<span class="numbering"> <span class="syllable-count">6</span></span><br>
 With merrie looke<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span> <span class="line-count">2375</span> </span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> How now my headstrong<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> How now my headstrong<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
 Where have you bin gadding<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">6</span></span></p>
 <p><span class="character"><em>Juliet</em><span class="char-stop">.</span></span> Where I have learnt me to repent the sin<span class="numbering"> <span class="syllable-count">10</span></span><br>
 Of disobedient opposition<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
@@ -2636,12 +2447,12 @@ To you and your behests<span class="comma minor">,</span> and am enjoyn'd<span c
 By holy <em>Lawrence</em><span class="comma minor">,</span> to fall prostrate here<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 To beg your pardon<span class="colon major">:</span> pardon I beseech you<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 Henceforward I am ever rul'd by you<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Send for the Countie<span class="comma minor">,</span> goe tell him of this<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Send for the Countie<span class="comma minor">,</span> goe tell him of this<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Ile have this knot knit up to morrow morning<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">2385</span> </span></p>
 <p><span class="character"><em>Juliet</em><span class="char-stop">.</span></span> I met the youthfull Lord at <em>Lawrence</em> Cell<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And gave him what becomed Love I might<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Not stepping ore the bounds of modestie<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Why I am glad on't<span class="comma minor">,</span> this is well<span class="comma minor">,</span> stand up<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Why I am glad on't<span class="comma minor">,</span> this is well<span class="comma minor">,</span> stand up<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 This is as't should be<span class="comma minor">,</span> let me see the County<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">2390</span> </span><br>
 I marrie go I say<span class="comma minor">,</span> and fetch him hither<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
 <p>Now afore God<span class="comma minor">,</span> this reveren'd holy Frier<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
@@ -2731,7 +2542,7 @@ Upon my Rapiers point<span class="colon major">:</span> stay <em>Tybalt</em><spa
 Take these keies<span class="comma minor">,</span> and fetch more spices Nurse<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> They call for Dates and Quinces in the Pastrie<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Enter old Capulet</em>.</span>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Come<span class="comma minor">,</span> stir<span class="comma minor">,</span> stir<span class="comma minor">,</span> stir<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">4</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Come<span class="comma minor">,</span> stir<span class="comma minor">,</span> stir<span class="comma minor">,</span> stir<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">4</span></span><br>
 The second Cocke hath Crow'd<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">6</span></span><br>
 The Curphew Bell hath rung<span class="comma minor">,</span> 'tis three a clocke<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2475</span> </span><br>
 Looke to the bakte meates<span class="comma minor">,</span> good <em>Angelica</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -2739,20 +2550,20 @@ Spare not for cost<span class="end-stop major">.</span><span class="numbering"> 
 <p><span class="character"><em>Nurse</em><span class="char-stop">.</span></span> Go you Cot-queane<span class="comma minor">,</span> go<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">5</span></span><br>
 Get you to bed<span class="comma minor">,</span> faith youle be sicke to morrow<span class="numbering"> <span class="syllable-count">11</span></span><br>
 For this nights watching<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span> <span class="line-count">2480</span> </span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> No not a whit<span class="colon major">:</span> what<span class="mid-stop major">?</span> I have watcht ere now<span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> No not a whit<span class="colon major">:</span> what<span class="mid-stop major">?</span> I have watcht ere now<span class="numbering"> <span class="syllable-count">10</span></span><br>
 All night for lesse cause<span class="comma minor">,</span> and nere beene sicke<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Capulet</span></em><span class="char-stop">.</span></span> I you have bin a  Mouse-hunt in your time<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 But I will watch you from such watching now<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Exit Lady and Nurse</em>.</span>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> A jealous hood<span class="comma minor">,</span> a jealous hood<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">8</span> <span class="line-count">2485</span> </span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> A jealous hood<span class="comma minor">,</span> a jealous hood<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">8</span> <span class="line-count">2485</span> </span><br>
 Now fellow<span class="comma minor">,</span> what there<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
 <span class="direction"><em>Enter three or foure with spits, and logs, and baskets</em>.</span>
 <p><span class="character"><em>Fellow</em><span class="char-stop">.</span></span> Things for the Cooke sir<span class="comma minor">,</span> but I know not what<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Make hast<span class="comma minor">,</span> make hast<span class="comma minor">,</span> sirrah<span class="comma minor">,</span> fetch drier Logs<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Make hast<span class="comma minor">,</span> make hast<span class="comma minor">,</span> sirrah<span class="comma minor">,</span> fetch drier Logs<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <p>Call <em>Peter</em><span class="comma minor">,</span> he will shew thee where they are<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Fellow</em><span class="char-stop">.</span></span> I have a head sir<span class="comma minor">,</span> that will find out logs<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2490</span> </span><br>
 And never trouble <em>Peter</em> for the matter<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> Masse and well said<span class="comma minor">,</span> a merrie horson<span class="comma minor">,</span> ha<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> Masse and well said<span class="comma minor">,</span> a merrie horson<span class="comma minor">,</span> ha<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Thou shalt be loggerhead<span class="colon major">;</span> good Father<span class="comma minor">,</span> 'tis day<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
 <span class="direction"><em>Play Musicke</em></span>
 <p>The Countie will be here with Musicke straight<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -3246,39 +3057,39 @@ We tooke this Mattocke and this Spade from him<span class="comma minor">,</span>
 As he was comming from this Church-yard side<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Constable</em><span class="char-stop">.</span></span> A great suspition<span class="comma minor">,</span> stay the Frier too<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <span class="direction"><em>Enter the Prince</em>.</span>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> What misadventure is so earely up<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">2965</span> </span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> What misadventure is so earely up<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">2965</span> </span><br>
 That calls our person from our mornings rest<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Enter Capulet and his Wife</em>.</span>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> What should it be that they so shrike abroad<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> O the people in the streete crie <em>Romeo</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> What should it be that they so shrike abroad<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> O the people in the streete crie <em>Romeo</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>Some <em>Juliet</em><span class="comma minor">,</span> and some <em>Paris</em><span class="comma minor">,</span> and all runne<span class="numbering"> <span class="syllable-count">10</span></span><br>
 With open outcry toward our Monument<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">2970</span> </span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> What feare is this which startles in your eares<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> What feare is this which startles in your eares<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <p><span class="character"><em>Watch</em><span class="char-stop">.</span></span> Soveraigne<span class="comma minor">,</span> here lies the Countie <em>Paris</em> slaine<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 And <em>Romeo</em> dead<span class="comma minor">,</span> and <em>Juliet</em> dead before<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Warme and new kil'd<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Search<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">1</span> <span class="line-count">2975</span> </span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Search<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">1</span> <span class="line-count">2975</span> </span><br>
 Seeke<span class="comma minor">,</span> and know how<span class="comma minor">,</span> this foule murder comes<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
 <p><span class="character"><em>Watch</em><span class="char-stop">.</span></span> Here is a Frier<span class="comma minor">,</span> and Slaughter'd <em>Romeos</em> man<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 With Instruments upon them fit to open<span class="numbering"> <span class="syllable-count">11</span></span><br>
 These dead mens Tombes<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> O heaven<span class="end-stop major">!</span><span class="numbering"> <span class="syllable-count">3</span> <span class="line-count">2980</span> </span></p>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> O heaven<span class="end-stop major">!</span><span class="numbering"> <span class="syllable-count">3</span> <span class="line-count">2980</span> </span></p>
 <p>O wife looke how our Daughter bleedes<span class="end-stop major">!</span><span class="numbering"> <span class="syllable-count">8</span></span></p>
 <p>This Dagger hath mistaine<span class="comma minor">,</span> for loe his house<span class="numbering"> <span class="syllable-count">10</span></span><br>
 Is empty on the backe of <em>Mountague</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And is misheathed in my Daughters bosome<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
-<p><span class="character"><em>Wife</em><span class="char-stop">.</span></span> O me<span class="comma minor">,</span> this sight of death<span class="comma minor">,</span> is as a Bell<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2985</span> </span><br>
+<p><span class="character"><em><span class="sub-honorific">Lady</span> <span class="sub-name addendum">Mountague</span></em><span class="char-stop">.</span></span> O me<span class="comma minor">,</span> this sight of death<span class="comma minor">,</span> is as a Bell<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2985</span> </span><br>
 That warnes my old age to a Sepulcher<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <span class="direction"><em>Enter Mountague</em>.</span>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Come <em>Mountague</em><span class="comma minor">,</span> for thou art early up<span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Come <em>Mountague</em><span class="comma minor">,</span> for thou art early up<span class="numbering"> <span class="syllable-count">10</span></span><br>
 To see thy Sonne and Heire<span class="comma minor">,</span> now early downe<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Mountague</em><span class="char-stop">.</span></span> Alas my liege<span class="comma minor">,</span> my wife is dead to night<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Griefe of my Sonnes exile hath stopt her breath<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2990</span> </span><br>
 What further woe conspires against my age<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Looke<span class="colon major">:</span> and thou shalt see<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Looke<span class="colon major">:</span> and thou shalt see<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">5</span></span></p>
 <p><span class="character"><em>Mountague</em><span class="char-stop">.</span></span> O thou untaught<span class="comma minor">,</span> what manners is in this<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 To presse before thy Father to a grave<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Seale up the mouth of outrage for a while<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2995</span> </span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Seale up the mouth of outrage for a while<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">2995</span> </span><br>
 Till we can cleare these ambiguities<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
 And know their spring<span class="comma minor">,</span> their head<span class="comma minor">,</span> their true descent<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And then I will be generall of your woes<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
@@ -3290,7 +3101,7 @@ Yet most suspected as the time and place<span class="numbering"> <span class="sy
 Doth make against me of this direfull murther<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">12</span></span><br>
 And heere I stand both to impeach and purge<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3005</span> </span><br>
 My selfe condemned<span class="comma minor">,</span> and my selfe excus'd<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Then say at once<span class="comma minor">,</span> what thou dost know in this<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Then say at once<span class="comma minor">,</span> what thou dost know in this<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Frier</em><span class="char-stop">.</span></span> I will be briefe<span class="comma minor">,</span> for my short date of breath<span class="numbering"> <span class="syllable-count">10</span></span><br>
 Is not so long as is a tedious tale<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><em>Romeo</em> there dead<span class="comma minor">,</span> was husband to that <em>Juliet</em><span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">3010</span> </span><br>
@@ -3331,7 +3142,7 @@ But <span class="paren minor">(</span>as it seemes<span class="paren minor">)</s
 And if ought in this miscarried by my fault<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">11</span> <span class="line-count">3045</span> </span><br>
 Let my old life be sacrific'd<span class="comma minor">,</span> some houre before the time<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">14</span></span><br>
 Unto the rigour of severest Law<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> We still have knowne thee for a Holy man<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> We still have knowne thee for a Holy man<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>Where's <em>Romeo's</em> man<span class="mid-stop major">?</span> What can he say to this<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
 <p><span class="character"><em>Boy</em><span class="char-stop">.</span></span> I brought my Master newes of <em>Juliets</em> death<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3050</span> </span><br>
 And then in poste he came from <em>Mantua</em><span class="numbering"> <span class="syllable-count">9</span></span><br>
@@ -3339,7 +3150,7 @@ To this same place<span class="comma minor">,</span> to this same Monument<span 
 <p>This Letter he early bid me give his Father<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">12</span></span><br>
 And threatned me with death<span class="comma minor">,</span> going in the Vault<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 If I departed not<span class="comma minor">,</span> and left him there<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3055</span> </span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> Give me the Letter<span class="comma minor">,</span> I will look on it<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> Give me the Letter<span class="comma minor">,</span> I will look on it<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>Where is the Counties Page that rais'd the Watch<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p>Sirra<span class="comma minor">,</span> what made your Master in this place<span class="end-stop major">?</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
 <p><span class="character"><em>Page</em><span class="char-stop">.</span></span> He came with flowres to strew his Ladies grave<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
@@ -3347,7 +3158,7 @@ And bid me stand aloofe<span class="comma minor">,</span> and so I did<span clas
 Anon comes one with light to ope the Tombe<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And by and by my Maister drew on him<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 And then I ran away to call the Watch<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> This Letter doth make good the Friers words<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> This Letter doth make good the Friers words<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">9</span></span><br>
 Their course of Love<span class="comma minor">,</span> the tydings of her death<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3065</span> </span><br>
 And heere he writes<span class="comma minor">,</span> that he did buy a poyson<span class="numbering"> <span class="syllable-count">11</span></span><br>
 Of a poore Pothecarie<span class="comma minor">,</span> and therewithall<span class="numbering"> <span class="syllable-count">12</span></span><br>
@@ -3357,7 +3168,7 @@ See what a scourge is laide upon your hate<span class="comma minor">,</span><spa
 That Heaven finds meanes to kill your joyes with Love<span class="colon major">;</span><span class="numbering"> <span class="syllable-count">11</span></span><br>
 And I<span class="comma minor">,</span> for winking at your discords too<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Have lost a brace of Kinsmen<span class="colon major">:</span> All are punish'd<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">11</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> O Brother <em>Mountague</em><span class="comma minor">,</span> give me thy hand<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> O Brother <em>Mountague</em><span class="comma minor">,</span> give me thy hand<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 This is my Daughters joynture<span class="comma minor">,</span> for no more<span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3075</span> </span><br>
 Can I demand<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">4</span></span></p>
 <p><span class="character"><em>Mountague</em><span class="char-stop">.</span></span> But I can give thee more<span class="colon major">:</span><span class="numbering"> <span class="syllable-count">6</span></span><br>
@@ -3365,9 +3176,9 @@ For I will raise her Statue in pure Gold<span class="comma minor">,</span><span 
 That whiles <em>Verona</em> by that name is knowne<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 There shall no figure at that Rate be set<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3080</span> </span><br>
 As that of True and Faithfull <em>Juliet</em><span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
-<p><span class="character"><em>Captaine</em><span class="char-stop">.</span></span> As rich shall <em>Romeo</em> by his Lady ly<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Capulet</em><span class="char-stop">.</span></span> As rich shall <em>Romeo</em> by his Lady ly<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Poore sacrifices of our enmity<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">9</span></span></p>
-<p><span class="character"><em><span class="sub-honorific">Prince</span> <span class="sub-name addendum">Eskales</span></em><span class="char-stop">.</span></span> A glooming peace this morning with it brings<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
+<p><span class="character"><em>Prince</em><span class="char-stop">.</span></span> A glooming peace this morning with it brings<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 The Sunne for sorrow will not shew his head<span class="colon major">;</span><span class="numbering"> <span class="syllable-count">10</span> <span class="line-count">3085</span> </span><br>
 Go hence<span class="comma minor">,</span> to have more talke of these sad things<span class="comma minor">,</span><span class="numbering"> <span class="syllable-count">10</span></span><br>
 Some shall be pardon'd<span class="comma minor">,</span> and some punished<span class="end-stop major">.</span><span class="numbering"> <span class="syllable-count">10</span></span></p>
@@ -3378,18 +3189,3 @@ THE TRAGEDIE OF<span class="numbering"></span><br>
 ROMEO and JULIET</div><span class="numbering"></span></p>
 </div>
 </div>
-
-
-
-    </div> <!-- /content -->
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="lib/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="lib/jquery.min.js"><\/script>')</script>
-    <script src="lib/jquery.autocomplete.min.js"></script>
-    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="scripts/settings.js"></script>
-    <script src="scripts/interface.js"></script>
-  </body>
-</html>

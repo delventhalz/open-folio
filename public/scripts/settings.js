@@ -25,6 +25,12 @@ var plays = [{
   value: "A Midsummer Night's Dream", 
   path: "plays/midsummer.html"
 }, {
+  value: "Othello", 
+  path: "plays/othello.html"
+}, {
+  value: "Romeo and Juliet", 
+  path: "plays/romeo-juliet.html"
+}, {
   value: "The Tempest", 
   path: "plays/tempest.html"
 }, {
