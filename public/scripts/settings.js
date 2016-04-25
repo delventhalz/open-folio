@@ -19,6 +19,12 @@ var plays = [{
   value: "Hamlet", 
   path: "plays/hamlet.html"
 }, {
+  value: "King Henry IV part 1", 
+  path: "plays/henry-4-1.html"
+}, {
+  value: "King Henry IV part 2", 
+  path: "plays/henry-4-2.html"
+}, {
   value: "Macbeth", 
   path: "plays/macbeth.html"
 }, {
