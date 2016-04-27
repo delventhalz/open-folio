@@ -25,6 +25,9 @@ var plays = [{
   value: "King Henry IV part 2", 
   path: "plays/henry-4-2.html"
 }, {
+  value: "King Henry V", 
+  path: "plays/henry-5.html"
+}, {
   value: "King Henry VI part 1", 
   path: "plays/henry-6-1.html"
 }, {
@@ -33,6 +36,9 @@ var plays = [{
 }, {
   value: "King Henry VI part 3", 
   path: "plays/henry-6-3.html"
+}, {
+  value: "King Henry VIII", 
+  path: "plays/henry-8.html"
 }, {
   value: "Macbeth", 
   path: "plays/macbeth.html"
