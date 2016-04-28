@@ -40,6 +40,12 @@ var plays = [{
   value: "King Henry VIII", 
   path: "plays/henry-8.html"
 }, {
+  value: "King John", 
+  path: "plays/john.html"
+}, {
+  value: "King Lear", 
+  path: "plays/lear.html"
+}, {
   value: "King Richard II", 
   path: "plays/richard-2.html"
 }, {
