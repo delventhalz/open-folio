@@ -16,6 +16,12 @@ var animating = {
 
 // Names and paths of plays for the autocomplete
 var plays = [{
+  value: "All's Well That Ends Well", 
+  path: "plays/alls-well.html"
+}, {
+  value: "Anthony and Cleopatra", 
+  path: "plays/anthony-cleopatra.html"
+}, {
   value: "Hamlet", 
   path: "plays/hamlet.html"
 }, {
