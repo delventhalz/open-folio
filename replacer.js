@@ -75,6 +75,9 @@ var format = function(string) {
 
   for (currentLine = 0; currentLine < currentText.length; currentLine++) {
     var line = currentText[currentLine];
+    if (line[8] === 'Z' || line[8] === 'D') {
+      console.log('* * * * * * * * * * * * * * * * * *');
+    }
     console.log(line);
 
     if (line[0] > 0) {
@@ -244,7 +247,9 @@ var formatLine = function(line, isStart) {
 
     '#': function() {},
 
-    '"': function() {}
+    '"': function() {},
+    
+    '%': function() {}
 
   };
   /*********  End Router  *********/
