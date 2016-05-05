@@ -79,8 +79,17 @@ var plays = [{
   value: "Macbeth", 
   path: "plays/macbeth.html"
 }, {
+  value: "Measure for Measure", 
+  path: "plays/measure.html"
+}, {
+  value: "The Merchant of Venice", 
+  path: "plays/merchant.html"
+}, {
   value: "A Midsummer Night's Dream", 
   path: "plays/midsummer.html"
+}, {
+  value: "Much Ado About Nothing", 
+  path: "plays/much-ado.html"
 }, {
   value: "Othello", 
   path: "plays/othello.html"

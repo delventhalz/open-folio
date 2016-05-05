@@ -249,7 +249,9 @@ var formatLine = function(line, isStart) {
 
     '"': function() {},
     
-    '%': function() {}
+    '%': function() {},
+
+    '*': function() {}
 
   };
   /*********  End Router  *********/
