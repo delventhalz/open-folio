@@ -19,8 +19,14 @@ var plays = [{
   value: "All's Well That Ends Well", 
   path: "plays/alls-well.html"
 }, {
+  value: "As You Like It", 
+  path: "plays/as-you-like-it.html"
+}, {
   value: "Anthony and Cleopatra", 
   path: "plays/anthony-cleopatra.html"
+}, {
+  value: "Comedy of Errors", 
+  path: "plays/comedy-errors.html"
 }, {
   value: "Hamlet", 
   path: "plays/hamlet.html"
