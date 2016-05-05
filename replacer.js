@@ -242,7 +242,9 @@ var formatLine = function(line, isStart) {
 
     '|': function() { i++; },
 
-    '#': function() {}
+    '#': function() {},
+
+    '"': function() {}
 
   };
   /*********  End Router  *********/

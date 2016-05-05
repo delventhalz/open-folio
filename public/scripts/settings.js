@@ -28,6 +28,12 @@ var plays = [{
   value: "Comedy of Errors", 
   path: "plays/comedy-errors.html"
 }, {
+  value: "Coriolanus", 
+  path: "plays/coriolanus.html"
+}, {
+  value: "Cymbeline", 
+  path: "plays/cymbeline.html"
+}, {
   value: "Hamlet", 
   path: "plays/hamlet.html"
 }, {
