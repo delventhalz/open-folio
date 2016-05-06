@@ -85,6 +85,9 @@ var plays = [{
   value: "The Merchant of Venice", 
   path: "plays/merchant.html"
 }, {
+  value: "Merry Wives of Windsor", 
+  path: "plays/merry-wives.html"
+}, {
   value: "A Midsummer Night's Dream", 
   path: "plays/midsummer.html"
 }, {
@@ -100,8 +103,17 @@ var plays = [{
   value: "The Tempest", 
   path: "plays/tempest.html"
 }, {
+  value: "Timon of Athens", 
+  path: "plays/timon.html"
+}, {
+  value: "Titus Andronicus", 
+  path: "plays/titus.html"
+}, {
   value: "Twelfth Night", 
   path: "plays/twelfth-night.html"
+}, {
+  value: "Two Gentlemen og Verona", 
+  path: "plays/two-gentlemen.html"
 }, {
   value: "Winter's Tale", 
   path: "plays/winters-tale.html"
