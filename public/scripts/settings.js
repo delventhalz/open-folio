@@ -100,6 +100,9 @@ var plays = [{
   value: "Romeo and Juliet", 
   path: "plays/romeo-juliet.html"
 }, {
+  value: "Taming of the Shrew", 
+  path: "plays/taming.html"
+}, {
   value: "The Tempest", 
   path: "plays/tempest.html"
 }, {
@@ -108,6 +111,9 @@ var plays = [{
 }, {
   value: "Titus Andronicus", 
   path: "plays/titus.html"
+}, {
+  value: "Troylus and Cressida", 
+  path: "plays/troylus.html"
 }, {
   value: "Twelfth Night", 
   path: "plays/twelfth-night.html"
