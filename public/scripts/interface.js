@@ -189,11 +189,10 @@ var setDynamicText = function() {
  *                 LISTENERS                   *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
-// Move stage direction tags to after numbering tags
-// (affects appearance when directions have block display)
+// Move stage direction tags to after numbering tags.
+// Affects appearance when directions are given block display.
 Array.prototype.forEach.call($('.direction'), function(direction){
-  var numbering = $(direction).nextAll('.numbering')[0];
-
+  var numbering = $(direction).next('.numbering')[0];
   if (numbering) $(direction).detach().insertAfter(numbering);
 });
 
@@ -209,6 +208,10 @@ $('.toggle').on('click', function() {
   $(this).toggleClass('active');
 });
 
+// Printing
+$('#print-button').on('click', function() {
+  window.print();
+});
 
 // Play selection
 $('#play-selection').autocomplete({
