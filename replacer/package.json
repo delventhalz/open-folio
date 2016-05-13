@@ -1,0 +1,12 @@
+{
+  "name": "replacer",
+  "version": "0.2.0",
+  "main": "replacer.js",
+  "scripts": {
+    "start": "node replacer.js"
+  },
+  "dependencies": {
+    "readline-sync": "^1.2.22",
+    "spellchecker": "^3.1.3"
+  }
+}

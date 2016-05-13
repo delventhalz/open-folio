@@ -1,16 +1,11 @@
 {
-  "name": "replacer",
-  "version": "0.1.6",
+  "name": "css-shakespeare",
+  "version": "0.1.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "postinstall": "bower install"
+    "start": "node server.js"
   },
   "dependencies": {
-    "readline-sync": "^1.2.22",
-    "spellchecker": "^3.1.3",
-    "bower": "^1.7.2",
     "express": "4.13.3"
-  },
-  "scripts": {}
+  }
 }
