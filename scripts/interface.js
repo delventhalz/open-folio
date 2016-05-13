@@ -47,6 +47,15 @@ var animateChange = function(hidden, done) {
   }, animating.delay);
 };
 
+// Move stage directions to after numbering. Semantically weird, but
+// necessary for appearance when directions are given block display.
+var shiftDirections = function() {
+  Array.prototype.forEach.call($('.direction'), function(direction){
+    var numbering = $(direction).next('.numbering')[0];
+    if (numbering) $(direction).detach().insertAfter(numbering);
+  });
+};
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
  *             INTERFACE FUNCTIONS             *
@@ -189,14 +198,6 @@ var setDynamicText = function() {
  *                 LISTENERS                   *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
-// Move stage direction tags to after numbering tags.
-// Affects appearance when directions are given block display.
-Array.prototype.forEach.call($('.direction'), function(direction){
-  var numbering = $(direction).next('.numbering')[0];
-  if (numbering) $(direction).detach().insertAfter(numbering);
-});
-
-
 // Text resizing
 setDynamicText();
 $(window).on('resize', function() {
@@ -225,6 +226,7 @@ $('#play-selection').autocomplete({
       $.get(suggestion.path, function(data) {
         $('.folio').append(data);
         populateSceneSelect();
+        shiftDirections();
         if ( !$('.preset').hasClass('active') ) {
           $('#modern-preset').trigger('click');
         }

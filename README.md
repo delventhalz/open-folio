@@ -1,1 +1,1 @@
-An online edition of Shakespeare's First Folio, formatted in semantic HTML, and deployed with a CSS based interface allowing for on-the-fly reformatting of each play. Currently in open alpha.
+An online edition of Shakespeare's First Folio, formatted in semantic HTML, and deployed with a CSS based interface allowing for on-the-fly reformatting of each play. Currently in an open alpha.
