@@ -1,0 +1,18 @@
+@media print {
+  @page {
+    margin-top: 0.75in;
+    margin-bottom: 0.75in;
+    margin-left: 1.25in;
+    margin-right: 2.25in;
+  }
+
+  .folio {
+    font-size: 9pt;
+    line-height: 150%;
+  }
+
+  .folio h1 {
+    margin-top: 0;
+    margin-bottom: 6em;
+  }
+}
