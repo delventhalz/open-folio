@@ -137,6 +137,43 @@ $('#syllable-numbers').on('click', function() {
  * * * * * * * * * * * * * * * * * * * * * * * */
 
 $('#font-size').on('change', function() {
-  console.log($(this).val());
-})
+  setPrintStyle('.folio', 'font-size', $(this).val());
+});
 
+$('#line-height').on('change', function() {
+  setPrintStyle('.folio', 'line-height', $(this).val());
+});
+
+$('#one-column').on('click', function() {
+  $('#two-columns').removeClass('active');
+  $('#print-columns').html('');
+});
+
+$('#two-columns').on('click', function() {
+  $('#one-column').removeClass('active');
+  setStyle('#print-columns', 
+    '@media print{' + 
+      '.folio{' + 
+        '-webkit-column-count:2;' + 
+        '-moz-column-count:2;' + 
+        'column-count:2;' + 
+      '}' + 
+    '}'
+  );
+});
+
+$('#top-margin').on('change', function() {
+  setPrintStyle('@page', 'margin-top', $(this).val());
+});
+
+$('#bottom-margin').on('change', function() {
+  setPrintStyle('@page', 'margin-bottom', $(this).val());
+});
+
+$('#left-margin').on('change', function() {
+  setPrintStyle('@page', 'margin-left', $(this).val());
+});
+
+$('#right-margin').on('change', function() {
+  setPrintStyle('@page', 'margin-right', $(this).val());
+});
