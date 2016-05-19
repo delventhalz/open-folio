@@ -101,7 +101,7 @@ $('#character-caps').on('click', function() {
 });
 
 $('#character-bold').on('click', function() {
-  toggleStyle('.character', 'font-weight', '800', '300');
+  toggleStyle('.character', 'font-weight', '900', '400');
 });
 
 $('#direction-linebreak').on('click', function() {
@@ -120,8 +120,8 @@ $('#punctuation-whitespace').on('click', function() {
 
 // TODO: Make major punctuation bigger as well;
 $('#punctuation-bold').on('click', function() {
-  toggleStyle('.major', 'font-weight', '800', '300');
-  toggleStyle('.minor', 'font-weight', '800', '300');
+  toggleStyle('.major', 'font-weight', '900', '400');
+  toggleStyle('.minor', 'font-weight', '900', '400');
 });
 
 $('#line-numbers').on('click', function() {

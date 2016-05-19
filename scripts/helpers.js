@@ -134,33 +134,42 @@ var togglePreset = function(button, name) {
  * * * * * * * * * * * * * * * * * * * * * * * */
 
 // Adds a style tag to the head if it does not exist.
-var makeStyleTag = function(selector) {
-  var type;
+var makeStyleTag = function(label) {
+  var type = label[0] === '.' ? 'class' : 'id';
 
-  if (!$(selector).length) {
-    if (selector[0] === '.') type = 'class';
-    else if (selector[0] === '#') type = 'id';
-    else return;
-
-    $('head').append('<style ' + type + '="' + selector.slice(1) 
+  if (!$(label).length) {
+    $('head').append('<style ' + type + '="' + label.slice(1) 
       + '" type="text/css"></style>');
   }
+};
+
+var setStyle = function(label, tag) {
+  makeStyleTag(label);
+  $(label).html(tag);
+};
+
+var buildLabel = function(selector, style) {
+  return selector.replace('.', '').replace('#', '').replace('@', '') + '-' + style;
+};
+
+var setPrintStyle = function(selector, style, value) {
+  var label = '#print-' + buildLabel(selector, style);
+  setStyle(label, '@media print {' + selector + '{' + style + ':' + value + ';} }');
 };
 
 // Toggles a particular CSS style on or off in the whole document
 // Note that an off state must be provided in order to override existing styles
 var toggleStyle = function(selector, style, on, off) {
-  var id = '#' + selector.replace('.', '').replace('#', '') + '-' + style;
-  makeStyleTag(id);
+  var label = '#' + buildLabel(selector, style);
+  var value = $(selector).css(style) === off ? on : off;
 
   animateChange(function() {
-    if ($(selector).css(style) === off) {
-      $(id).html(selector + '{' + style + ':' + on + ';}');
-    } else {
-      $(id).html(selector + '{' + style + ':' + off + ';}');
-    }
+    setStyle(label, selector + '{' + style + ':' + value + ';}');
   });
 };
+
+
+
 
 var setSceneVisibility = function() {
   if (!settings.displayAll && settings.scene) {
