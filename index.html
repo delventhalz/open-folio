@@ -43,8 +43,8 @@
 
         <!-- Print and Submit Feedback buttons -->
         <ul class="nav navbar-nav navbar-right">
-          <li id="feedback-button" title="display help"><a data-toggle="modal" data-target="#print-modal"><span class="glyphicon glyphicon-alert"></span></a></li>
-          <li id="print-button" title="print" class="active"><a><span class="glyphicon glyphicon-print"></span></a></li>
+          <li id="feedback-button" title="display help"><a data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-alert"></span></a></li>
+          <li id="print-button" title="print" class="active"><a data-toggle="modal" data-target="#print-modal"><span class="glyphicon glyphicon-print"></span></a></li>
         </ul>
 
         <div id="navbar" class="navbar-collapse collapse">
@@ -200,38 +200,46 @@
     <div class="modal fade" id="print-modal" tabindex="-1" role="dialog" aria-labelledby="Print Formatting">
       <div class="modal-dialog">
         <div class="modal-content">
+
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title">Format Your Print</h4>
           </div>
+
           <div class="modal-body">
-            <div class="col-md-6">
-              <!-- TODO: figure out how to look up these values live -->
-              <h6>Font Size</h6>
-              <input id="font-size" type="text" value="9pt" class="form-control">
-              <h6>Line Spacing</h6>
-              <input id="line-height" type="text" value="1.5" class="form-control">
-              <h6>Columns</h6>
-              <div class="btn-group">
-                <button id="one-column" title="one column" type="button" class="btn btn-default toggle active">1</button>
-                <button id="two-columns" title="two columns" type="button" class="btn btn-default toggle">2</button>
+
+            <div class="row">
+              <div class="col-md-6">
+                <!-- TODO: figure out how to look up these values live -->
+                <h6>Font Size</h6>
+                <input id="font-size" type="text" value="9pt" class="form-control">
+                <h6>Line Spacing</h6>
+                <input id="line-height" type="text" value="1.5" class="form-control">
+                <h6>Columns</h6>
+                <div class="btn-group">
+                  <button id="one-column" title="one column" type="button" class="btn btn-default toggle active">1</button>
+                  <button id="two-columns" title="two columns" type="button" class="btn btn-default toggle">2</button>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <h6>Top</h6>
+                <input id="top-margin" type="text" value="0.75in" class="form-control">
+                <h6>Bottom</h6>
+                <input id="bottom-margin" type="text" value="0.75in" class="form-control">
+                <h6>Left</h6>
+                <input id="left-margin" type="text" value="1.25in" class="form-control">
+                <h6>Right</h6>
+                <input id="right-margin" type="text" value="2.25in" class="form-control">
               </div>
             </div>
-            <div class="col-md-6">
-              <h6>Top</h6>
-              <input id="top-margin" type="text" value="0.75in" class="form-control">
-              <h6>Bottom</h6>
-              <input id="bottom-margin" type="text" value="0.75in" class="form-control">
-              <h6>Left</h6>
-              <input id="left-margin" type="text" value="1.25in" class="form-control">
-              <h6>Right</h6>
-              <input id="right-margin" type="text" value="2.25in" class="form-control">
-            </div>
           </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Go to Print</button>
+            <button id="go-to-print" type="button" class="btn btn-primary">Go to Print</button>
           </div>
+
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->

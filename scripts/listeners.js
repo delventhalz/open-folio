@@ -18,11 +18,6 @@ $('.toggle').on('click', function() {
  *              TOP LINE BUTTONS               *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
-// Printing
-$('#print-button').on('click', function() {
-  window.print();
-});
-
 // Play selection
 $('#play-selection').autocomplete({
   lookup: plays,
@@ -133,7 +128,7 @@ $('#syllable-numbers').on('click', function() {
 });
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
- *               PRINT SETTINGS                *
+ *                PRINT MODAL                  *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
 $('#font-size').on('change', function() {
@@ -191,4 +186,9 @@ $('#right-margin').on('change', function() {
   $(this).val(val);
 
   setPrintStyle('@page', 'margin-right', val);
+});
+
+$('#go-to-print').on('click', function() {
+  $('#print-modal').modal('hide');
+  window.print();
 });
