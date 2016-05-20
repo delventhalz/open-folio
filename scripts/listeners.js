@@ -137,6 +137,9 @@ $('#syllable-numbers').on('click', function() {
  * * * * * * * * * * * * * * * * * * * * * * * */
 
 $('#font-size').on('change', function() {
+  var val = defaultUnit($(this).val(), 'pt');
+  $(this).val(val);
+
   setPrintStyle('.folio', 'font-size', $(this).val());
 });
 
@@ -163,17 +166,29 @@ $('#two-columns').on('click', function() {
 });
 
 $('#top-margin').on('change', function() {
-  setPrintStyle('@page', 'margin-top', $(this).val());
+  var val = defaultUnit($(this).val(), 'in');
+  $(this).val(val);
+
+  setPrintStyle('@page', 'margin-top', val);
 });
 
 $('#bottom-margin').on('change', function() {
-  setPrintStyle('@page', 'margin-bottom', $(this).val());
+  var val = defaultUnit($(this).val(), 'in');
+  $(this).val(val);
+
+  setPrintStyle('@page', 'margin-bottom', val);
 });
 
 $('#left-margin').on('change', function() {
-  setPrintStyle('@page', 'margin-left', $(this).val());
+  var val = defaultUnit($(this).val(), 'in');
+  $(this).val(val);
+
+  setPrintStyle('@page', 'margin-left', val);
 });
 
 $('#right-margin').on('change', function() {
-  setPrintStyle('@page', 'margin-right', $(this).val());
+  var val = defaultUnit($(this).val(), 'in');
+  $(this).val(val);
+
+  setPrintStyle('@page', 'margin-right', val);
 });

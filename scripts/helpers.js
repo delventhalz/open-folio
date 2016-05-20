@@ -168,8 +168,10 @@ var toggleStyle = function(selector, style, on, off) {
   });
 };
 
-
-
+// Apply a unit to a number string if none already exists
+var defaultUnit = function(num, unit) {
+  return Number(num) === NaN ? num : num + unit;
+}
 
 var setSceneVisibility = function() {
   if (!settings.displayAll && settings.scene) {
