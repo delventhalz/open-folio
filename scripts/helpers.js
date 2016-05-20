@@ -106,7 +106,7 @@ var toggleOff = function(id) {
     });
   }
 
-  if (!id) return toggleOff( getIds('.toggle') );
+  if (!id) return toggleOff( getIds('.navbar .toggle') );
 
   if (id[0] !== '#') id = '#' + id;
 
@@ -170,7 +170,9 @@ var toggleStyle = function(selector, style, on, off) {
 
 // Apply a unit to a number string if none already exists
 var defaultUnit = function(num, unit) {
-  return Number(num) === NaN ? num : num + unit;
+  num = num[0] === '.' ? 0 + num: num;
+  num = isNaN( Number(num) ) ? num : num + unit;
+  return num;
 }
 
 var setSceneVisibility = function() {

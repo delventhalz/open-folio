@@ -49,11 +49,6 @@ textarea:focus, input:focus{
   background-color: #235c9e;
 }
 
-.anchor {
-  margin-top: -200px;
-  padding-top: 200px;
-}
-
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
 .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
 .autocomplete-selected { background: #F0F0F0; }
