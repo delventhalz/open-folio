@@ -118,7 +118,7 @@ var plays = [{
   value: "Twelfth Night", 
   path: "plays/twelfth-night.html"
 }, {
-  value: "Two Gentlemen og Verona", 
+  value: "Two Gentlemen of Verona", 
   path: "plays/two-gentlemen.html"
 }, {
   value: "Winter's Tale", 

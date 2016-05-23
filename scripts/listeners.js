@@ -14,7 +14,7 @@ $('.toggle').on('click', function() {
 });
 
 // Load welcome content
-loadContent('templates/welcome.html');
+loadWelcome();
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
@@ -23,7 +23,13 @@ loadContent('templates/welcome.html');
 
 // Back to home page
 $('#header-brand').on('click', function() {
-  loadContent('templates/welcome.html');
+  animateChange(function() {
+    $('.formatting').attr('href', '');
+    toggleOff();
+    $('.preset').removeClass('active');
+
+    loadWelcome();
+  });
 });
 
 // Play selection
@@ -32,13 +38,7 @@ $('#play-selection').autocomplete({
 
   onSelect: function(suggestion) {
     animateChange(function() {
-      loadContent(suggestion.path, suggestion.value, function() {
-        populateSceneSelect();
-        shiftDirections();
-        if ( !$('.preset').hasClass('active') ) {
-          $('#modern-preset').trigger('click');
-        }
-      });
+      loadContent(suggestion.path, suggestion.value);
     });
   }
 

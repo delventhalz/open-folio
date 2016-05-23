@@ -14,7 +14,37 @@ var loadContent = function(path, title, callback) {
 
   $.get(path, function(data) {
     $(target).append(data);
+
+    if (title) {
+      populateSceneSelect();
+      shiftDirections();
+      if ( !$('.preset').hasClass('active') ) {
+        $('#modern-preset').trigger('click');
+      }
+    }
+
     if (callback) callback();
+  });
+};
+
+var loadWelcome = function() {
+  loadContent('templates/welcome.html', null, function() {
+
+    plays.forEach(function(play) {
+      $('#play-list').append('<button type="button" ' + 
+        'class="list-group-item play-link" value="' + play.path +
+        '">' + play.value + '</button>');
+    });
+
+    $('#play-list').on('click', '.play-link', function() {
+      var path = $(this).val();
+      var title = $(this).text();
+
+      animateChange(function() {
+        loadContent(path, title);
+      });
+    });
+
   });
 };
 
