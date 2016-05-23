@@ -13,10 +13,18 @@ $('.toggle').on('click', function() {
   $(this).toggleClass('active');
 });
 
+// Load welcome content
+loadContent('templates/welcome.html');
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * *
  *              TOP LINE BUTTONS               *
  * * * * * * * * * * * * * * * * * * * * * * * */
+
+// Back to home page
+$('#header-brand').on('click', function() {
+  loadContent('templates/welcome.html');
+});
 
 // Play selection
 $('#play-selection').autocomplete({
@@ -24,11 +32,7 @@ $('#play-selection').autocomplete({
 
   onSelect: function(suggestion) {
     animateChange(function() {
-      $('.content').children().remove();
-      $('.content').append('<div class="folio">\n<h1 class="title">' + 
-        suggestion.value + '</h1>\n</div>');
-      $.get(suggestion.path, function(data) {
-        $('.folio').append(data);
+      loadContent(suggestion.path, suggestion.value, function() {
         populateSceneSelect();
         shiftDirections();
         if ( !$('.preset').hasClass('active') ) {

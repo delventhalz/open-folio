@@ -3,6 +3,10 @@ p {
   margin: 0;
 }
 
+body {
+  font-size: 16px;
+}
+
 .content {
   margin-top: 176px;
 }
@@ -28,6 +32,7 @@ textarea:focus, input:focus{
 
 .navbar-brand {
   font-style: normal;
+  cursor: pointer;
 }
 
 .dropdown-menu {
@@ -47,6 +52,17 @@ textarea:focus, input:focus{
 
 .dropdown-menu li:active {
   background-color: #235c9e;
+}
+
+footer {
+  background-color: #eee;
+  font-size: 14px;
+  margin-top: 10em;
+  text-align: center;
+}
+
+footer p {
+  padding: 1em 8em;
 }
 
 .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }

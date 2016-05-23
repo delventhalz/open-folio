@@ -2,6 +2,22 @@
  *              GENERAL HELPERS                *
  * * * * * * * * * * * * * * * * * * * * * * * */
 
+var loadContent = function(path, title, callback) {
+  var target = '.content';
+  $(target).children().remove();
+
+  if (title) {
+    $(target).append('<div class="folio">\n<h1 class="title">' + 
+      title + '</h1>\n</div>');
+    target = '.folio';
+  }
+
+  $.get(path, function(data) {
+    $(target).append(data);
+    if (callback) callback();
+  });
+};
+
 // Returns an array of all ids that match a class
 var getIds = function(className) {
   if (className[0] !== '.') className = '.' + className;
@@ -63,7 +79,7 @@ var shiftDirections = function() {
 var populateSceneSelect = function() {
   var anchorIds = $.makeArray(
     $('.anchor').map(function(index, anchor) {
-    return $(anchor).attr('id');
+      return $(anchor).attr('id');
     })
   );
 
@@ -173,7 +189,7 @@ var defaultUnit = function(num, unit) {
   num = num[0] === '.' ? 0 + num: num;
   num = isNaN( Number(num) ) ? num : num + unit;
   return num;
-}
+};
 
 var setSceneVisibility = function() {
   if (!settings.displayAll && settings.scene) {
