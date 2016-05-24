@@ -43,8 +43,8 @@
 
         <!-- Print and Submit Feedback buttons -->
         <ul class="nav navbar-nav navbar-right">
-          <li id="feedback-button" title="display help"><a data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-alert"></span></a></li>
-          <li id="print-button" title="print" class="active"><a data-toggle="modal" data-target="#print-modal"><span class="glyphicon glyphicon-print"></span></a></li>
+          <li id="feedback-button" title="send a bug report or other feedback"><a data-toggle="modal" data-target="#feedback-modal"><span class="glyphicon glyphicon-alert"></span></a></li>
+          <li id="print-button" title="customize print styles" class="active"><a data-toggle="modal" data-target="#print-modal"><span class="glyphicon glyphicon-print"></span></a></li>
         </ul>
 
         <div id="navbar" class="navbar-collapse collapse">
@@ -68,9 +68,9 @@
               <!-- Style Presets Selection -->
               <div class="nav navbar-right col-sm-6">
                 <div class="nav-header">Presets</div>
-                <button id="modern-preset" type="button" class="btn btn-primary preset">Modern</button>
-                <button id="original-preset" type="button" class="btn btn-primary preset">Original</button>
-                <button id="night-preset" type="button" class="btn btn-primary preset">Night</button>
+                <button id="modern-preset" title="a clean sans-serif design" type="button" class="btn btn-primary preset">Modern</button>
+                <button id="original-preset" title="a serif design similar to the original folio" type="button" class="btn btn-primary preset">Original</button>
+                <button id="night-preset" title="inspired by code editors, a dark background with colorful elements" type="button" class="btn btn-primary preset">Night</button>
               </div>
 
             </div>
@@ -127,7 +127,7 @@
               <div class="btn-group">
                 <button id="paragraph-linebreak" title="add vertical padding after end stops" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-resize-vertical"></span></button>
 
-                <button id="punctuation-whitespace" title="add padding after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
+                <button id="punctuation-whitespace" title="add space after major punctuation" type="button" class="btn btn-default toggle"><strong>!?.</strong></button>
 
                 <button id="punctuation-bold" title="make punctuation bold" type="button" class="btn btn-default toggle"><span class="glyphicon glyphicon-bold"></span></button>
               </div>
@@ -137,7 +137,7 @@
             <div class="nav navbar-nav col-sm-3">
               <div class="nav-header">Numbering</div>
               <div class="btn-group">
-                <button id="syllable-numbers" title="toggle syllable counts (beta)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
+                <button id="syllable-numbers" title="toggle syllable counts (approximate)" type="button" class="btn btn-default toggle"><em><small>to•be•or</small></em></button>
 
                 <button id="line-numbers" title="toggle line numbers" type="button" class="btn btn-default toggle"><em><small>5, 10, 15</small></em></button>
               </div>

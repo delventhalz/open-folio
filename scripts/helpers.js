@@ -168,6 +168,7 @@ var togglePreset = function(button, name) {
   }, animating.delay + animating.inTime);
 
   toggleOff();
+  $('.one-off-style').remove();
   toggleOn(styles[name].toggles);
 
   $('.preset').removeClass('active');
@@ -185,7 +186,7 @@ var makeStyleTag = function(label) {
 
   if (!$(label).length) {
     $('head').append('<style ' + type + '="' + label.slice(1) 
-      + '" type="text/css"></style>');
+      + '" class="one-off-style" type="text/css"></style>');
   }
 };
 
@@ -208,7 +209,7 @@ var setPrintStyle = function(selector, style, value) {
 var toggleStyle = function(selector, style, on, off) {
   var label = '#' + buildLabel(selector, style);
   var value = $(selector).css(style) === off ? on : off;
-
+  console.log(value);
   animateChange(function() {
     setStyle(label, selector + '{' + style + ':' + value + ';}');
   });
